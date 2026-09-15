@@ -55,7 +55,14 @@
   --t-gross:          calc(1.15rem * var(--skala));
   --pap-text:         calc(1.02rem * var(--skala));
   --pap-zeile:        1.72;
-  --pap-breite:       38rem;                   /* Satzspiegel, ca. 72 Zeichen */
+  /* Zeilenlaenge in ch, nicht in rem: 1ch ist die Breite der Ziffer 0 in der
+     GERADE geltenden Schrift. So bleibt die Zeile bei etwa 70 Zeichen, egal
+     ob ein Geraet auf Libre Baskerville, Jost oder Courier Prime druckt.
+     In rem gemessen waren es je nach Geraet 80 bis 115 Zeichen.
+     Gemessen: 58ch ergeben 72 Zeichen bei Libre Baskerville und 71 bei
+     Jost. Bei einer Schreibmaschinenschrift ist 1ch exakt ein Zeichen -
+     REGENSCHAUER setzt deshalb 72ch (siehe themen.css). */
+  --pap-breite:       58ch;
 
   /* --- Abstaende: 4-px-Raster -------------------------------------------- */
   --a0: 2px;  --a1: 4px;  --a2: 8px;  --a3: 12px; --a4: 16px;

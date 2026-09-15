@@ -102,7 +102,45 @@ danach aus dem Browser-Cache.
 | `--t-gross` | 1,15 rem | Suchfeld |
 | `--pap-text` | 1,02 rem | Papier-Fließtext |
 | `--pap-zeile` | 1,72 | Zeilenabstand Papier |
-| `--pap-breite` | 38 rem | Satzspiegel ≈ 72 Zeichen |
+| `--pap-breite` | 58 ch | Satzspiegel, gemessen 72–75 Zeichen |
+
+### Bogenbreite und Satzspiegel sind zwei verschiedene Dinge
+
+Das war anfangs vermischt, mit dem Ergebnis: auf einem 1100 px breiten Brett
+lag ein 684 px schmaler Bogen mit 208 px Rand je Seite — und die Zeile lief
+trotzdem auf 98 Zeichen.
+
+| | |
+|---|---|
+| **Bogen** | `width: min(100%, max(40rem, 88cqi))`, höchstens `64rem`. `#papierblatt` ist `container-type: inline-size`, der Bogen misst sich also am **Brett**, nicht am Fenster. Ergebnis: 85 % der Brettbreite, ~84 px Rand je Seite. |
+| **Satzspiegel** | `max-width: var(--pap-breite)` auf `p h2 h3 h4 ul ol blockquote .formel`. Tabellen, Bilder, Info- und Warnkästen nutzen den **ganzen** Bogen — wie auf einer technischen Zeichnung. |
+
+Die Zeilenlänge steht in **`ch`**, nicht in `rem`: `1ch` ist die Breite der
+Ziffer 0 in der gerade geltenden Schrift, die Zeile passt sich also der
+Leseschrift des Geräts an. Gemessen bei `58ch`: 72 Zeichen (Libre
+Baskerville), 75 (Jost). Bei einer Schreibmaschinenschrift ist `1ch` exakt
+ein Zeichen — **Regenschauer** setzt deshalb `72ch`.
+
+Nachmessen im Browser:
+
+```js
+const p = [...document.querySelectorAll('.blatt > p')]
+  .find(x => !x.classList.contains('demo-vermerk') && x.textContent.length > 90);
+const s = document.createElement('span');
+s.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
+s.textContent = 'abcdefghijklmnopqrstuvwxyz ';
+p.appendChild(s);
+const proZeichen = s.getBoundingClientRect().width / 27; s.remove();
+Math.round(p.getBoundingClientRect().width / proZeichen);   // Zeichen je Zeile
+```
+
+### Fassungsnummer an CSS und JS
+
+`server.py` ersetzt beim Ausliefern von `index.html` den Platzhalter
+`__FASSUNG__` durch `<version>-<jüngster Zeitstempel unter static/>`. Ohne das
+zeigt ein Browser nach einem Update der Box weiter die alte Oberfläche aus
+seinem Zwischenspeicher — beim Entwickeln genauso wie im Betrieb. Die HTML
+selbst geht mit `Cache-Control: no-cache` raus.
 
 ---
 

@@ -187,6 +187,8 @@
   --f-buch: "Courier Prime", "Courier New", monospace;
   --pap-text: calc(0.94rem * var(--skala));
   --pap-zeile: 1.7;
+  /* Schreibmaschine: 1ch ist genau ein Zeichen, also direkt die Zeilenlaenge */
+  --pap-breite: 72ch;
   --stempel-dreh: 0deg;
   --rahmen-staerke: 1px;
   --raster-fein: transparent; --raster-grob: transparent;

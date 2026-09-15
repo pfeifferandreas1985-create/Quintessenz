@@ -547,7 +547,9 @@ body {
 /* 7-Zoll-Klasse (1024x600): weiter nebeneinander, aber schmaleres Terminal.
    Unter 900 px wird gestapelt - dort verdraengt das Papier das Terminal. */
 @media (min-width: 900px) and (max-width: 1199px) {
-  :root { --term-breite: 352px; --pap-breite: 34rem; }
+  /* Satzspiegel braucht hier keine Sonderregel mehr - 64ch passen sich
+     von selbst an, und max-width erzwingt nie einen Ueberlauf. */
+  :root { --term-breite: 352px; }
   body { padding: var(--a2); gap: var(--a2); }
   #geraet { padding: var(--a2); border-radius: 16px; }
   #schirmtext { padding: var(--a3) var(--a3) var(--a1); }
