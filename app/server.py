@@ -373,13 +373,30 @@ STATIC = APP_DIR / "static"
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
+def _fassung() -> str:
+    """Kennung der ausgelieferten Oberflaeche.
+
+    Haengt an den Verweisen auf CSS und JS. Ohne sie zeigt ein Browser nach
+    einem Update der Box weiter die alte Fassung aus seinem Zwischenspeicher -
+    beim Entwickeln genauso wie im Betrieb. Der juengste Zeitstempel unter
+    static/ aendert sich bei jeder Aenderung und sonst nie.
+    """
+    neueste = max((f.stat().st_mtime for f in STATIC.rglob("*") if f.is_file()),
+                  default=0.0)
+    return f"{VERSION}-{int(neueste)}"
+
+
 @app.get("/", response_class=HTMLResponse)
-def wurzel() -> FileResponse:
-    return FileResponse(STATIC / "index.html")
+def wurzel() -> HTMLResponse:
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    return HTMLResponse(
+        html.replace("__FASSUNG__", _fassung()),
+        headers={"Cache-Control": "no-cache"},
+    )
 
 
 @app.exception_handler(404)
 async def nicht_gefunden(request, exc):  # type: ignore[no-untyped-def]
     if request.url.path.startswith("/api/"):
         return JSONResponse({"fehler": "nicht gefunden"}, status_code=404)
-    return FileResponse(STATIC / "index.html")
+    return wurzel()

@@ -17,6 +17,10 @@
   min-height: 0;
   overflow-y: auto;
   border-radius: 3px;
+  /* Das Brett ist der Bezugsrahmen fuer die Bogengroesse - nicht das
+     Fenster. So waechst der Bogen mit der Spalte, egal wie breit das
+     Terminal danebensteht. */
+  container-type: inline-size;
   padding: var(--brett-polster);
   background-color: var(--brett);
   background-image: var(--brett-deko);
@@ -40,7 +44,11 @@
  * der Zeichnungsrahmen. Oben halten ihn zwei Klammern.                   */
 #papierblatt > .blatt {
   position: relative;
-  max-width: var(--pap-breite);
+  /* Der Bogen fuellt 88 % des Bretts, mindestens 40 rem, hoechstens 64 rem.
+     Vorher war er fest auf den Satzspiegel genagelt und schwamm auf breiten
+     Schirmen in 200 px Rand je Seite. */
+  width: min(100%, max(40rem, 88cqi));
+  max-width: 64rem;
   margin: 0 auto;
   /* Der Satzspiegel muss INNERHALB des Zeichnungsrahmens liegen.
      Rahmen: 12 px ringsum, links 28 px (Heftrand). Dazu je 16-20 px Luft,
@@ -255,6 +263,17 @@
   margin: var(--a5) 0 var(--a2);
   letter-spacing: .06em; text-transform: uppercase; color: var(--tinte-mittel);
 }
+/* SATZSPIEGEL. Der Bogen darf breit sein, die ZEILE nicht: ueber etwa
+   75 Zeichen wird Fliesstext unlesbar. Tabellen, Bilder, Info- und
+   Warnkaesten duerfen dagegen den ganzen Bogen nutzen - genau wie auf
+   einer technischen Zeichnung. Text bleibt am linken Heftrand. */
+.blatt p, .blatt h2, .blatt h3, .blatt h4,
+.blatt ul, .blatt ol, .blatt blockquote,
+.blatt .formel, .blatt .demo-vermerk,
+.blatt .aktenkopf .untertitel, .blatt .aktenkopf h1 {
+  max-width: var(--pap-breite);
+}
+
 .blatt p { margin: 0 0 var(--a4); hyphens: auto; }
 .blatt strong { font-weight: 700; }
 .blatt em { font-style: italic; }
@@ -710,8 +729,11 @@ hr.trenner {
   }
   #papierblatt { padding: 0; background: #fff; }
   #papierblatt > .blatt {
-    max-width: none; border: 0; box-shadow: none; background: #fff; padding: 0;
+    width: auto; max-width: none; border: 0; box-shadow: none;
+    background: #fff; padding: 0;
   }
+  .blatt p, .blatt h2, .blatt h3, .blatt h4, .blatt ul, .blatt ol,
+  .blatt blockquote, .blatt .formel { max-width: none; }
   #papierblatt > .blatt::before,
   #papierblatt > .blatt::after { display: none; }
   .aktenzeichen { background: none; border-color: #000; }
