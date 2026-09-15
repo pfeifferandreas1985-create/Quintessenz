@@ -1,0 +1,639 @@
+/* ===========================================================================
+   WELT 2: PAPIER
+   Lesen. Vergilbtes Blatt, dunkle Tinte, ruhig, kontrastreich.
+   VERBOTEN auf dieser Seite: Glow, Scanlines, Flackern, Leuchtfarben.
+   Ziel: Kontrast Tinte/Papier >= 7:1 (gemessen: #1E1A14 auf #E0D4B4 = 11,6:1).
+   =========================================================================== */
+
+#papierblatt {
+  min-height: 0;
+  overflow-y: auto;
+  border-radius: 3px;
+  background:
+    /* Papierstruktur: zwei feine, unregelmaessige Lagen */
+    repeating-linear-gradient(94deg,  rgba(120,100,60,.030) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(176deg, rgba(120,100,60,.022) 0 3px, transparent 3px 7px),
+    radial-gradient(150% 100% at 20% 0%, var(--pap-hell) 0%, var(--pap-dunkel) 78%);
+  box-shadow:
+    inset 0 0 0 1px var(--pap-kante),
+    inset 0 0 90px rgba(120,95,45,.20),
+    0 16px 40px rgba(0,0,0,.45);
+  color: var(--tinte);
+  font-family: var(--f-buch);
+  font-size: var(--pap-text);
+  line-height: var(--pap-zeile);
+  scrollbar-width: thin;
+  scrollbar-color: var(--pap-kante) transparent;
+}
+#papierblatt::-webkit-scrollbar { width: 10px; }
+#papierblatt::-webkit-scrollbar-thumb { background: var(--pap-kante); border-radius: 5px; }
+
+.blatt { max-width: var(--pap-breite); margin: 0 auto; padding: var(--a7) var(--a5) var(--a8); }
+
+/* --- Leerzustand: das Terminal hat noch nichts gedruckt ------------------- */
+
+.papier-leer {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%;
+  gap: var(--a4);
+  color: var(--tinte-schwach);
+  font-family: var(--f-akte);
+  text-align: center;
+  padding: var(--a6);
+}
+.papier-leer .atom { width: 3.6rem; height: 3.6rem; opacity: .55; }
+.papier-leer .gross {
+  font-family: var(--f-schild);
+  font-size: calc(1.05rem * var(--skala));
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--tinte-mittel);
+}
+
+/* --- Aktenkopf: der Stempel oben auf dem Blatt --------------------------- */
+
+.aktenkopf {
+  border-bottom: 2px solid var(--tinte);
+  padding-bottom: var(--a3);
+  margin-bottom: var(--a5);
+}
+.aktenkopf .laufweg {
+  font-family: var(--f-schild);
+  font-size: calc(.72rem * var(--skala));
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--tinte-schwach);
+  margin-bottom: var(--a2);
+}
+.aktenkopf h1 {
+  font-family: var(--f-schild);
+  font-weight: 600;
+  font-size: calc(1.72rem * var(--skala));
+  line-height: 1.16;
+  letter-spacing: -.005em;
+  margin: 0 0 var(--a1);
+  color: var(--tinte);
+}
+.aktenkopf .untertitel {
+  font-family: var(--f-akte);
+  font-size: calc(.92rem * var(--skala));
+  color: var(--tinte-mittel);
+  margin-bottom: var(--a3);
+}
+
+/* Stempelreihe: Tiefe, Sprache, DEMO, NUR LOKAL */
+.stempelreihe { display: flex; flex-wrap: wrap; gap: var(--a2); margin-bottom: var(--a3); }
+
+.stempel {
+  font-family: var(--f-schild);
+  font-weight: 600;
+  font-size: calc(.68rem * var(--skala));
+  letter-spacing: .2em;
+  padding: 3px 9px;
+  border: 2px solid var(--stempel);
+  border-radius: 2px;
+  color: var(--stempel);
+  background: var(--stempel-blass);
+  transform: rotate(-1.4deg);
+  text-transform: uppercase;
+}
+.stempel.tiefe-LEHRBUCH { transform: rotate(.8deg); }
+.stempel.tiefe-PRAXIS   { transform: rotate(-.6deg); }
+.stempel.tiefe-FALL     { transform: rotate(1.2deg); }
+.stempel.nurlokal, .stempel.pruefen {
+  border-style: double; border-width: 3px;
+}
+/* Der DEMO-Stempel muss LESBAR sein. Die Streifen sitzen deshalb als
+   schmales Band oben und unten, nicht hinter der Schrift. */
+.stempel.demo {
+  position: relative;
+  color: var(--warn-schwarz);
+  border-color: var(--warn-schwarz);
+  background: var(--warn-gelb);
+  padding: 6px 10px;
+  text-shadow: none;
+  transform: rotate(-1deg);
+}
+.stempel.demo::before, .stempel.demo::after {
+  content: "";
+  position: absolute; left: 0; right: 0; height: 3px;
+  background: repeating-linear-gradient(45deg,
+    var(--warn-schwarz) 0 5px, var(--warn-gelb) 5px 10px);
+}
+.stempel.demo::before { top: 0; }
+.stempel.demo::after  { bottom: 0; }
+.stempel.sprache { border-style: dashed; transform: none; }
+
+/* Aktenzeichen: die Quellenangabe als Formularzeile */
+.aktenzeichen {
+  font-family: var(--f-akte);
+  font-size: calc(.76rem * var(--skala));
+  line-height: 1.6;
+  color: var(--tinte-mittel);
+  border: 1px solid var(--tinte-schwach);
+  border-radius: 2px;
+  padding: var(--a2) var(--a3);
+  background: rgba(255,255,255,.14);
+}
+.aktenzeichen dl { display: grid; grid-template-columns: 7.2em 1fr; gap: 1px var(--a2); margin: 0; }
+.aktenzeichen dt {
+  text-transform: uppercase; letter-spacing: .1em;
+  font-size: calc(.68rem * var(--skala));
+  color: var(--tinte-schwach);
+  padding-top: .16em;
+}
+.aktenzeichen dd { margin: 0; word-break: break-word; }
+
+/* --- Fliesstext ----------------------------------------------------------- */
+
+.blatt h2, .blatt h3, .blatt h4 {
+  font-family: var(--f-schild);
+  font-weight: 600;
+  color: var(--tinte);
+  line-height: 1.25;
+  scroll-margin-top: var(--a5);
+}
+.blatt h2 {
+  font-size: calc(1.28rem * var(--skala));
+  margin: var(--a7) 0 var(--a3);
+  padding-bottom: var(--a1);
+  border-bottom: 1px solid var(--pap-kante);
+}
+.blatt h3 { font-size: calc(1.08rem * var(--skala)); margin: var(--a6) 0 var(--a2); }
+.blatt h4 {
+  font-size: calc(.94rem * var(--skala));
+  margin: var(--a5) 0 var(--a2);
+  letter-spacing: .06em; text-transform: uppercase; color: var(--tinte-mittel);
+}
+.blatt p { margin: 0 0 var(--a4); hyphens: auto; }
+.blatt strong { font-weight: 700; }
+.blatt em { font-style: italic; }
+.blatt sub, .blatt sup { font-size: .76em; }
+
+.blatt a {
+  color: var(--stempel);
+  text-decoration-color: rgba(139,46,31,.4);
+  text-underline-offset: .18em;
+}
+.blatt a:hover { background: var(--stempel-blass); }
+
+.blatt ul, .blatt ol { margin: 0 0 var(--a4); padding-left: var(--a5); }
+.blatt li { margin-bottom: var(--a2); }
+.blatt li::marker { color: var(--tinte-schwach); }
+.blatt ol { counter-reset: schritt; list-style: none; padding-left: 0; }
+.blatt ol > li {
+  counter-increment: schritt;
+  position: relative;
+  padding-left: var(--a6);
+}
+.blatt ol > li::before {
+  content: counter(schritt);
+  position: absolute; left: 0; top: .08em;
+  width: 1.55em; height: 1.55em;
+  display: grid; place-items: center;
+  font-family: var(--f-schild); font-size: .78em; font-weight: 600;
+  color: var(--pap-hell);
+  background: var(--tinte-mittel);
+  border-radius: 2px;
+}
+
+/* --- Bilder: eingeklebte Fotos und Zeichnungen --------------------------- */
+
+figure { margin: var(--a6) 0; }
+figure .rahmen {
+  padding: var(--a2);
+  background: color-mix(in srgb, var(--pap-hell) 68%, #fff);
+  border: 1px solid var(--pap-kante);
+  box-shadow: 0 3px 9px rgba(60,45,20,.28);
+  transform: rotate(-.35deg);
+}
+figure img { display: block; width: 100%; height: auto; }
+
+/* Platzhalterrahmen: erbt Tinte und Stempelrot des gewaehlten Geraets. */
+figure .platzhalter {
+  display: block; width: 100%; height: auto;
+  color: var(--stempel);
+  background: repeating-linear-gradient(45deg,
+    transparent 0 11px, rgba(30,26,20,.05) 11px 12px);
+}
+.platzhalter .ph-marke {
+  font-family: var(--f-schild); font-size: 12px; letter-spacing: 3px;
+  fill: currentColor;
+}
+.platzhalter .ph-text {
+  font-family: var(--f-akte); font-size: 14px; fill: var(--tinte-mittel);
+}
+.platzhalter .ph-fuss {
+  font-family: var(--f-akte); font-size: 10px; letter-spacing: 1.5px;
+  fill: currentColor;
+}
+figure figcaption {
+  font-family: var(--f-akte);
+  font-size: calc(.76rem * var(--skala));
+  line-height: 1.55;
+  color: var(--tinte-mittel);
+  margin-top: var(--a2);
+  padding-left: var(--a2);
+  border-left: 2px solid var(--pap-kante);
+}
+figure figcaption .herkunft {
+  display: block;
+  color: var(--tinte-schwach);
+  font-size: calc(.68rem * var(--skala));
+  margin-top: 2px;
+}
+figure.schmal { max-width: 22rem; }
+figure.breit  { max-width: none; }
+
+/* Seitenkopie: staerker gerahmt, sichtbar "aufgeklebt" */
+figure.seitenkopie .rahmen {
+  transform: rotate(.5deg);
+  padding: var(--a3);
+  border: 1px solid var(--tinte-schwach);
+  box-shadow: 0 5px 14px rgba(60,45,20,.34);
+}
+figure.seitenkopie .rahmen::before {
+  content: "KOPIE";
+  display: block;
+  font-family: var(--f-schild);
+  font-size: calc(.62rem * var(--skala));
+  letter-spacing: .26em;
+  color: var(--stempel);
+  margin-bottom: var(--a2);
+}
+
+/* --- Tabellen als gestempelte Formulare ---------------------------------- */
+
+.formular { margin: var(--a5) 0; }
+.formular .titel {
+  font-family: var(--f-schild);
+  font-size: calc(.76rem * var(--skala));
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--tinte-mittel);
+  padding-bottom: var(--a1);
+}
+.formular .rollbar { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--f-akte);
+  font-size: calc(.82rem * var(--skala));
+  line-height: 1.45;
+  background: rgba(255,255,255,.16);
+}
+th, td {
+  border: 1px solid var(--tinte-schwach);
+  padding: var(--a2) var(--a2);
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  font-family: var(--f-schild);
+  font-weight: 600;
+  font-size: calc(.72rem * var(--skala));
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: rgba(30,26,20,.10);
+  white-space: nowrap;
+}
+tbody tr:nth-child(even) td { background: rgba(30,26,20,.045); }
+td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
+td.c, th.c { text-align: center; }
+.formular .fussnote {
+  font-family: var(--f-akte);
+  font-size: calc(.72rem * var(--skala));
+  color: var(--tinte-schwach);
+  margin-top: var(--a2);
+  padding-left: var(--a2);
+  border-left: 2px solid var(--pap-kante);
+}
+
+/* --- Infokasten: gestempeltes Formular mit Label/Wert --------------------- */
+
+.infokasten {
+  margin: var(--a5) 0;
+  border: 1px solid var(--tinte-mittel);
+  border-top-width: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,.2);
+  padding: var(--a3) var(--a4);
+}
+.infokasten > .titel {
+  font-family: var(--f-schild);
+  font-size: calc(.72rem * var(--skala));
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--stempel);
+  margin-bottom: var(--a2);
+}
+.infokasten dl {
+  display: grid;
+  grid-template-columns: minmax(8em, 15em) 1fr;
+  gap: 0;
+  margin: 0;
+  font-family: var(--f-akte);
+  font-size: calc(.84rem * var(--skala));
+}
+.infokasten dt {
+  color: var(--tinte-mittel);
+  padding: var(--a1) var(--a2) var(--a1) 0;
+  border-bottom: 1px dotted var(--pap-kante);
+}
+.infokasten dd {
+  margin: 0;
+  padding: var(--a1) 0;
+  border-bottom: 1px dotted var(--pap-kante);
+  font-weight: 700;
+}
+.infokasten dl > :nth-last-child(-n+2) { border-bottom: 0; }
+
+/* --- Warnkaesten: schwarz-gelb gestreift --------------------------------- */
+
+.warnung {
+  margin: var(--a5) 0;
+  border: 2px solid var(--warn-schwarz);
+  border-radius: 2px;
+  background: rgba(255,255,255,.28);
+  overflow: hidden;
+}
+/* Das Warnband: Klebestreifen OBEN, darunter ein ruhiger Grund fuer den
+   Titel. Frueher lag die Schrift auf den Streifen und war unlesbar. */
+.warnung > .band {
+  position: relative;
+  display: flex; align-items: center; gap: var(--a3);
+  padding: calc(var(--a2) + 8px) var(--a3) var(--a2);
+  font-family: var(--f-schild);
+  font-weight: 600;
+  font-size: calc(.8rem * var(--skala));
+  letter-spacing: .1em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: var(--warn-schwarz);
+  background: var(--warn-gelb);
+}
+.warnung > .band::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0; height: 8px;
+  background: repeating-linear-gradient(45deg,
+    var(--warn-schwarz) 0 8px, var(--warn-gelb) 8px 16px);
+}
+.warnung > .band span {
+  flex: none;
+  background: var(--warn-schwarz);
+  color: var(--warn-gelb);
+  padding: 2px 9px;
+  border-radius: 2px;
+  letter-spacing: .18em;
+}
+.warnung > .text {
+  padding: var(--a3);
+  font-family: var(--f-akte);
+  font-size: calc(.86rem * var(--skala));
+  line-height: 1.62;
+  color: var(--tinte);
+}
+.warnung.gefahr  { border-width: 3px; }
+.warnung.hinweis > .band {
+  background: none;
+  border-bottom: 1px solid var(--tinte-schwach);
+  color: var(--tinte-mittel);
+  padding-top: var(--a2);
+}
+.warnung.hinweis > .band::before { display: none; }
+.warnung.hinweis > .band span {
+  background: none;
+  padding: 1px 7px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+.warnung.hinweis { border-width: 1px; border-color: var(--tinte-schwach); }
+
+/* --- Code als Lochstreifen ------------------------------------------------ */
+
+.lochstreifen {
+  margin: var(--a5) 0;
+  border: 1px solid var(--tinte-schwach);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--pap-hell) 80%, #fff);
+  overflow: hidden;
+}
+.lochstreifen .kopf {
+  display: flex; justify-content: space-between; gap: var(--a3);
+  padding: var(--a1) var(--a3);
+  font-family: var(--f-schild);
+  font-size: calc(.66rem * var(--skala));
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--tinte-schwach);
+  border-bottom: 1px solid var(--pap-kante);
+  background:
+    radial-gradient(circle at 8px 50%, var(--pap-kante) 1.9px, transparent 2.1px) 0 0/16px 100%;
+}
+.lochstreifen pre {
+  margin: 0;
+  padding: var(--a3);
+  overflow-x: auto;
+  font-family: var(--f-code);
+  font-size: calc(.8rem * var(--skala));
+  line-height: 1.58;
+  color: var(--tinte);
+  tab-size: 4;
+}
+.lochstreifen .kommentar { color: var(--tinte-schwach); font-style: italic; }
+.lochstreifen .zeichen   { color: var(--stempel); }
+.lochstreifen .wort      { font-weight: 700; }
+
+/* --- Formeln -------------------------------------------------------------- */
+
+.formel {
+  margin: var(--a5) 0;
+  padding: var(--a3) var(--a4);
+  text-align: center;
+  border-top: 1px solid var(--pap-kante);
+  border-bottom: 1px solid var(--pap-kante);
+  font-family: var(--f-buch);
+  font-size: calc(1.14rem * var(--skala));
+  font-style: italic;
+  color: var(--tinte);
+  overflow-x: auto;
+}
+.formel .tex { white-space: nowrap; }
+.tex-aufrecht { font-style: normal; }
+.tex-wurzel {
+  border-top: 1px solid currentColor;
+  padding: 0 .18em 0 .1em;
+  margin-left: -.06em;
+}
+/* Gestapelter Bruch: Zaehler ueber Nenner, Bruchstrich als Rahmen. */
+.tex-bruch {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1.12;
+  margin: 0 .18em;
+}
+.tex-bruch > .z { padding: 0 .3em .1em; }
+.tex-bruch > .n { padding: .1em .3em 0; border-top: 1px solid currentColor; }
+.tex-bruch.klein { font-size: .86em; }
+.formel sup, .formel sub { font-size: .68em; line-height: 0; }
+
+.formel .klartext {
+  display: block;
+  margin-top: var(--a2);
+  font-family: var(--f-akte);
+  font-style: normal;
+  font-size: calc(.72rem * var(--skala));
+  color: var(--tinte-schwach);
+}
+
+/* --- Zitat ---------------------------------------------------------------- */
+
+blockquote {
+  margin: var(--a5) 0;
+  padding: 0 0 0 var(--a4);
+  border-left: 3px solid var(--stempel);
+  font-style: italic;
+  color: var(--tinte-mittel);
+}
+blockquote cite {
+  display: block;
+  margin-top: var(--a2);
+  font-family: var(--f-akte);
+  font-style: normal;
+  font-size: calc(.74rem * var(--skala));
+  color: var(--tinte-schwach);
+}
+
+/* --- Fall: Frage und Antwort (Stack Exchange) ---------------------------- */
+
+.fall { margin: var(--a5) 0; }
+.fall > .kopf {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--a2);
+  font-family: var(--f-schild);
+  font-size: calc(.72rem * var(--skala));
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--tinte-schwach);
+  padding-bottom: var(--a2);
+  border-bottom: 1px solid var(--pap-kante);
+  margin-bottom: var(--a3);
+}
+.fall > .kopf .rolle {
+  color: var(--pap-hell);
+  background: var(--tinte-mittel);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+.fall.antwort > .kopf .rolle { background: var(--tinte-schwach); }
+.fall.akzeptiert > .kopf .rolle { background: var(--stempel); }
+.fall > .kopf .stimmen { margin-left: auto; font-variant-numeric: tabular-nums; }
+.fall.frage { padding-left: var(--a3); border-left: 3px solid var(--tinte-schwach); }
+.fall.antwort { padding-left: var(--a3); border-left: 3px solid var(--pap-kante); }
+.fall.akzeptiert { border-left-color: var(--stempel); }
+.fall.weitere { display: none; }
+.fall-aufklappen {
+  all: unset; cursor: pointer;
+  display: block; width: 100%;
+  margin: var(--a4) 0;
+  padding: var(--a2);
+  text-align: center;
+  font-family: var(--f-schild);
+  font-size: calc(.72rem * var(--skala));
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--tinte-mittel);
+  border: 1px dashed var(--tinte-schwach);
+  border-radius: 2px;
+}
+.fall-aufklappen:hover { background: rgba(255,255,255,.28); color: var(--tinte); }
+.blatt[data-weitere="offen"] .fall.weitere { display: block; }
+
+hr.trenner {
+  border: 0;
+  margin: var(--a6) auto;
+  width: 30%;
+  border-top: 1px solid var(--pap-kante);
+}
+
+/* --- Randvermerk fuer Demo-Akten ----------------------------------------- */
+
+.demo-vermerk {
+  margin: 0 0 var(--a5);
+  padding: var(--a2) var(--a3);
+  border: 1px dashed var(--stempel);
+  border-radius: 2px;
+  font-family: var(--f-akte);
+  font-size: calc(.76rem * var(--skala));
+  line-height: 1.55;
+  color: var(--stempel);
+  background: var(--stempel-blass);
+}
+
+/* --- Fussbereich des Blattes --------------------------------------------- */
+
+.blattfuss {
+  margin-top: var(--a8);
+  padding-top: var(--a3);
+  border-top: 1px solid var(--pap-kante);
+  font-family: var(--f-akte);
+  font-size: calc(.74rem * var(--skala));
+  color: var(--tinte-schwach);
+  display: flex; flex-wrap: wrap; gap: var(--a2) var(--a5);
+  justify-content: space-between;
+}
+
+/* --- Overlay "Original einsehen" ----------------------------------------- */
+
+#overlay {
+  position: fixed; inset: 0; z-index: 800;
+  display: none;
+  background: rgba(7,10,6,.86);
+  padding: 4vh 4vw;
+}
+#overlay[open] { display: grid; grid-template-rows: auto 1fr; gap: var(--a2); }
+#overlay .leiste {
+  display: flex; align-items: center; gap: var(--a3);
+  font-family: var(--f-schild);
+  font-size: calc(.74rem * var(--skala));
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--phos-dim);
+}
+#overlay iframe {
+  width: 100%; height: 100%;
+  border: 1px solid var(--phos-schwach);
+  border-radius: var(--r-knopf);
+  background: var(--term-bg);
+}
+
+/* --- Druckansicht: Schwarz auf Weiss, keine Effekte ---------------------- */
+
+@media print {
+  @page { margin: 18mm 16mm; }
+  body { display: block; background: #fff; padding: 0; }
+  #geraet, #overlay, .demo-vermerk ~ .werkzeuge, #boot { display: none !important; }
+  #papierblatt {
+    overflow: visible; background: #fff; box-shadow: none; color: #000;
+  }
+  .blatt { max-width: none; padding: 0; }
+  .aktenkopf { border-color: #000; }
+  .stempel { color: #000; border-color: #000; background: none; transform: none;
+             text-shadow: none; }
+  .stempel.demo { background: none; }
+  .warnung > .band { background: #000; color: #fff; }
+  .warnung > .band::before { display: none; }
+  .warnung > .band span { background: #fff; color: #000; }
+  table, th, td { border-color: #000; background: none !important; }
+  figure .rahmen { transform: none; box-shadow: none; border-color: #000; background: none; }
+  .lochstreifen { background: none; border-color: #000; }
+  .lochstreifen .kopf { background: none; }
+  a { color: #000; text-decoration: underline; }
+  .blattfuss { border-color: #000; color: #000; }
+  .fall.weitere { display: block !important; }
+  .fall-aufklappen { display: none; }
+  h2, h3, h4 { break-after: avoid; }
+  figure, table, .warnung, .infokasten { break-inside: avoid; }
+}

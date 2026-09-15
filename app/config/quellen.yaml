@@ -1,0 +1,160 @@
+# quellen.yaml - Welche Quelle gehoert zu welchem Thema?
+#
+# bereiche.yaml sagt, WAS es gibt (16 Bereiche, 104 Themen, aus der
+# WISSENSUEBERSICHT abgeleitet). Diese Datei sagt, WORAUS die Akten eines
+# Themas gemacht werden. Sie wird von Hand gepflegt und ueberlebt jeden Lauf
+# des Generators.
+#
+# Diese Datei ist im Prototyp noch nicht wirksam: der Server liefert Akten aus
+# adapters/eigene.py (echt) und demo/fixtures.py (Demo). Sobald ingest/ laeuft,
+# ist sie die einzige Steuerung dafuer, was ins Archiv wandert.
+#
+# -------------------------------------------------------------------------
+# AUFBAU EINES QUELLENEINTRAGS
+#
+#   typ: zim | se | pdf | eigen
+#
+#   zim   datei:      Dateiname in zim/ (ohne Pfad)
+#         praefix:    Namensraum-Praefix in der ZIM, meist "A/"
+#         artikel:    Liste konkreter Artikel (fuer kuratierte Einstiegsakten)
+#         kategorie:  Kategoriename; alle Artikel darin werden aufgenommen
+#         suche:      Suchbegriffe; Treffer aus der Kiwix-Suche werden verlinkt,
+#                     aber NICHT ingestiert (fuer Wikipedia-grosse Quellen)
+#         max:        Obergrenze aufgenommener Artikel (Schutz gegen Ausufern)
+#
+#   se    datei:      Stack-Exchange-ZIM
+#         tags:       nur Fragen mit diesen Tags
+#         min_score:  Mindestpunktzahl der Frage
+#         nur_beantwortet: true -> nur Fragen mit akzeptierter Antwort
+#
+#   pdf   datei:      Pfad unterhalb von pdf/
+#         kapitel:    Seitenbereiche, die je eine Akte werden
+#                     - {von: 12, bis: 29, titel: "..."}
+#         seitenbild: Seiten, die als Kopie eingeklebt statt gesetzt werden
+#         tiefe:      ueberschreibt die Tiefe des Themas
+#
+#   eigen modul:      fahrzeuge | rebuild | tabellen
+#
+# einstieg: Liste von Akten-IDs, die auf der Themenseite ganz oben stehen.
+#           Alles Weitere folgt nach Tiefe sortiert (Referenz zuerst, Faelle
+#           zuletzt) - siehe server.py, TIEFE_RANG.
+# -------------------------------------------------------------------------
+
+themen:
+
+  # --- 1 Elektrotechnik ---------------------------------------------------
+
+  elektrotechnik-und-elektronik/grundlagen:
+    einstieg: [et-ohmsches-gesetz]
+    quellen:
+      - typ: zim
+        datei: wikipedia_de_all_maxi.zim
+        artikel: [Ohmsches_Gesetz, Kirchhoffsche_Regeln, Wechselstrom,
+                  Drehstrom, Elektrische_Leistung, Blindleistung,
+                  Elektrischer_Widerstand, Kondensator, Spule_(Elektrotechnik)]
+      - typ: zim
+        datei: wikibooks_de_all_maxi.zim
+        kategorie: Elektrotechnik
+        max: 200
+
+  elektrotechnik-und-elektronik/leitungsdimensionierung-strombelastbarkeit:
+    einstieg: [et-leitungsquerschnitt]
+    quellen:
+      - typ: pdf
+        datei: energie/abb_installation_handbook_7ed.pdf
+        kapitel:
+          - {von: 14, bis: 21, titel: "Strombelastbarkeit und Spannungsfall"}
+          - {von: 22, bis: 31, titel: "Kurzschlussschutz und Selektivität"}
+        seitenbild: [19, 27]
+        tiefe: REFERENZ
+
+  elektrotechnik-und-elektronik/konkrete-schaltungsprobleme-warum-schwingt:
+    einstieg: [et-mosfet-heiss]
+    quellen:
+      - typ: se
+        datei: stackexchange_electronics_en_all.zim
+        tags: [mosfet, power-supply, operational-amplifier, pcb, switching,
+               thermal, gate-driver]
+        min_score: 5
+        nur_beantwortet: true
+
+  # --- 7 Medizin ----------------------------------------------------------
+
+  medizin/krankheiten-symptome-medikamente-anatomie:
+    einstieg: [med-anaphylaxie]
+    quellen:
+      - typ: zim
+        datei: wikimed_de_all_maxi.zim
+        # WikiMed ist klein genug fuer vollen Ingest.
+        kategorie: "*"
+        max: 12000
+
+  medizin/erste-hilfe-reanimation-aktuelle-erc:
+    einstieg: [med-reanimation]
+    quellen:
+      - typ: pdf
+        datei: med/erc_leitlinien_2021_de.pdf
+        kapitel:
+          - {von: 41, bis: 56, titel: "Basismaßnahmen beim Erwachsenen"}
+          - {von: 57, bis: 78, titel: "Erweiterte Maßnahmen"}
+        seitenbild: [43, 44, 61]
+        tiefe: PRAXIS
+
+  medizin/blutungskontrolle-tourniquet-thorax-schock:
+    einstieg: [med-tourniquet]
+    quellen:
+      - typ: pdf
+        datei: med/tccc_guidelines.pdf
+        kapitel:
+          - {von: 8, bis: 14, titel: "Massive Blutung"}
+          - {von: 15, bis: 22, titel: "Atemweg und Atmung"}
+        tiefe: PRAXIS
+
+  # --- 12 Zivilisationsneustart -------------------------------------------
+
+  zivilisationsneustart/abhaengigkeitsbaeume:
+    quellen:
+      - typ: eigen
+        modul: rebuild
+
+  # --- 16 Eigene Fahrzeuge -------------------------------------------------
+
+  eigene-fahrzeuge/land-rover-defender-110-td5:
+    einstieg: [fz-defender-kenndaten, fz-defender-schwachstellen]
+    quellen:
+      - typ: eigen
+        modul: fahrzeuge
+      - typ: pdf
+        datei: fahrzeuge/defender/workshop_manual_td5.pdf
+        # Kapitelgrenzen erst nach dem Beschaffen eintragen.
+        tiefe: PRAXIS
+
+  eigene-fahrzeuge/vespa-v50-n-v5a1t-1963:
+    einstieg: [fz-vespa-zuendung]
+    quellen:
+      - typ: eigen
+        modul: fahrzeuge
+      - typ: pdf
+        datei: fahrzeuge/vespa/piaggio_wsh_v50_scan.pdf
+        tiefe: PRAXIS
+
+# -------------------------------------------------------------------------
+# Quellen, die NICHT ingestiert, sondern nur durchsucht werden.
+# Fuer Archive, bei denen ein eigener Volltextindex sinnlos waere
+# (Wikipedia DE maxi: 2,9 Mio. Artikel, ~95 GB). Die Kiwix-Suche auf :8888
+# liefert die Treffer, der Artikel wird beim Oeffnen live aus der ZIM
+# gelesen, bereinigt und ins Papier-Template gegossen.
+# -------------------------------------------------------------------------
+nur_durchsuchen:
+  - wikipedia_de_all_maxi.zim
+  - wikipedia_en_all_nopic.zim
+  - gutenberg_en_all.zim
+  - gutenberg_de_all.zim
+  - wiktionary_de_all.zim
+
+# Inhalte aus diesen Pfaden bekommen den Stempel NUR LOKAL und werden bei
+# einer Weitergabe der Box ausgelassen.
+nur_lokal:
+  - zim/eigene/privat/
+  - pdf/fahrzeuge/
+  - own/

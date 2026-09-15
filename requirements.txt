@@ -1,0 +1,13 @@
+# Laufzeit der Anwendung (app/). Bewusst klein: laeuft auf dem Pi 5 ohne
+# Compiler, ohne Datenbankserver, ohne Node.
+fastapi>=0.115
+uvicorn[standard]>=0.30
+PyYAML>=6.0
+httpx>=0.27          # spaeter: llama-server
+
+# Erst fuer die Ingest-Stufe noetig, nicht beim Start:
+#   python-libzim>=3.4      ZIM lesen
+#   pymupdf>=1.24           PDF-Text, Bilder, Seitenrendering
+#   sqlite-vec>=0.1         Vektorsuche
+# Werkzeuge:
+#   fonttools[woff]         tools/fetch_fonts.py (TTF -> woff2)

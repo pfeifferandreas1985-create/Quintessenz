@@ -1,0 +1,377 @@
+/* ===========================================================================
+   ZEHN GERÄTE
+
+   Jedes Thema ist eine andere Maschine aus einer anderen Welt - und jede
+   Maschine druckt auf ihrem eigenen Papier. Deshalb setzt ein Thema IMMER
+   beide Welten: die Roehre (Gehaeuse, Phosphor, Raster, Kantenradius) und
+   den Bogen (Papierton, Tinte, Stempel, Warnfarbe, Lesefschrift).
+
+   Gestaltet ist die Anmutung des Geraets, nicht die Marke: keine Logos,
+   keine Figuren, keine Filmschriften, keine geschuetzten Namen. Die
+   Eigennamen sind eigene. Was als Anregung diente, steht in docs/DESIGN.md.
+
+   Regeln, die jedes Thema einhalten muss:
+     * Tinte auf Papier mindestens 7:1  (tools/kontrast.py prueft alle zehn)
+     * Phosphor auf Schirm mindestens 4,5:1
+     * Auf dem Papier kein Leuchten, kein Raster - nur Farbe und Form
+     * Nur die vier lokal vorliegenden OFL-Familien
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1  PHOSPHOR - Aktenterminal einer Behoerde, Roehre von 1958
+   Grundeinstellung. Bakelit, Zeilensprung, vergilbtes Aktenpapier.
+   --------------------------------------------------------------------------- */
+:root[data-thema="phosphor"] {
+  --term-bg: #0B0F0A;  --term-bg-tief: #070A06;  --term-bg-hoch: #0E140C;
+  --term-gehaeuse: #191612; --term-gehaeuse-h: #2A2621; --term-gehaeuse-t: #120F0C;
+  --term-chrom: #6E6A63;
+  --phos: #33FF66; --phos-hell: #9DFFC0;
+  --phos-dim: rgba(51,255,102,.58); --phos-schwach: rgba(51,255,102,.28);
+  --phos-hauch: rgba(51,255,102,.10); --phos-glut: rgba(51,255,102,.34);
+  --term-warn: #FFB000;
+  --raster: repeating-linear-gradient(180deg, rgba(0,0,0,.55) 0 1px, transparent 1px 3px);
+  --r-bezel: 22px;
+
+  --pap-hell: #E8DCC0; --pap-dunkel: #D9CBA3; --pap-kante: #C4B48C;
+  --tinte: #1E1A14; --tinte-mittel: #433B2E; --tinte-schwach: #6B6151;
+  --stempel: #8B2E1F; --warn-gelb: #E3B505; --warn-schwarz: #171310;
+  --f-buch: "Libre Baskerville", Georgia, serif;
+}
+
+/* ---------------------------------------------------------------------------
+   2  BERNSTEIN - Leitstand einer Anlage, Bernsteinroehre
+   Waermer, ruhiger. Papier ist Durchschlag, nicht Akte.
+   --------------------------------------------------------------------------- */
+:root[data-thema="bernstein"] {
+  --term-bg: #100C06;  --term-bg-tief: #0A0704;  --term-bg-hoch: #141008;
+  --term-gehaeuse: #1C1712; --term-gehaeuse-h: #2E2720; --term-gehaeuse-t: #14100C;
+  --term-chrom: #7A7166;
+  --phos: #FFB000; --phos-hell: #FFD98A;
+  --phos-dim: rgba(255,176,0,.62); --phos-schwach: rgba(255,176,0,.30);
+  --phos-hauch: rgba(255,176,0,.11); --phos-glut: rgba(255,176,0,.34);
+  --term-warn: #9DFFC0;
+  --raster: repeating-linear-gradient(180deg, rgba(0,0,0,.5) 0 1px, transparent 1px 3px);
+  --r-bezel: 22px;
+
+  --pap-hell: #EDE4D3; --pap-dunkel: #DCD0B9; --pap-kante: #C0B091;
+  --tinte: #221C12; --tinte-mittel: #4A3F2C; --tinte-schwach: #6F6350;
+  --stempel: #7A3B12; --warn-gelb: #D9A406; --warn-schwarz: #1A1409;
+  --f-buch: "Libre Baskerville", Georgia, serif;
+}
+
+/* ---------------------------------------------------------------------------
+   3  GITTERNETZ - Konsole eines Rechnerraums, in dem Licht die Wege zeichnet
+   Hart, kantig, kein Bakelit sondern Anthrazit. Gitter statt Zeilensprung.
+   Papier ist ein kaltweisses Diagrammblatt.
+   --------------------------------------------------------------------------- */
+:root[data-thema="gitternetz"] {
+  --term-bg: #03070C;  --term-bg-tief: #010407;  --term-bg-hoch: #061016;
+  --term-gehaeuse: #0A1018; --term-gehaeuse-h: #1A2530; --term-gehaeuse-t: #05090E;
+  --term-chrom: #4E6B7A;
+  --phos: #6FE9FF; --phos-hell: #CFF8FF;
+  --phos-dim: rgba(111,233,255,.62); --phos-schwach: rgba(111,233,255,.30);
+  --phos-hauch: rgba(111,233,255,.09); --phos-glut: rgba(111,233,255,.40);
+  --term-warn: #FF7A18;
+  --raster:
+    repeating-linear-gradient(180deg, rgba(111,233,255,.16) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg,  rgba(111,233,255,.16) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(180deg, rgba(0,0,0,.34) 0 1px, transparent 1px 4px);
+  --r-bezel: 3px;
+
+  --pap-hell: #EDF4F8; --pap-dunkel: #DCE8EF; --pap-kante: #AFC4D2;
+  --tinte: #0C1620; --tinte-mittel: #2C3D4B; --tinte-schwach: #55697A;
+  --stempel: #0E6C88; --warn-gelb: #FFB300; --warn-schwarz: #0C1620;
+  --f-buch: "Jost", system-ui, sans-serif;
+  --pap-zeile: 1.66;
+}
+
+/* ---------------------------------------------------------------------------
+   4  REGENSCHAUER - Serverkeller, in dem Zeichen von oben nach unten fallen
+   Kaelteres Gruen als PHOSPHOR, fast schwarzer Grund, senkrechtes Raster.
+   Papier ist blassgruenes Endlospapier aus dem Nadeldrucker.
+   --------------------------------------------------------------------------- */
+:root[data-thema="regenschauer"] {
+  --term-bg: #010502;  --term-bg-tief: #000200;  --term-bg-hoch: #030B05;
+  --term-gehaeuse: #0A0F0B; --term-gehaeuse-h: #17211A; --term-gehaeuse-t: #060A07;
+  --term-chrom: #3F5545;
+  --phos: #22E96A; --phos-hell: #A7FFC6;
+  --phos-dim: rgba(34,233,106,.58); --phos-schwach: rgba(34,233,106,.26);
+  --phos-hauch: rgba(34,233,106,.08); --phos-glut: rgba(34,233,106,.42);
+  --term-warn: #E8FFEE;
+  --raster:
+    repeating-linear-gradient(90deg,  rgba(34,233,106,.13) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(180deg, rgba(0,0,0,.62) 0 1px, transparent 1px 3px);
+  --r-bezel: 10px;
+
+  --pap-hell: #E6EFE4; --pap-dunkel: #D3DFD1; --pap-kante: #AEC0AC;
+  --tinte: #101510; --tinte-mittel: #333C33; --tinte-schwach: #5A655A;
+  --stempel: #2C6B3A; --warn-gelb: #C9B411; --warn-schwarz: #101510;
+  --f-buch: "Courier Prime", "Courier New", monospace;
+  --pap-text: calc(0.96rem * var(--skala));
+  --pap-zeile: 1.68;
+}
+
+/* ---------------------------------------------------------------------------
+   5  REAKTORKERN - Helmanzeige eines gepanzerten Fluganzugs
+   Gold auf fast schwarzem Grund, Hologrammblau als Zweitfarbe, angeschraegtes
+   Gehaeuse. Papier ist ein technisches Datenblatt.
+   --------------------------------------------------------------------------- */
+:root[data-thema="reaktorkern"] {
+  --term-bg: #0A0705;  --term-bg-tief: #060403;  --term-bg-hoch: #120C07;
+  --term-gehaeuse: #201513; --term-gehaeuse-h: #3A2620; --term-gehaeuse-t: #160E0C;
+  --term-chrom: #B08D57;
+  --phos: #FFC24A; --phos-hell: #FFE6B0;
+  --phos-dim: rgba(255,194,74,.62); --phos-schwach: rgba(255,194,74,.30);
+  --phos-hauch: rgba(255,194,74,.10); --phos-glut: rgba(255,194,74,.38);
+  --term-warn: #59E6FF;
+  --raster:
+    repeating-linear-gradient(180deg, rgba(89,230,255,.09) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(180deg, rgba(0,0,0,.42) 0 1px, transparent 1px 3px);
+  --r-bezel: 14px;
+
+  --pap-hell: #F2EFEA; --pap-dunkel: #E4DFD6; --pap-kante: #C2B8A9;
+  --tinte: #191714; --tinte-mittel: #3E3A33; --tinte-schwach: #67625A;
+  --stempel: #A8341A; --warn-gelb: #E8A100; --warn-schwarz: #191714;
+  --f-buch: "Jost", system-ui, sans-serif;
+  --pap-zeile: 1.66;
+}
+
+/* ---------------------------------------------------------------------------
+   6  FLUGLEITUNG - Instrumentenbrett einer Propellermaschine der 1930er
+   Radiumweiss hinter gewoelbtem Glas, Nussholz und Messing, sehr runde Kanten.
+   Papier ist Leinenpapier mit Sepiatinte.
+   --------------------------------------------------------------------------- */
+:root[data-thema="flugleitung"] {
+  --term-bg: #0D1210;  --term-bg-tief: #080C0A;  --term-bg-hoch: #121917;
+  --term-gehaeuse: #241C12; --term-gehaeuse-h: #3E3220; --term-gehaeuse-t: #19130C;
+  --term-chrom: #B08D57;
+  --phos: #CFE3D2; --phos-hell: #F2FBF2;
+  --phos-dim: rgba(207,227,210,.66); --phos-schwach: rgba(207,227,210,.32);
+  --phos-hauch: rgba(207,227,210,.09); --phos-glut: rgba(207,227,210,.26);
+  --term-warn: #E8C24A;
+  --raster: repeating-linear-gradient(180deg, rgba(0,0,0,.34) 0 1px, transparent 1px 4px);
+  --r-bezel: 30px;
+
+  --pap-hell: #F0E7D2; --pap-dunkel: #E2D6BC; --pap-kante: #C5B590;
+  --tinte: #2A2114; --tinte-mittel: #4E3F28; --tinte-schwach: #77674B;
+  --stempel: #7A4A1E; --warn-gelb: #D9A62A; --warn-schwarz: #2A2114;
+  --f-buch: "Libre Baskerville", Georgia, serif;
+}
+
+/* ---------------------------------------------------------------------------
+   7  LOGBUCH - Kartentisch unter Deck, beleuchtet von einer Oellampe
+   Dunkles Holz, unruhiges warmes Licht, starke Vignette.
+   Papier ist vergilbtes Pergament.
+   --------------------------------------------------------------------------- */
+:root[data-thema="logbuch"] {
+  --term-bg: #0B0805;  --term-bg-tief: #060403;  --term-bg-hoch: #130D07;
+  --term-gehaeuse: #2A1D12; --term-gehaeuse-h: #46331F; --term-gehaeuse-t: #1B120A;
+  --term-chrom: #9A7B4A;
+  --phos: #F0C070; --phos-hell: #FFE6BC;
+  --phos-dim: rgba(240,192,112,.64); --phos-schwach: rgba(240,192,112,.30);
+  --phos-hauch: rgba(240,192,112,.10); --phos-glut: rgba(240,192,112,.30);
+  --term-warn: #E07A4E;
+  --raster: repeating-linear-gradient(180deg, rgba(0,0,0,.5) 0 2px, transparent 2px 5px);
+  --r-bezel: 18px;
+
+  --pap-hell: #EADAB4; --pap-dunkel: #D8C296; --pap-kante: #BBA073;
+  --tinte: #2A1D10; --tinte-mittel: #4E3A22; --tinte-schwach: #776040;
+  --stempel: #7C2A18; --warn-gelb: #D6A62E; --warn-schwarz: #1C1309;
+  --f-buch: "Libre Baskerville", Georgia, serif;
+}
+
+/* ---------------------------------------------------------------------------
+   8  SEEKARTE - Navigationspult eines Abenteurerschiffs
+   Kraeftiges Gold auf lackiertem Blau, Rot als Signalfarbe.
+   Papier ist helles Seekartenpapier mit schwerer Tuschelinie.
+   --------------------------------------------------------------------------- */
+:root[data-thema="seekarte"] {
+  --term-bg: #061019;  --term-bg-tief: #030910;  --term-bg-hoch: #0A1A26;
+  --term-gehaeuse: #10222E; --term-gehaeuse-h: #1E3A4C; --term-gehaeuse-t: #0A1821;
+  --term-chrom: #C8A24A;
+  --phos: #FFD23F; --phos-hell: #FFF0B8;
+  --phos-dim: rgba(255,210,63,.66); --phos-schwach: rgba(255,210,63,.32);
+  --phos-hauch: rgba(255,210,63,.10); --phos-glut: rgba(255,210,63,.34);
+  --term-warn: #FF6F55;
+  --raster:
+    repeating-linear-gradient(90deg, rgba(255,210,63,.07) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(180deg, rgba(0,0,0,.4) 0 1px, transparent 1px 4px);
+  --r-bezel: 20px;
+
+  --pap-hell: #F4E9CE; --pap-dunkel: #E6D5AC; --pap-kante: #C9AE79;
+  --tinte: #14100A; --tinte-mittel: #3A2F1E; --tinte-schwach: #69593C;
+  --stempel: #A82C17; --warn-gelb: #F2B705; --warn-schwarz: #14100A;
+  --f-buch: "Libre Baskerville", Georgia, serif;
+}
+
+/* ---------------------------------------------------------------------------
+   9  SPRINGFIELD - Leitstand eines Kernkraftwerks in Zeichentrickfarben
+   Flaechig, kein Zeilensprung, sehr runde Kanten, kraeftiges Gelb auf Blau.
+   Papier ist weiss mit schwarzer Konturtinte.
+   --------------------------------------------------------------------------- */
+:root[data-thema="springfield"] {
+  --term-bg: #07222F;  --term-bg-tief: #051A24;  --term-bg-hoch: #0A2E3E;
+  --term-gehaeuse: #0E3346; --term-gehaeuse-h: #17506B; --term-gehaeuse-t: #092634;
+  --term-chrom: #7FC8E8;
+  --phos: #FFD90F; --phos-hell: #FFF27A;
+  --phos-dim: rgba(255,217,15,.74); --phos-schwach: rgba(255,217,15,.36);
+  --phos-hauch: rgba(255,217,15,.12); --phos-glut: rgba(255,217,15,.22);
+  --term-warn: #6FD0F0;
+  --raster: none;                       /* flaechig, kein Roehrenraster */
+  --r-bezel: 30px;
+
+  --pap-hell: #FDF9EC; --pap-dunkel: #F3EDD8; --pap-kante: #1B1B1B;
+  --tinte: #121212; --tinte-mittel: #333333; --tinte-schwach: #5C5C5C;
+  --stempel: #C41F1F; --warn-gelb: #FFD90F; --warn-schwarz: #121212;
+  --f-buch: "Jost", system-ui, sans-serif;
+  --pap-zeile: 1.64;
+}
+
+/* ---------------------------------------------------------------------------
+   10  KLEMMBAUSTEIN - Anzeige an einer Bauanleitung aus Kunststoffsteinen
+   Weiss auf ABS-Blaugrau, Gelb als Akzent, Noppenraster statt Scanlines.
+   Papier ist reinweisses Anleitungspapier mit harter Kontur.
+   --------------------------------------------------------------------------- */
+:root[data-thema="klemmbaustein"] {
+  --term-bg: #12202A;  --term-bg-tief: #0C1820;  --term-bg-hoch: #182B38;
+  --term-gehaeuse: #1E2E3A; --term-gehaeuse-h: #2F4655; --term-gehaeuse-t: #16232C;
+  --term-chrom: #9BB0BE;
+  --phos: #FFFFFF; --phos-hell: #F2CD37;
+  --phos-dim: rgba(255,255,255,.70); --phos-schwach: rgba(255,255,255,.30);
+  --phos-hauch: rgba(242,205,55,.13); --phos-glut: rgba(255,255,255,.16);
+  --term-warn: #F2CD37;
+  --raster: radial-gradient(circle at 8px 8px, rgba(255,255,255,.10) 2.4px, transparent 2.6px) 0 0/16px 16px;
+  --r-bezel: 6px;
+
+  --pap-hell: #FFFFFF; --pap-dunkel: #F2F5F7; --pap-kante: #B9C6CF;
+  --tinte: #16191C; --tinte-mittel: #3A4249; --tinte-schwach: #626C75;
+  --stempel: #D01012; --warn-gelb: #F2CD37; --warn-schwarz: #16191C;
+  --f-buch: "Jost", system-ui, sans-serif;
+  --pap-zeile: 1.64;
+}
+
+/* ===========================================================================
+   Formabweichungen, die ueber reine Farbe hinausgehen.
+   Sparsam: die Geometrie traegt einen Teil des Charakters, aber die
+   Bedienung bleibt in allen zehn identisch.
+   =========================================================================== */
+
+/* GITTERNETZ: nichts ist rund. Schilder und Stempel werden zu Winkelrahmen. */
+:root[data-thema="gitternetz"] .schild { border-radius: 0; }
+:root[data-thema="gitternetz"] .knopf { border-radius: 2px; }
+:root[data-thema="gitternetz"] .stempel { transform: none; border-radius: 0; }
+:root[data-thema="gitternetz"] .aktenkopf { border-bottom-width: 1px; }
+
+/* REGENSCHAUER: Endlospapier hat Leitzeilen. */
+:root[data-thema="regenschauer"] .blatt {
+  background-image: repeating-linear-gradient(
+    180deg, transparent 0 calc(2 * var(--pap-zeile) * 1em - 1px),
+    rgba(44,107,58,.07) calc(2 * var(--pap-zeile) * 1em - 1px) calc(2 * var(--pap-zeile) * 1em));
+}
+:root[data-thema="regenschauer"] .stempel { transform: none; }
+
+/* SPRINGFIELD und KLEMMBAUSTEIN: Zeichentrick und Bauanleitung leben von der
+   Kontur. Kaesten bekommen einen harten Rahmen statt feiner Linien. */
+:root[data-thema="springfield"] .infokasten,
+:root[data-thema="klemmbaustein"] .infokasten,
+:root[data-thema="springfield"] .formular table,
+:root[data-thema="klemmbaustein"] .formular table {
+  border: 2px solid var(--tinte);
+}
+:root[data-thema="springfield"] th, :root[data-thema="springfield"] td,
+:root[data-thema="klemmbaustein"] th, :root[data-thema="klemmbaustein"] td {
+  border-color: var(--tinte);
+}
+:root[data-thema="springfield"] figure .rahmen,
+:root[data-thema="klemmbaustein"] figure .rahmen {
+  border: 2px solid var(--tinte); box-shadow: none;
+}
+:root[data-thema="springfield"] .stempel { border-width: 3px; transform: rotate(-2deg); }
+:root[data-thema="klemmbaustein"] .stempel { transform: none; border-radius: 0; }
+:root[data-thema="klemmbaustein"] figure .rahmen { transform: none; }
+
+/* KLEMMBAUSTEIN: Noppen auf den Bakelitknoepfen. */
+:root[data-thema="klemmbaustein"] .knopf { border-radius: 4px; }
+:root[data-thema="klemmbaustein"] .knopf .led { border-radius: 2px; }
+
+/* LOGBUCH und SEEKARTE: Papier mit unruhigem Rand. */
+:root[data-thema="logbuch"] #papierblatt,
+:root[data-thema="seekarte"] #papierblatt {
+  box-shadow:
+    inset 0 0 0 1px var(--pap-kante),
+    inset 0 0 140px rgba(90,60,20,.34),
+    0 16px 40px rgba(0,0,0,.5);
+}
+
+/* FLUGLEITUNG: gewoelbtes Instrumentenglas, deutlicher als sonst. */
+:root[data-thema="flugleitung"] #schirm::after {
+  background:
+    radial-gradient(100% 82% at 50% 45%, transparent 42%, rgba(0,0,0,.66) 100%),
+    linear-gradient(118deg, rgba(255,255,255,.07) 0%, transparent 42%);
+}
+
+/* ===========================================================================
+   Geraetewahl - die Klappe unter dem Schirm
+   =========================================================================== */
+
+#themenwahl {
+  display: none;
+  flex: none;
+  margin-top: var(--a2);
+  padding: var(--a2);
+  border: 1px solid var(--phos-schwach);
+  border-radius: var(--r-knopf);
+  background: rgba(0,0,0,.35);
+}
+#themenwahl[open] { display: grid; gap: var(--a1); }
+
+.geraet-wahl {
+  all: unset;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--a3);
+  padding: var(--a2);
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--r-knopf);
+  color: var(--phos-dim);
+}
+.geraet-wahl:hover, .geraet-wahl:focus-visible {
+  border-color: var(--phos-schwach);
+  background: var(--phos-hauch);
+  color: var(--phos);
+}
+.geraet-wahl[aria-current="true"] { color: var(--phos); border-color: var(--phos-dim); }
+.geraet-wahl[aria-current="true"]::after { content: "\2714"; }
+
+/* Zwei Plaettchen: links die Roehre, rechts der Bogen. So sieht man vor der
+   Wahl, dass ein Thema beide Welten umstellt. */
+.geraet-probe {
+  display: flex;
+  width: 44px; height: 22px;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+}
+.geraet-probe i { flex: 1; display: block; }
+.geraet-probe i:first-child { position: relative; }
+.geraet-probe i:first-child::after {
+  content: ""; position: absolute; inset: 3px 4px auto 4px; height: 2px;
+  background: currentColor; opacity: .9;
+}
+
+.geraet-wahl .bez {
+  font-family: var(--f-schild);
+  font-size: var(--t-klein);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+.geraet-wahl .bez small {
+  display: block;
+  font-family: var(--f-term);
+  letter-spacing: .04em;
+  text-transform: none;
+  opacity: .62;
+}
