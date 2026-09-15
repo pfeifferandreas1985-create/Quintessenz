@@ -7,12 +7,42 @@
 #
 # Quelle: WISSENSUEBERSICHT.md
 
+# Gruppen: nur Zwischenueberschriften am Eingang, KEINE eigene
+# Navigationsebene. Jeder Bereich bleibt einen Klick entfernt und
+# behaelt seine Adresse #/b/<id>. Gepflegt in tools/gen_bereiche.py.
+gruppen:
+  - id: engineering
+    schild: "ENGINEERING"
+    themen: 32
+    bereiche: [elektrotechnik-und-elektronik, mechanik-und-maschinenelemente, antriebstechnik-regelung-sensorik, sps-und-automatisierung, mess-und-prueftechnik-fehlersuche]
+  - id: rechner
+    schild: "RECHNER"
+    themen: 13
+    bereiche: [programmierung-und-linux, ki-faehigkeiten]
+  - id: ueberleben
+    schild: "ÜBERLEBEN"
+    themen: 26
+    bereiche: [medizin, survival-und-grundversorgung, militaerische-grundlagen-defensiv]
+  - id: versorgung
+    schild: "VERSORGUNG"
+    themen: 14
+    bereiche: [energie-und-infrastruktur, kommunikation, karten-und-navigation]
+  - id: wissen
+    schild: "WISSEN"
+    themen: 14
+    bereiche: [allgemeinwissen-sprache-literatur, zivilisationsneustart]
+  - id: eigenes
+    schild: "EIGENES"
+    themen: 5
+    bereiche: [eigene-fahrzeuge]
+
 bereiche:
   - id: elektrotechnik-und-elektronik
     nr: 1
     titel: "Elektrotechnik und Elektronik"
     schild: "ELEKTROTECHNIK"
     piktogramm: blitz
+    gruppe: engineering
     themen:
       - id: grundlagen
         titel: "Grundlagen: Ohm, Kirchhoff, Wechselstrom, Drehstrom, Leistung, Blindleistung"
@@ -75,6 +105,7 @@ bereiche:
     titel: "Mechanik und Maschinenelemente"
     schild: "MECHANIK"
     piktogramm: zahnrad
+    gruppe: engineering
     themen:
       - id: statik-festigkeitslehre-kinematik-dynamik
         titel: "Statik, Festigkeitslehre, Kinematik, Dynamik"
@@ -117,6 +148,7 @@ bereiche:
     titel: "Antriebstechnik, Regelung, Sensorik"
     schild: "ANTRIEBE"
     piktogramm: regler
+    gruppe: engineering
     themen:
       - id: dc-schritt-servo-bldc-asynchronmotoren
         titel: "DC-, Schritt-, Servo-, BLDC-, Asynchronmotoren: Aufbau, Kennlinien, Ansteuerung"
@@ -149,6 +181,7 @@ bereiche:
     titel: "SPS und Automatisierung"
     schild: "SPS"
     piktogramm: relais
+    gruppe: engineering
     themen:
       - id: iec-61131-3
         titel: "IEC 61131-3: ST, KOP, FUP, AWL, Ablaufsprache"
@@ -181,6 +214,7 @@ bereiche:
     titel: "Mess- und Prüftechnik, Fehlersuche"
     schild: "MESSTECHNIK"
     piktogramm: messgeraet
+    gruppe: engineering
     themen:
       - id: oszilloskop-grundlagen-tastkoepfe-triggern
         titel: "Oszilloskop-Grundlagen, Tastköpfe, Triggern"
@@ -208,6 +242,7 @@ bereiche:
     titel: "Programmierung und Linux"
     schild: "PROGRAMMIERUNG"
     piktogramm: lochkarte
+    gruppe: rechner
     themen:
       - id: c
         titel: "C: Sprache, Standardbibliothek, Embedded-Stil"
@@ -247,6 +282,7 @@ bereiche:
     titel: "Medizin"
     schild: "MEDIZIN"
     piktogramm: kreuz
+    gruppe: ueberleben
     themen:
       - id: krankheiten-symptome-medikamente-anatomie
         titel: "Krankheiten, Symptome, Medikamente, Anatomie: ca. 50.000 Artikel mit Bildern"
@@ -301,6 +337,7 @@ bereiche:
     titel: "Survival und Grundversorgung"
     schild: "SURVIVAL"
     piktogramm: zelt
+    gruppe: ueberleben
     themen:
       - id: wasser-finden-filtern-entkeimen-chlor
         titel: "Wasser finden, filtern, entkeimen (Chlor, SODIS, Biosand, Abkochen)"
@@ -348,6 +385,7 @@ bereiche:
     titel: "Energie und Infrastruktur"
     schild: "ENERGIE"
     piktogramm: atom
+    gruppe: versorgung
     themen:
       - id: pv-anlagen-auslegen-inselsysteme-batterien
         titel: "PV-Anlagen auslegen, Inselsysteme, Batterien, LiFePO4, BMS"
@@ -375,6 +413,7 @@ bereiche:
     titel: "Kommunikation"
     schild: "KOMMUNIKATION"
     piktogramm: antenne
+    gruppe: versorgung
     themen:
       - id: amateurfunk-theorie-pruefungsfragen-n-e
         titel: "Amateurfunk-Theorie, Prüfungsfragen N/E/A, Bandpläne, Frequenzplan"
@@ -412,6 +451,7 @@ bereiche:
     titel: "Militärische Grundlagen (defensiv)"
     schild: "SCHUTZ"
     piktogramm: schild
+    gruppe: ueberleben
     themen:
       - id: wachdienst-beobachtung-deckung-tarnung
         titel: "Wachdienst, Beobachtung, Deckung, Tarnung, Meldungen"
@@ -466,6 +506,7 @@ bereiche:
     titel: "Zivilisationsneustart"
     schild: "NEUSTART"
     piktogramm: amboss
+    gruppe: wissen
     themen:
       - id: was-nach-dem-kollaps-wie
         titel: "Was nach dem Kollaps wie lange nutzbar bleibt, Neustart-Reihenfolge"
@@ -515,6 +556,7 @@ bereiche:
     titel: "Allgemeinwissen, Sprache, Literatur"
     schild: "ALLGEMEIN"
     piktogramm: buch
+    gruppe: wissen
     themen:
       - id: deutsche-wikipedia-komplett-mit-bildern
         titel: "Deutsche Wikipedia komplett mit Bildern"
@@ -558,6 +600,7 @@ bereiche:
     titel: "Karten und Navigation"
     schild: "KARTEN"
     piktogramm: kompass
+    gruppe: versorgung
     themen:
       - id: strassen-wege-gebaeude-gewaesser
         titel: "Straßen, Wege, Gebäude, Gewässer, Landnutzung, Ortsnamen, alle Zoomstufen"
@@ -591,6 +634,7 @@ bereiche:
     titel: "KI-Fähigkeiten"
     schild: "MASCHINE"
     piktogramm: gehirn
+    gruppe: rechner
     themen:
       - id: fragen-beantworten-mit-quellenbezug-rag
         titel: "Fragen beantworten mit Quellenbezug (RAG)"
@@ -639,6 +683,7 @@ bereiche:
     titel: "Eigene Fahrzeuge"
     schild: "FAHRZEUGE"
     piktogramm: schraubenschluessel
+    gruppe: eigenes
     themen:
       - id: land-rover-defender-110-td5
         titel: "Land Rover Defender 110 TD5 (1998–2006)"

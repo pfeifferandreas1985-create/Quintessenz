@@ -22,6 +22,19 @@ SCHILD = {
     9: "ENERGIE", 10: "KOMMUNIKATION", 11: "SCHUTZ", 12: "NEUSTART",
     13: "ALLGEMEIN", 14: "KARTEN", 15: "MASCHINE", 16: "FAHRZEUGE",
 }
+# Gruppen der obersten Navigationsebene (Entscheidung vom 15.09.2026).
+# Die 16 Bereiche bleiben einen Klick entfernt; die Gruppe ist nur eine
+# Zwischenueberschrift am Eingang, kein eigener Schritt. Die Reihenfolge
+# hier ist die Reihenfolge auf dem Schirm - innerhalb wie aussen.
+GRUPPEN = [
+    ("engineering", "ENGINEERING", [1, 2, 3, 4, 5]),
+    ("rechner",     "RECHNER",     [6, 15]),
+    ("ueberleben",  "\u00dcBERLEBEN",   [7, 8, 11]),
+    ("versorgung",  "VERSORGUNG",  [9, 10, 14]),
+    ("wissen",      "WISSEN",      [13, 12]),
+    ("eigenes",     "EIGENES",     [16]),
+]
+
 TIEFE_MAP = {
     "referenz": "REFERENZ", "lehrbuch": "LEHRBUCH",
     "praxis": "PRAXIS", "q&a": "FALL", "code": "REFERENZ",
@@ -144,6 +157,12 @@ def main(src: Path, dst: Path) -> None:
             "umfang": col("umfang", "was es bedeutet", default=""),
         })
 
+    gruppe_von = {nr: gid for gid, _, nrs in GRUPPEN for nr in nrs}
+    nach_nr = {b["nr"]: b for b in bereiche}
+    fehlend = [b["nr"] for b in bereiche if b["nr"] not in gruppe_von]
+    if fehlend:
+        print(f"  WARNUNG: Bereiche ohne Gruppe: {fehlend} -> 'wissen'")
+
     out = [
         "# bereiche.yaml - Navigationsebene 1 und 2 des QUINTESSENZ TERMINALs.",
         "#",
@@ -153,6 +172,23 @@ def main(src: Path, dst: Path) -> None:
         "# Quellenzuordnung stehen in quellen.yaml und bleiben davon unberuehrt.",
         "#",
         f"# Quelle: {src.name}",
+        "",
+        "# Gruppen: nur Zwischenueberschriften am Eingang, KEINE eigene",
+        "# Navigationsebene. Jeder Bereich bleibt einen Klick entfernt und",
+        "# behaelt seine Adresse #/b/<id>. Gepflegt in tools/gen_bereiche.py.",
+        "gruppen:",
+    ]
+    for gid, schild, nrs in GRUPPEN:
+        mitglieder = [nach_nr[n] for n in nrs if n in nach_nr]
+        themen = sum(len(b["themen"]) for b in mitglieder)
+        out += [
+            f"  - id: {gid}",
+            f"    schild: {yaml_str(schild)}",
+            f"    themen: {themen}",
+            "    bereiche: [" + ", ".join(
+                slug(b["titel"], max_woerter=4, max_len=34) for b in mitglieder) + "]",
+        ]
+    out += [
         "",
         "bereiche:",
     ]
@@ -164,6 +200,7 @@ def main(src: Path, dst: Path) -> None:
             f"    titel: {yaml_str(b['titel'])}",
             f"    schild: {yaml_str(b['schild'])}",
             f"    piktogramm: {b['piktogramm']}",
+            f"    gruppe: {gruppe_von.get(b['nr'], 'wissen')}",
             "    themen:",
         ]
         for t in b["themen"]:
@@ -187,9 +224,13 @@ def main(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text("\n".join(out), encoding="utf-8")
     ges = sum(len(b["themen"]) for b in bereiche)
-    print(f"{dst}: {len(bereiche)} Bereiche, {ges} Themen")
-    for b in bereiche:
-        print(f"  2.{b['nr']:<2} {b['titel'][:44]:44s} {len(b['themen']):>3} Themen")
+    print(f"{dst}: {len(GRUPPEN)} Gruppen, {len(bereiche)} Bereiche, {ges} Themen")
+    for gid, schild, nrs in GRUPPEN:
+        mitglieder = [nach_nr[n] for n in nrs if n in nach_nr]
+        themen = sum(len(b["themen"]) for b in mitglieder)
+        print(f"\n  {schild:<14s} {themen:>3} Themen")
+        for b in mitglieder:
+            print(f"    2.{b['nr']:<2} {b['titel'][:42]:42s} {len(b['themen']):>3}")
 
 
 if __name__ == "__main__":

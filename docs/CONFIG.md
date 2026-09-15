@@ -4,11 +4,56 @@ Zwei Dateien steuern, was im Terminal erscheint. Sie sind bewusst getrennt:
 
 | Datei | Beantwortet | Gepflegt |
 |---|---|---|
-| `app/config/bereiche.yaml` | **Was** gibt es? 16 Bereiche, 104 Themen | erzeugt aus `doku/WISSENSUEBERSICHT.md` |
+| `app/config/bereiche.yaml` | **Was** gibt es? 6 Gruppen, 16 Bereiche, 104 Themen | erzeugt aus `doku/WISSENSUEBERSICHT.md` |
 | `app/config/quellen.yaml` | **Woraus** werden die Akten eines Themas gemacht? | von Hand |
 
 Der Generator überschreibt `bereiche.yaml` vollständig. `quellen.yaml` fasst er
 nie an — dort steht die Handarbeit.
+
+---
+
+## 0. Gruppen
+
+Die sechs Gruppen sind **Zwischenüberschriften am Eingang, keine
+Navigationsebene.** Jeder Bereich bleibt einen Klick entfernt und behält seine
+Adresse `#/b/<id>`; es gibt bewusst keine Route `/api/gruppe/<id>`. Der Eingang
+wird dadurch scanbar, ohne dass der Weg zur Antwort länger wird.
+
+| Gruppe | Bereiche | Themen |
+|---|---|---|
+| **ENGINEERING** | Elektrotechnik · Mechanik · Antriebe/Regelung/Sensorik · SPS · Messtechnik | 32 |
+| **RECHNER** | Programmierung und Linux · KI-Fähigkeiten | 13 |
+| **ÜBERLEBEN** | Medizin · Survival und Grundversorgung · Militärische Grundlagen (defensiv) | 26 |
+| **VERSORGUNG** | Energie und Infrastruktur · Kommunikation · Karten und Navigation | 14 |
+| **WISSEN** | Allgemeinwissen/Sprache/Literatur · Zivilisationsneustart | 14 |
+| **EIGENES** | Eigene Fahrzeuge | 5 |
+
+*EIGENES* steht bewusst allein: es ist das einzige, dessen Akten den Stempel
+**NUR LOKAL** tragen und bei einer Weitergabe der Box außen vor bleiben.
+
+Die Reihenfolge der Gruppen gilt an zwei Stellen: am Eingang **und** in der
+Trefferliste der Suche. Wer die Gruppen einmal kennt, findet Treffer an
+derselben Stelle wieder.
+
+### Ändern
+
+Die Zuordnung steht in `tools/gen_bereiche.py` in der Tabelle `GRUPPEN` —
+nicht in der YAML, sonst ginge sie beim nächsten Generatorlauf verloren:
+
+```python
+GRUPPEN = [
+    ("engineering", "ENGINEERING", [1, 2, 3, 4, 5]),   # Abschnittsnummern 2.x
+    ("rechner",     "RECHNER",     [6, 15]),
+    ...
+]
+```
+
+Die Zahlen sind die Abschnittsnummern aus `WISSENSUEBERSICHT.md`, die
+Reihenfolge innerhalb der Liste ist die Reihenfolge auf dem Schirm. Nach dem
+Ändern `python tools/gen_bereiche.py` laufen lassen.
+
+Ein Bereich, der in keiner Gruppe steht, geht nicht verloren: der Generator
+warnt, und der Server hängt ihn am Eingang unter **SONSTIGE** an.
 
 ---
 
@@ -30,21 +75,30 @@ python tools/gen_bereiche.py /srv/box/doku/WISSENSUEBERSICHT.md
 Ausgabe:
 
 ```
-app/config/bereiche.yaml: 16 Bereiche, 104 Themen
-  2.1  Elektrotechnik und Elektronik      11 Themen
-  2.2  Mechanik und Maschinenelemente      7 Themen
-  ...
+app/config/bereiche.yaml: 6 Gruppen, 16 Bereiche, 104 Themen
+
+  ENGINEERING     32 Themen
+    2.1  Elektrotechnik und Elektronik          11
+    2.2  Mechanik und Maschinenelemente          7
+    ...
 ```
 
 ### Aufbau
 
 ```yaml
+gruppen:
+  - id: engineering
+    schild: "ENGINEERING"
+    themen: 32
+    bereiche: [elektrotechnik-und-elektronik, mechanik-und-maschinenelemente, ...]
+
 bereiche:
   - id: elektrotechnik-und-elektronik   # URL-Name, aus dem Titel abgeleitet
     nr: 1                               # Abschnittsnummer der Übersicht
     titel: "Elektrotechnik und Elektronik"
     schild: "ELEKTROTECHNIK"            # Metallschild, max. ~18 Zeichen
     piktogramm: blitz                   # Symbol-ID aus piktogramme.svg
+    gruppe: engineering                 # Zwischenüberschrift am Eingang
     themen:
       - id: grundlagen
         titel: "Grundlagen: Ohm, Kirchhoff, Wechselstrom, ..."
@@ -82,8 +136,9 @@ und Regeln stehen in [DESIGN.md](DESIGN.md#piktogramme).
 
 Einen Abschnitt `### 2.17 Neuer Bereich` samt Tabelle in
 `WISSENSUEBERSICHT.md` ergänzen, in `gen_bereiche.py` bei `SCHILD` und
-`PIKTOGRAMME` je einen Eintrag anhängen, Generator laufen lassen. Die
-Navigation nimmt beliebig viele Bereiche.
+`PIKTOGRAMME` je einen Eintrag anhängen **und die Nummer in eine Gruppe
+eintragen**, dann Generator laufen lassen. Die Navigation nimmt beliebig viele
+Bereiche.
 
 ---
 

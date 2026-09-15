@@ -215,8 +215,10 @@ const Z = { ansicht: 'eingang', bereich: null, thema: null, akte: null, frage: '
 function pfadZeichnen(teile) {
   $('#pfad').innerHTML = teile.map((t, i) => {
     const letzte = i === teile.length - 1;
-    const inhalt = letzte
-      ? `<span class="jetzt">${esc(t.text)}</span>`
+    /* still: eine Stufe, die nur beschriftet - die Gruppe hat keine eigene
+       Seite, also darf sie auch nicht wie ein Knopf aussehen. */
+    const inhalt = (letzte || t.still || !t.ziel)
+      ? `<span class="${letzte ? 'jetzt' : 'still'}">${esc(t.text)}</span>`
       : `<button data-ziel="${esc(t.ziel)}">${esc(t.text)}</button>`;
     return (i ? '<span class="teiler">›</span>' : '') + inhalt;
   }).join('');
@@ -232,19 +234,18 @@ async function zeigeEingang() {
 
   const k = d.kennzahlen;
   const belegt = d.bereiche.filter((b) => b.akten > 0).length;
-  const html = `
-    <div class="instrumente">
-      ${gauge('Akten', k.akten_gesamt, k.akten_gesamt / 500)}
-      ${gauge('Bereiche belegt', `${belegt}/${k.bereiche_gesamt}`, belegt / k.bereiche_gesamt)}
-      ${gauge('Archiv', groesse(k.archiv_bytes), Math.log10(1 + k.archiv_bytes) / 12)}
+
+  /* Die Gruppen sind Zwischenueberschriften, keine Navigationsebene:
+     jeder Bereich bleibt einen Klick entfernt und behaelt seine Adresse.
+     Sie ordnen nur den Eingang - und die Trefferliste der Suche, damit
+     beides an derselben Stelle steht. */
+  const gruppeHtml = (g) => `
+    <div class="gruppenkopf">
+      <span class="schild">${esc(g.schild)}</span>
+      <span class="zahl">${g.akten ? `${g.akten} Akten · ` : ''}${g.themen} Themen</span>
     </div>
-    ${k.akten_demo ? `<p class="hinweis">
-       <b>Prototyp.</b> ${k.akten_gesamt - k.akten_demo} Akten stammen aus echtem eigenem
-       Material, ${k.akten_demo} sind Demo-Akten und auf dem Papier als solche gestempelt.
-       Datenpfad: ${esc(d.datenpfad)}</p>` : ''}
-    <div class="abschnitt">Archivbestand – 16 Bereiche</div>
-    <ul class="liste" role="listbox" aria-label="Bereiche">
-      ${d.bereiche.map((b) => `
+    <ul class="liste" role="group" aria-label="${esc(g.schild)}">
+      ${g.bereiche.map((b) => `
         <li class="eintrag${b.akten ? '' : ' leer'}" role="option" aria-selected="false"
             data-ziel="#/b/${b.id}" data-leer="${b.akten ? 0 : 1}">
           <span class="zeiger" aria-hidden="true">&gt;</span>
@@ -255,6 +256,22 @@ async function zeigeEingang() {
             ${b.themen} Themen</span>
         </li>`).join('')}
     </ul>`;
+
+  const html = `
+    <div class="instrumente">
+      ${gauge('Akten', k.akten_gesamt, k.akten_gesamt / 500)}
+      ${gauge('Bereiche belegt', `${belegt}/${k.bereiche_gesamt}`, belegt / k.bereiche_gesamt)}
+      ${gauge('Archiv', groesse(k.archiv_bytes), Math.log10(1 + k.archiv_bytes) / 12)}
+    </div>
+    ${k.akten_demo ? `<p class="hinweis">
+       <b>Prototyp.</b> ${k.akten_gesamt - k.akten_demo} Akten stammen aus echtem eigenem
+       Material, ${k.akten_demo} sind Demo-Akten und auf dem Papier als solche gestempelt.
+       Datenpfad: ${esc(d.datenpfad)}</p>` : ''}
+    <div class="abschnitt">Archivbestand – ${k.bereiche_gesamt} Bereiche
+      in ${d.gruppen.length} Gruppen</div>
+    <div role="listbox" aria-label="Bereiche">
+      ${d.gruppen.map(gruppeHtml).join('')}
+    </div>`;
   setzeInhalt(html);
 }
 
@@ -262,7 +279,11 @@ async function zeigeBereich(id) {
   const d = await holen(`/api/bereich/${encodeURIComponent(id)}`);
   Z.ansicht = 'bereich'; Z.bereich = id; Z.thema = Z.akte = null;
   document.body.dataset.ansicht = 'bereich';
-  pfadZeichnen([{ text: 'Eingang', ziel: '#/' }, { text: d.schild }]);
+  pfadZeichnen([
+    { text: 'Eingang', ziel: '#/' },
+    ...(d.gruppe ? [{ text: d.gruppe.schild, still: true }] : []),
+    { text: d.schild },
+  ]);
 
   const html = `
     <div class="abschnitt">${PIKTO(d.piktogramm)} ${esc(d.titel)}</div>

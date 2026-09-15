@@ -127,6 +127,7 @@ statt eine Ausnahme zu schreiben.
 | `.tiefe` | kleiner Rahmen mit REFERENZ / LEHRBUCH / PRAXIS / FALL |
 | `.klammer` | setzt `[ … ]` um einen Aktennamen |
 | `.abschnitt` | Abschnittsüberschrift mit auslaufender Linie |
+| `.gruppenkopf` | Gruppenschild am Eingang mit Bestandszahl — **kein Klickziel** |
 | `.gauge` | Zeigerinstrument (Archivgröße, Treffer, Bereiche) |
 | `.werkzeug` | Aktenwerkzeug in der Randleiste, mit Tastenkürzel |
 | `.knopf` | Bakelitknopf unter dem Schirm |

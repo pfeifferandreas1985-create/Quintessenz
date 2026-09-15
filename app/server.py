@@ -41,13 +41,19 @@ app = FastAPI(title="QUINTESSENZ TERMINAL", version=VERSION, docs_url=None, redo
 
 # --- Bestand laden ----------------------------------------------------------
 
-def _lade_bereiche() -> list[dict[str, Any]]:
+def _lade_konfig() -> dict[str, Any]:
     with open(APP_DIR / "config" / "bereiche.yaml", encoding="utf-8") as f:
-        return yaml.safe_load(f)["bereiche"]
+        return yaml.safe_load(f)
 
 
-BEREICHE: list[dict[str, Any]] = _lade_bereiche()
+_KONFIG = _lade_konfig()
+BEREICHE: list[dict[str, Any]] = _KONFIG["bereiche"]
 BEREICH_NACH_ID = {b["id"]: b for b in BEREICHE}
+# Gruppen sind nur Zwischenueberschriften am Eingang, keine Navigationsebene.
+# Es gibt deshalb bewusst KEINE Route /api/gruppe/<id>.
+GRUPPEN: list[dict[str, Any]] = _KONFIG.get("gruppen", [])
+GRUPPEN_RANG = {b: (gi, bi) for gi, g in enumerate(GRUPPEN)
+                for bi, b in enumerate(g["bereiche"])}
 
 REGISTER: dict[str, Akte] = {}
 VOLLTEXT: dict[str, str] = {}
@@ -85,26 +91,49 @@ def _sortiert(akten: list[Akte]) -> list[Akte]:
 
 @app.get("/api/eingang")
 def eingang() -> dict[str, Any]:
-    """Startbildschirm: 16 Bereiche mit Bestandsanzeige plus Kennzahlen."""
-    bereiche = []
+    """Startbildschirm: 16 Bereiche, nach Gruppen geordnet, plus Kennzahlen."""
+    nach_id: dict[str, dict[str, Any]] = {}
     for b in BEREICHE:
         akten = _akten_im_bereich(b["id"])
         belegte = {a.thema_id for a in akten}
-        bereiche.append({
+        nach_id[b["id"]] = {
             "id": b["id"], "nr": b["nr"], "titel": b["titel"],
             "schild": b["schild"], "piktogramm": b["piktogramm"],
+            "gruppe": b.get("gruppe", ""),
             "themen": len(b["themen"]),
             "themen_belegt": len(belegte),
             "akten": len(akten),
+        }
+
+    gruppen = []
+    for g in GRUPPEN:
+        mitglieder = [nach_id[i] for i in g["bereiche"] if i in nach_id]
+        gruppen.append({
+            "id": g["id"], "schild": g["schild"],
+            "themen": sum(m["themen"] for m in mitglieder),
+            "akten": sum(m["akten"] for m in mitglieder),
+            "bereiche": mitglieder,
         })
+    # Bereiche, die keiner Gruppe zugeordnet sind, gehen nicht verloren.
+    zugeordnet = {m["id"] for g in gruppen for m in g["bereiche"]}
+    uebrig = [b for i, b in nach_id.items() if i not in zugeordnet]
+    if uebrig:
+        gruppen.append({"id": "sonstige", "schild": "SONSTIGE",
+                        "themen": sum(b["themen"] for b in uebrig),
+                        "akten": sum(b["akten"] for b in uebrig),
+                        "bereiche": uebrig})
+
+    bereiche = [m for g in gruppen for m in g["bereiche"]]
     best = pfade.bestand()
     return {
+        "gruppen": gruppen,
         "bereiche": bereiche,
         "kennzahlen": {
             "akten_gesamt": len(REGISTER),
             "akten_demo": sum(1 for a in REGISTER.values() if a.demo),
             "themen_gesamt": sum(len(b["themen"]) for b in BEREICHE),
             "bereiche_gesamt": len(BEREICHE),
+            "gruppen_gesamt": len(GRUPPEN),
             "archiv_bytes": sum(int(v["bytes"]) for v in best.values()),
             "archiv_dateien": sum(int(v["dateien"]) for v in best.values()),
         },
@@ -128,9 +157,11 @@ def bereich(bereich_id: str) -> dict[str, Any]:
             "akten": len(im_thema),
             "quellen": sorted({a.quelle.typ for a in im_thema}),
         })
+    g = next((x for x in GRUPPEN if b["id"] in x["bereiche"]), None)
     return {
         "id": b["id"], "nr": b["nr"], "titel": b["titel"], "schild": b["schild"],
         "piktogramm": b["piktogramm"], "ausschluss": b.get("ausschluss", []),
+        "gruppe": {"id": g["id"], "schild": g["schild"]} if g else None,
         "akten_gesamt": len(akten), "themen": themen,
     }
 
@@ -260,11 +291,14 @@ def suche(q: str = Query("", min_length=0), grenze: int = 60) -> dict[str, Any]:
         g["treffer"].append(d)
 
     dauer = (time.perf_counter() - t0) * 1000
+    # Gleiche Reihenfolge wie am Eingang - wer die Gruppen kennt, findet
+    # die Treffer an derselben Stelle wieder.
     return {
         "anfrage": q,
         "treffer": len(bewertet),
         "dauer_ms": round(dauer, 1),
-        "gruppen": sorted(gruppen.values(), key=lambda g: -len(g["treffer"])),
+        "gruppen": sorted(gruppen.values(),
+                          key=lambda g: GRUPPEN_RANG.get(g["bereich_id"], (99, 99))),
     }
 
 
