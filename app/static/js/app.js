@@ -65,16 +65,28 @@ const groesse = (b) => {
  * ein Logo. Woher die Anregung stammt, steht in docs/DESIGN.md.            */
 
 const GERAETE = [
-  { id: 'phosphor',      name: 'Phosphor',      was: 'Aktenterminal, R\u00f6hre 1958',     t: '#33FF66', b: '#E1D5B8' },
-  { id: 'bernstein',     name: 'Bernstein',     was: 'Leitstand, Bernsteinr\u00f6hre',     t: '#FFB000', b: '#E5DAC6' },
-  { id: 'gitternetz',    name: 'Gitternetz',    was: 'Rechnerraum aus Licht',           t: '#6FE9FF', b: '#E5EEF4' },
-  { id: 'regenschauer',  name: 'Regenschauer',  was: 'Serverkeller, fallende Zeichen',  t: '#22E96A', b: '#DCE7DA' },
-  { id: 'reaktorkern',   name: 'Reaktorkern',   was: 'Helmanzeige eines Fluganzugs',    t: '#FFC24A', b: '#EBE7E0' },
-  { id: 'flugleitung',   name: 'Flugleitung',   was: 'Cockpit der 1930er, Messing',     t: '#CFE3D2', b: '#E9DEC7' },
-  { id: 'logbuch',       name: 'Logbuch',       was: 'Kartentisch bei \u00d6llampe',       t: '#F0C070', b: '#E1CEA5' },
-  { id: 'seekarte',      name: 'Seekarte',      was: 'Navigationspult, Gold auf Blau',  t: '#FFD23F', b: '#EDDFBD' },
-  { id: 'springfield',   name: 'Springfield',   was: 'Kraftwerk in Zeichentrickfarben', t: '#FFD90F', b: '#F8F3E2' },
-  { id: 'klemmbaustein', name: 'Klemmbaustein', was: 'Anzeige an einer Bauanleitung',   t: '#FFFFFF', b: '#F9FAFB' },
+  // id · Name · was es darstellt · t Phosphor · g Gehaeuse · w Signalfarbe
+  // · b Bogen · z Cursorzeichen
+  { id: 'phosphor',      name: 'Phosphor',      was: 'Aktenterminal, R\u00f6hre 1958',
+    t: '#33FF66', g: '#191612', w: '#FFB000', b: '#E1D5B8', z: '>' },
+  { id: 'bernstein',     name: 'Bernstein',     was: 'Leitstand, Bernsteinr\u00f6hre',
+    t: '#FFB000', g: '#1C1712', w: '#9DFFC0', b: '#E5DAC6', z: '\u00bb' },
+  { id: 'gitternetz',    name: 'Gitternetz',    was: 'Lichtgitter \u00b7 Blaupause',
+    t: '#6FE9FF', g: '#05090E', w: '#FF7A18', b: '#0F4C81', z: '\u25b8' },
+  { id: 'regenschauer',  name: 'Regenschauer',  was: 'Serverkeller \u00b7 Endlospapier',
+    t: '#22E96A', g: '#050806', w: '#E8FFEE', b: '#DCE7DA', z: '\u2595' },
+  { id: 'reaktorkern',   name: 'Reaktorkern',   was: 'Helmanzeige, Gold + Blau',
+    t: '#FFC24A', g: '#1A1210', w: '#59E6FF', b: '#EBE7E0', z: '\u25c6' },
+  { id: 'flugleitung',   name: 'Flugleitung',   was: 'Cockpit 1930er, Messing',
+    t: '#CFE3D2', g: '#2E2314', w: '#E8C24A', b: '#E9DEC7', z: '\u25b4' },
+  { id: 'logbuch',       name: 'Logbuch',       was: 'Kartentisch, \u00d6llampe',
+    t: '#F0C070', g: '#33230F', w: '#E07A4E', b: '#E1CEA5', z: '\u2756' },
+  { id: 'seekarte',      name: 'Seekarte',      was: 'Navigationspult, Gold auf Blau',
+    t: '#FFD23F', g: '#123246', w: '#FF6F55', b: '#EDDFBD', z: '\u2726' },
+  { id: 'springfield',   name: 'Springfield',   was: 'Zeichentrick, harte Kontur',
+    t: '#FFD90F', g: '#2A9FD6', w: '#6FD0F0', b: '#F8F3E2', z: '\u25b6' },
+  { id: 'klemmbaustein', name: 'Klemmbaustein', was: 'Bauanleitung, Noppen',
+    t: '#FFFFFF', g: '#0055BF', w: '#C91A09', b: '#FFFFFF', z: '\u25cf' },
 ];
 
 /* ===========================  Einstellungen  ============================== */
@@ -124,7 +136,9 @@ function geraetewahlZeichnen() {
     <button class="geraet-wahl" type="button" role="option" data-thema="${g.id}"
             aria-current="${g.id === EIN.thema}">
       <span class="geraet-probe" aria-hidden="true">
-        <i style="background:#12100E;color:${g.t}"></i><i style="background:${g.b}"></i>
+        <i style="background:${g.g};color:${g.t}">${g.z}</i>
+        <i style="background:${g.w}"></i>
+        <i style="background:${g.b}"></i>
       </span>
       <span class="bez">${esc(g.name)}<small>${esc(g.was)}</small></span>
     </button>`).join('');
@@ -134,6 +148,9 @@ function geraetSetzen(id) {
   EIN.thema = id;
   anwenden();
   einstellungenSichern();
+  /* Die Instrumente werden als SVG gezeichnet, nicht per CSS - nach einem
+     Geraetewechsel muss die Ansicht deshalb neu aufgebaut werden. */
+  route();
 }
 
 function geraeteklappe(auf) {
@@ -189,20 +206,73 @@ function booten() {
 
 /* ==========================  Zeigerinstrument  ============================ */
 
-function gauge(marke, wert, anteil) {
-  const a = Math.max(0, Math.min(1, anteil));
+/* Vier Instrumentenbauarten. Welche gilt, sagt das Geraet ueber --gauge-art:
+
+     nadel   Zeigerinstrument mit Teilstrichen   (Phosphor, Bernstein,
+                                                  Flugleitung, Logbuch, Seekarte)
+     ring    geschlossener Ring                  (Reaktorkern)
+     balken  grobe Segmente                      (Gitternetz, Springfield,
+                                                  Klemmbaustein)
+     saeule  Saeulen wie ein Aussteuerungsmesser (Regenschauer)
+
+   Alle zeichnen in dieselbe Flaeche 68x44, damit der Kopf des Eingangs in
+   jedem Geraet gleich hoch bleibt. */
+function bauart() {
+  return (getComputedStyle(document.documentElement)
+    .getPropertyValue('--gauge-art') || 'nadel').trim();
+}
+
+function gaugeSvg(a, art) {
+  const auf = (n) => n.toFixed(1);
+  if (art === 'ring') {
+    const u = 2 * Math.PI * 16;
+    return `<circle cx="34" cy="24" r="16" stroke-width="3" opacity=".22"/>
+      <circle cx="34" cy="24" r="16" stroke-width="3" stroke-linecap="butt"
+              stroke-dasharray="${auf(a * u)} ${auf(u)}"
+              transform="rotate(-90 34 24)"/>
+      <circle cx="34" cy="24" r="2" fill="currentColor" stroke="none" opacity=".7"/>`;
+  }
+  if (art === 'balken') {
+    const n = 8, voll = Math.round(a * n);
+    return Array.from({ length: n }, (_, i) =>
+      `<rect x="${6 + i * 7.3}" y="14" width="5.4" height="17" rx="1"
+             fill="currentColor" stroke="none"
+             opacity="${i < voll ? 1 : 0.18}"/>`).join('');
+  }
+  if (art === 'saeule') {
+    const n = 11;
+    return Array.from({ length: n }, (_, i) => {
+      const t = (i + 1) / n;
+      const h = Math.max(3, Math.min(1, a / t) * 24 * (0.45 + 0.55 * t));
+      return `<rect x="${5 + i * 5.4}" y="${34 - h}" width="3.4" height="${auf(h)}"
+              fill="currentColor" stroke="none"
+              opacity="${t <= a + 0.06 ? 1 : 0.18}"/>`;
+    }).join('');
+  }
+  // nadel
   const winkel = -120 + a * 240;
   const rad = (winkel - 90) * Math.PI / 180;
   const x = 34 + 24 * Math.cos(rad), y = 34 + 24 * Math.sin(rad);
+  const striche = Array.from({ length: 7 }, (_, i) => {
+    const w = (-120 + (i / 6) * 240 - 90) * Math.PI / 180;
+    const c = Math.cos(w), sn = Math.sin(w);
+    return `<line x1="${auf(34 + 26 * c)}" y1="${auf(36 + 26 * sn)}"
+                  x2="${auf(34 + 30 * c)}" y2="${auf(36 + 30 * sn)}"
+                  stroke-width="1.2" opacity=".45"/>`;
+  }).join('');
+  return `${striche}
+    <path d="M8 36a26 26 0 0 1 52 0" stroke-width="1.4" opacity=".28"/>
+    <path d="M8 36a26 26 0 0 1 52 0" stroke-width="2.4"
+          stroke-dasharray="${auf(a * 81.7)} 200"/>
+    <line x1="34" y1="36" x2="${auf(x)}" y2="${auf(y)}" stroke-width="1.6"/>
+    <circle cx="34" cy="36" r="2.2" fill="currentColor" stroke="none"/>`;
+}
+
+function gauge(marke, wert, anteil) {
+  const a = Math.max(0, Math.min(1, anteil));
   return `<div class="gauge">
     <svg width="68" height="44" viewBox="0 0 68 44" aria-hidden="true" fill="none"
-         stroke="currentColor" stroke-linecap="round">
-      <path d="M8 36a26 26 0 0 1 52 0" stroke-width="1.4" opacity=".28"/>
-      <path d="M8 36a26 26 0 0 1 52 0" stroke-width="2.4"
-            stroke-dasharray="${(a * 81.7).toFixed(1)} 200"/>
-      <line x1="34" y1="36" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke-width="1.6"/>
-      <circle cx="34" cy="36" r="2.2" fill="currentColor" stroke="none"/>
-    </svg>
+         stroke="currentColor" stroke-linecap="round">${gaugeSvg(a, bauart())}</svg>
     <span class="wert">${esc(wert)}</span>
     <span class="marke">${esc(marke)}</span>
   </div>`;
@@ -248,7 +318,7 @@ async function zeigeEingang() {
       ${g.bereiche.map((b) => `
         <li class="eintrag${b.akten ? '' : ' leer'}" role="option" aria-selected="false"
             data-ziel="#/b/${b.id}" data-leer="${b.akten ? 0 : 1}">
-          <span class="zeiger" aria-hidden="true">&gt;</span>
+          <span class="zeiger" aria-hidden="true"></span>
           ${PIKTO(b.piktogramm)}
           <span class="name"><span class="schild">${esc(b.schild)}</span>
             <br>${esc(b.titel)}</span>
@@ -292,7 +362,7 @@ async function zeigeBereich(id) {
       ${d.themen.map((t) => `
         <li class="eintrag${t.akten ? '' : ' leer'}" role="option" aria-selected="false"
             data-ziel="#/b/${d.id}/${t.id}" data-leer="${t.akten ? 0 : 1}">
-          <span class="zeiger" aria-hidden="true">&gt;</span>
+          <span class="zeiger" aria-hidden="true"></span>
           <span></span>
           <span class="name">${esc(t.titel)}
             <br><span class="tiefe">${t.tiefe.join(' · ')}</span>
@@ -325,7 +395,7 @@ async function zeigeThema(bereichId, themaId) {
       <ul class="liste" role="listbox" aria-label="Akten">
         ${d.akten.map((a) => `
           <li class="eintrag" role="option" aria-selected="false" data-ziel="#/a/${a.id}">
-            <span class="zeiger" aria-hidden="true">&gt;</span>
+            <span class="zeiger" aria-hidden="true"></span>
             <span></span>
             <span class="name klammer">${esc(a.titel)}
               <br><span class="tiefe">${esc(a.tiefe)}</span>
@@ -374,7 +444,7 @@ async function zeigeAkte(id) {
     ${a.verwandt.length ? `<div class="abschnitt">Verwandte Akten</div>
       <ul class="liste">${a.verwandt.map((v) => `
         <li class="eintrag" data-ziel="#/a/${v.id}">
-          <span class="zeiger" aria-hidden="true">&gt;</span><span></span>
+          <span class="zeiger" aria-hidden="true"></span><span></span>
           <span class="name">${esc(v.titel)}</span><span class="zahl"></span>
         </li>`).join('')}</ul>` : ''}
     <div id="chat"></div>`;
@@ -408,7 +478,7 @@ async function zeigeSuche(frage) {
           <ul class="liste" role="listbox">
             ${g.treffer.map((t) => `
               <li class="eintrag" role="option" aria-selected="false" data-ziel="#/a/${t.id}">
-                <span class="zeiger" aria-hidden="true">&gt;</span><span></span>
+                <span class="zeiger" aria-hidden="true"></span><span></span>
                 <span class="name klammer">${esc(t.titel)}
                   <br><span class="hinweis">${esc(t.schnipsel)}</span></span>
                 <span class="zahl"><span class="tiefe">${esc(t.tiefe)}</span></span>
@@ -808,7 +878,7 @@ function hilfe() {
     <div class="abschnitt">Zuletzt gelesen</div>
     <ul class="liste">${EIN.verlauf.slice(0, 8).map((v) => `
       <li class="eintrag" data-ziel="#/a/${v.id}">
-        <span class="zeiger" aria-hidden="true">&gt;</span><span></span>
+        <span class="zeiger" aria-hidden="true"></span><span></span>
         <span class="name">${esc(v.titel)}</span><span class="zahl"></span></li>`).join('')
       || '<li class="eintrag leer"><span></span><span></span><span class="name">—</span><span></span></li>'}
     </ul>`);

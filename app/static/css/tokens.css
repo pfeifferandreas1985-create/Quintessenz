@@ -67,6 +67,75 @@
   --r-schild:  3px;
   --strich:    1px solid var(--phos-schwach);
 
+  /* --- FORM ---------------------------------------------------------------
+   * Damit ein Geraet mehr sein kann als eine andere Palette. Jedes Thema in
+   * themen.css setzt diese Werte neu: Schrift, Cursorzeichen, Schildform,
+   * Instrumentenbauart, Trennlinien, Papierlagen.                          */
+  --term-groesse:   1;            /* Schriftfaktor im Terminal */
+  --term-spur:      .02em;        /* Laufweite der Menuenamen */
+  --term-vers:      none;         /* text-transform der Menuenamen */
+  --zeiger:         ">";          /* Cursorzeichen vor dem gewaehlten Eintrag */
+  --eintrag-trenn:  1px solid var(--phos-hauch);
+  --eintrag-marke:  0;            /* Breite des Balkens am gewaehlten Eintrag */
+  --schild-radius:  3px;
+  --schild-spur:    .18em;
+  --schild-rahmen:  none;
+  --knopf-radius:   999px;
+  --gauge-art:      nadel;        /* nadel | ring | balken | saeule */
+
+  /* --- BRETT ---------------------------------------------------------------
+   * Die rechte Seite ist ein ZEICHENBRETT, nicht eine Papierflaeche. Auf
+   * dem Brett liegt der Bogen als eigenes Blatt mit Schattenwurf und
+   * Klammern. --brett ist die Brettflaeche, --brett-deko die Ausstattung
+   * (Zeichenschiene oben, Massstab am linken Rand). Beides ohne Scrollen:
+   * der Hintergrund eines Scrollbereichs bleibt stehen, der Bogen wandert. */
+  --brett:        #2A2A24;
+  --brett-kante:  rgba(0,0,0,.5);
+  --schiene:      #8A8A82;        /* Zeichenschiene, Metall */
+  --brett-deko:
+    /* Zeichenschiene quer ueber den Kopf des Bretts */
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--schiene) 80%, #fff) 0 2px,
+      var(--schiene) 2px 9px,
+      color-mix(in srgb, var(--schiene) 55%, #000) 9px 13px,
+      rgba(0,0,0,.34) 13px 17px,
+      transparent 17px) top / 100% 17px no-repeat,
+    /* Massstab am linken Rand: alle 10 px ein Strich, alle 50 px ein langer */
+    repeating-linear-gradient(180deg,
+      color-mix(in srgb, var(--schiene) 70%, transparent) 0 1px,
+      transparent 1px 10px) left 3px top 17px / 6px 100% repeat-y,
+    repeating-linear-gradient(180deg,
+      color-mix(in srgb, var(--schiene) 90%, transparent) 0 1px,
+      transparent 1px 50px) left 3px top 17px / 11px 100% repeat-y;
+  --brett-polster: 34px 20px 64px;
+  --bogen-schatten: 0 2px 4px rgba(0,0,0,.28), 0 12px 28px rgba(0,0,0,.42);
+  --klammer:      #B9B9B0;        /* Blattklammern */
+
+  /* --- PAPIER: Reissbrett --------------------------------------------------
+   * Das Blatt ist ein Zeichnungsbogen, kein Brief: feines Raster, ein
+   * Zeichnungsrahmen und ein Schriftfeld als Aktenkopf. Jedes Geraet
+   * faerbt das ein - GITTERNETZ dreht es zur echten Blaupause um.        */
+  --raster-fein:    rgba(38,78,116,.07);
+  --raster-grob:    rgba(38,78,116,.13);
+  --raster-weite:   22px;         /* feines Raster */
+  --raster-grob-weite: 110px;     /* jede fuenfte Linie kraeftiger */
+  --rahmen-staerke: 2px;          /* Zeichnungsrahmen */
+  --rahmen-farbe:   var(--tinte-mittel);
+  --pap-erhoben:    color-mix(in srgb, var(--pap-hell) 68%, #fff);
+
+  /* --- PAPIER: zusaetzliche Lagen ------------------------------------------ */
+  --blatt-textur:
+    repeating-linear-gradient(0deg,  var(--raster-grob) 0 1px, transparent 1px var(--raster-grob-weite)),
+    repeating-linear-gradient(90deg, var(--raster-grob) 0 1px, transparent 1px var(--raster-grob-weite)),
+    repeating-linear-gradient(0deg,  var(--raster-fein) 0 1px, transparent 1px var(--raster-weite)),
+    repeating-linear-gradient(90deg, var(--raster-fein) 0 1px, transparent 1px var(--raster-weite));
+  --blatt-rand:     none;         /* Randstreifen: Lochung, Perforation, Zierlinie */
+  --blatt-rand-breite: 0px;
+  --h2-linie:       1px solid var(--pap-kante);
+  --h2-abstand:     var(--a1);
+  --stempel-dreh:   -1.4deg;
+  --kasten-rahmen:  1px solid var(--tinte-mittel);
+
   /* --- Effektschalter (von app.js gesetzt) -------------------------------- */
   /* Muster der Schirmoberflaeche. Jedes Thema setzt sein eigenes:
      Zeilensprung, Gitter, Regen, Punktraster oder gar keins. */

@@ -243,18 +243,53 @@ einer anderen Welt, die auf ihrem eigenen Papier druckt.
 Alle Definitionen stehen in `app/static/css/themen.css`, ausgewählt über
 `:root[data-thema="…"]`. Die Bedienung ist in allen zehn identisch.
 
-| Gerät | Requisite | Schirm | Raster | Papier | Leseschrift |
+### Drei Ebenen statt einer Fläche
+
+Die Leseseite besteht aus **Brett**, **Bogen** und **Rahmen** — nicht aus einer
+Papierfläche:
+
+| Ebene | Element | Was |
+|---|---|---|
+| **Brett** | `#papierblatt` | Reißbrett: Belag, Zeichenschiene quer über den Kopf, Maßstab am linken Rand. Scrollt **nicht** mit — nur der Bogen wandert darüber. |
+| **Bogen** | `.blatt` | Das Blatt: eigene Kante, Schattenwurf, Raster und Heftlochung als Hintergrundlagen. Zwei Klammern (`::before`) halten es oben. |
+| **Rahmen** | `.blatt::after` | Zeichnungsrahmen, links breiter als Heftrand. |
+
+Der Aktenkopf ist ein **Schriftfeld** (`.aktenzeichen`): harte Zellen,
+kräftiger Außenrahmen, keine Rundungen — der Titelblock einer technischen
+Zeichnung. Das erfüllt die Forderung „Quelle immer sichtbar wie ein
+Aktenstempel" ohne zusätzliche Bauteile.
+
+### Was ein Gerät alles umstellt
+
+Ein Thema tauscht **nicht nur die Palette**. Diese Token stehen jedem Gerät
+offen (Vorgaben in `tokens.css`, Werte in `themen.css`):
+
+| Token | Wirkung |
+|---|---|
+| `--f-term`, `--term-groesse`, `--term-spur`, `--term-vers` | Terminalschrift, Größe, Laufweite, Versalien |
+| `--zeiger` | Cursorzeichen vor dem gewählten Eintrag |
+| `--gauge-art` | Bauart der Instrumente: `nadel` · `ring` · `balken` · `saeule` |
+| `--r-bezel`, `--knopf-radius`, `--schild-radius`, `--schild-rahmen` | Form von Gehäuse, Knöpfen, Schildern |
+| `--eintrag-trenn`, `--eintrag-marke` | Trennlinien und Auswahlbalken |
+| `--raster` | Muster der Schirmoberfläche |
+| `--brett`, `--schiene`, `--klammer`, `--brett-deko` | Reißbrett und seine Ausstattung |
+| `--blatt-textur`, `--blatt-rand`, `--rahmen-staerke`, `--h2-linie`, `--stempel-dreh` | Bogen: Lagen, Randstreifen, Linien |
+| `#geraet::after` | Dekoration: Noppen, Messingschrauben, Nagelköpfe, HUD-Winkel |
+
+### Die zehn im Einzelnen
+
+| Gerät | Requisite | Schirm | Schrift · Zeichen · Instrument | Form | Brett + Bogen |
 |---|---|---|---|---|---|
-| **Phosphor** | Aktenterminal einer Behörde, Röhre 1958 | Grün `#33FF66` auf `#0B0F0A`, Bakelit | Zeilensprung | vergilbte Akte | Libre Baskerville |
-| **Bernstein** | Leitstand einer Anlage | Amber `#FFB000` | Zeilensprung, weich | Durchschlagpapier | Libre Baskerville |
-| **Gitternetz** | Rechnerraum, in dem Licht die Wege zeichnet | Cyan `#6FE9FF` auf `#03070C`, Anthrazit, Radius 3 px | Gitter 22 px | kaltweißes Diagrammblatt | Jost |
-| **Regenschauer** | Serverkeller, fallende Zeichen | kaltes Grün `#22E96A` auf `#010502` | senkrechte Bahnen 9 px | blassgrünes Endlospapier mit Leitzeilen | Courier Prime |
-| **Reaktorkern** | Helmanzeige eines gepanzerten Fluganzugs | Gold `#FFC24A`, Zweitfarbe Hologrammblau `#59E6FF` | feine Linien 5 px | technisches Datenblatt | Jost |
-| **Flugleitung** | Cockpit einer Propellermaschine der 1930er | Radiumweiß `#CFE3D2`, Nussholz + Messing, Radius 30 px | weich, starke Glaswölbung | Leinenpapier, Sepiatinte | Libre Baskerville |
-| **Logbuch** | Kartentisch unter Deck bei Öllampe | Laternengelb `#F0C070`, dunkles Holz | grob, starke Vignette | vergilbtes Pergament | Libre Baskerville |
-| **Seekarte** | Navigationspult eines Abenteurerschiffs | Gold `#FFD23F` auf lackiertem Blau `#10222E` | senkrecht 28 px | helles Seekartenpapier, schwere Tusche | Libre Baskerville |
-| **Springfield** | Kraftwerks-Leitstand in Zeichentrickfarben | Gelb `#FFD90F` auf Tiefblau `#07222F`, Radius 30 px | **keins** (flächig) | Weiß mit schwarzer Kontur, Rahmen 2 px | Jost |
-| **Klemmbaustein** | Anzeige an einer Bauanleitung aus Kunststoffsteinen | Weiß auf ABS-Blaugrau, Akzent Gelb `#F2CD37` | Noppen-Punktraster 16 px | reinweißes Anleitungspapier, harte Kontur | Jost |
+| **Phosphor** | Aktenterminal einer Behörde, Röhre 1958 | Grün `#33FF66` auf `#0B0F0A` | VT323 · `>` · Nadel | Bakelit, Radius 22 px, Zeilensprung | dunkelolives Brett · vergilbter Zeichnungsbogen |
+| **Bernstein** | Leitstand einer Anlage | Amber `#FFB000` | VT323 · `»` · Nadel | geriffeltes Bakelit, punktierte Trennlinien | Brett in Nussbraun · Durchschlag mit **Heftlochung** |
+| **Gitternetz** | Rechnerraum aus Licht | Cyan `#6FE9FF` auf `#03070C` | Jost **Versalien** · `▸` · **Balken** | kein Gehäuse, **Lichtkante + Eckwinkel**, Radius 2 px, Gitterraster | Lichttisch, **cyan leuchtende Klammern** · **echte Blaupause**: helle Linien auf Preußischblau |
+| **Regenschauer** | Serverkeller, fallende Zeichen | kaltes Grün `#22E96A` auf `#010502` | **Courier Prime** · `▌` · **Säule** | Gehäuse fast weg, senkrechte Bahnen | schwarzes Brett · **Endlospapier mit Transportlochung beidseitig** |
+| **Reaktorkern** | Helmanzeige eines Fluganzugs | Gold `#FFC24A`, Zweitfarbe `#59E6FF` | Jost Versalien · `◆` · **Ring** | **geschnittene Ecken** (clip-path), **schräge Schilder** | Brett in Metallbraun · Datenblatt mit **Passkreuzen** |
+| **Flugleitung** | Cockpit der 1930er | Radiumweiß `#CFE3D2` | VT323 · `▴` · Nadel | Nussholz, **Messingschrauben in den Ecken**, Radius 34 px, graviertes Messingschild | Holzbrett, Messingschiene · Leinenpapier mit **doppelter Zierlinie** |
+| **Logbuch** | Kartentisch bei Öllampe | Laternengelb `#F0C070` | VT323 · `❖` · Nadel | dunkles Holz, **Nagelköpfe**, gestrichelte Trennlinien | Brett in Dunkelbraun · **Pergament mit angesengtem Rand**, kein Raster |
+| **Seekarte** | Navigationspult | Gold `#FFD23F` auf lackiertem Blau | Jost Versalien · `✦` · Nadel | goldene Innenkante, Radius 10 px | marineblaues Brett, Goldschiene · **Rhumbenlinien**, 3-px-Tusche unter Überschriften |
+| **Springfield** | Kraftwerk in Zeichentrickfarben | Gelb `#FFD90F` auf Tiefblau | Jost · `▶` · **Balken** | **kein Raster**, Radius 30 px, **3-px-Kontur** um Gehäuse und Schirm | Türkisbrett, **schwarze Schiene, gelbe Klammern**, kein Maßstab · Weiß mit harter Kontur |
+| **Klemmbaustein** | Bauanleitung aus Kunststoffsteinen | Weiß auf **Stein-Blau `#0055BF`** | Jost · `●` · **Balken** | **Noppenreihe** über dem Schirm, gelbe Steinplatten als Schilder, Rot `#C91A09` als Signal | **Grundplatte mit Noppen**, **rote Klammern** · weißes Anleitungspapier, blau-roter Kopfstreifen, blaue Schrittnummern |
 
 ### Warum eigene Namen
 

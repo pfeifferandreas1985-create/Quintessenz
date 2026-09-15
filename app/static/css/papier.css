@@ -5,49 +5,119 @@
    Ziel: Kontrast Tinte/Papier >= 7:1 (gemessen: #1E1A14 auf #E0D4B4 = 11,6:1).
    =========================================================================== */
 
+/* Das Blatt selbst. --blatt-textur legt eine Lage UNTER den Text
+   (Endlospapier-Bahnen, Blaupausenraster, Rhumbenlinien), --blatt-rand
+   einen Randstreifen (Lochung, Perforation, Zierlinie). Beides setzt
+   jedes Geraet in themen.css. */
+/* ============================ DAS BRETT =================================== *
+ * Die Flaeche, auf der gezeichnet wird: Brettbelag, Zeichenschiene oben,
+ * Massstab am linken Rand. Der Hintergrund scrollt nicht mit - nur der
+ * Bogen wandert darueber, so wie auf einem echten Reissbrett.            */
 #papierblatt {
   min-height: 0;
   overflow-y: auto;
   border-radius: 3px;
-  background:
-    /* Papierstruktur: zwei feine, unregelmaessige Lagen */
-    repeating-linear-gradient(94deg,  rgba(120,100,60,.030) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(176deg, rgba(120,100,60,.022) 0 3px, transparent 3px 7px),
-    radial-gradient(150% 100% at 20% 0%, var(--pap-hell) 0%, var(--pap-dunkel) 78%);
+  padding: var(--brett-polster);
+  background-color: var(--brett);
+  background-image: var(--brett-deko);
   box-shadow:
-    inset 0 0 0 1px var(--pap-kante),
-    inset 0 0 90px rgba(120,95,45,.20),
+    inset 0 0 0 1px var(--brett-kante),
+    inset 0 0 90px rgba(0,0,0,.35),
     0 16px 40px rgba(0,0,0,.45);
   color: var(--tinte);
   font-family: var(--f-buch);
   font-size: var(--pap-text);
   line-height: var(--pap-zeile);
   scrollbar-width: thin;
-  scrollbar-color: var(--pap-kante) transparent;
+  scrollbar-color: var(--schiene) transparent;
 }
+#papierblatt::-webkit-scrollbar { width: 10px; }
+#papierblatt::-webkit-scrollbar-thumb { background: var(--schiene); border-radius: 5px; }
+
+/* ============================ DER BOGEN =================================== *
+ * Ein eigenes Blatt, das AUF dem Brett liegt: eigener Schattenwurf,
+ * eigene Kante, Raster und Heftlochung als Hintergrundlagen, darueber
+ * der Zeichnungsrahmen. Oben halten ihn zwei Klammern.                   */
+#papierblatt > .blatt {
+  position: relative;
+  max-width: var(--pap-breite);
+  margin: 0 auto;
+  /* Der Satzspiegel muss INNERHALB des Zeichnungsrahmens liegen.
+     Rahmen: 12 px ringsum, links 28 px (Heftrand). Dazu je 16-20 px Luft,
+     damit keine Zeile die Linie beruehrt. Die Lochung eines Geraets
+     (--blatt-rand-breite) kommt auf beiden Seiten oben drauf. */
+  padding:
+    var(--a7)
+    calc(var(--a6) + var(--blatt-rand-breite))
+    var(--a8)
+    calc(var(--a7) + var(--blatt-rand-breite));
+  background-image:
+    var(--blatt-textur),
+    var(--blatt-rand),
+    repeating-linear-gradient(94deg,  rgba(120,100,60,.030) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(176deg, rgba(120,100,60,.022) 0 3px, transparent 3px 7px),
+    radial-gradient(150% 100% at 20% 0%, var(--pap-hell) 0%, var(--pap-dunkel) 78%);
+  background-repeat: repeat, repeat-y, repeat, repeat, no-repeat;
+  border: 1px solid var(--pap-kante);
+  box-shadow: var(--bogen-schatten);
+}
+
+/* Zwei Klammern halten den Bogen am oberen Rand */
+#papierblatt > .blatt::before {
+  content: "";
+  position: absolute;
+  top: -9px; left: 14%; right: 14%;
+  height: 12px;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--klammer) 85%, #fff) 0 3px,
+      var(--klammer) 3px 8px,
+      color-mix(in srgb, var(--klammer) 50%, #000) 8px 12px)
+      left top / 54px 12px no-repeat,
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--klammer) 85%, #fff) 0 3px,
+      var(--klammer) 3px 8px,
+      color-mix(in srgb, var(--klammer) 50%, #000) 8px 12px)
+      right top / 54px 12px no-repeat;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.45));
+}
+
+/* Zeichnungsrahmen, links breiter als Heftrand */
+#papierblatt > .blatt::after {
+  content: "";
+  position: absolute;
+  inset: var(--a3) var(--a3) var(--a3) calc(var(--a3) + var(--a4));
+  border: var(--rahmen-staerke) solid var(--rahmen-farbe);
+  opacity: .55;
+  pointer-events: none;
+}
+#papierblatt > .blatt > * { position: relative; z-index: 1; }
 #papierblatt::-webkit-scrollbar { width: 10px; }
 #papierblatt::-webkit-scrollbar-thumb { background: var(--pap-kante); border-radius: 5px; }
 
-.blatt { max-width: var(--pap-breite); margin: 0 auto; padding: var(--a7) var(--a5) var(--a8); }
+
 
 /* --- Leerzustand: das Terminal hat noch nichts gedruckt ------------------- */
 
+/* Leeres Brett: kein Bogen eingespannt. Die Schrift steht auf dem Brett,
+   nicht auf Papier - deshalb helle Tinte auf dunklem Belag. */
 .papier-leer {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  height: 100%;
+  min-height: 100%;
   gap: var(--a4);
-  color: var(--tinte-schwach);
+  color: color-mix(in srgb, var(--schiene) 72%, transparent);
   font-family: var(--f-akte);
   text-align: center;
   padding: var(--a6);
 }
-.papier-leer .atom { width: 3.6rem; height: 3.6rem; opacity: .55; }
+.papier-leer .atom { width: 3.6rem; height: 3.6rem; opacity: .5; }
 .papier-leer .gross {
   font-family: var(--f-schild);
   font-size: calc(1.05rem * var(--skala));
   letter-spacing: .3em;
   text-transform: uppercase;
-  color: var(--tinte-mittel);
+  color: color-mix(in srgb, var(--schiene) 92%, transparent);
 }
 
 /* --- Aktenkopf: der Stempel oben auf dem Blatt --------------------------- */
@@ -57,6 +127,9 @@
   padding-bottom: var(--a3);
   margin-bottom: var(--a5);
 }
+/* Blattnummer oben rechts wie auf einer Zeichnung */
+.aktenkopf .laufweg { display: flex; gap: var(--a3); }
+.aktenkopf .laufweg .blattnr { margin-left: auto; white-space: nowrap; }
 .aktenkopf .laufweg {
   font-family: var(--f-schild);
   font-size: calc(.72rem * var(--skala));
@@ -94,7 +167,7 @@
   border-radius: 2px;
   color: var(--stempel);
   background: var(--stempel-blass);
-  transform: rotate(-1.4deg);
+  transform: rotate(var(--stempel-dreh));
   text-transform: uppercase;
 }
 .stempel.tiefe-LEHRBUCH { transform: rotate(.8deg); }
@@ -124,25 +197,42 @@
 .stempel.demo::after  { bottom: 0; }
 .stempel.sprache { border-style: dashed; transform: none; }
 
-/* Aktenzeichen: die Quellenangabe als Formularzeile */
+/* SCHRIFTFELD - die Quellenangabe als Titelblock einer technischen
+   Zeichnung: harte Zellen, kraeftiger Aussenrahmen, keine Rundungen.
+   Loest die Forderung "Quelle immer sichtbar wie ein Aktenstempel". */
 .aktenzeichen {
   font-family: var(--f-akte);
   font-size: calc(.76rem * var(--skala));
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--tinte-mittel);
-  border: 1px solid var(--tinte-schwach);
-  border-radius: 2px;
-  padding: var(--a2) var(--a3);
-  background: rgba(255,255,255,.14);
+  border: 2px solid var(--tinte);
+  border-radius: 0;
+  padding: 0;
+  background: color-mix(in srgb, var(--pap-hell) 55%, transparent);
+  overflow: hidden;
 }
-.aktenzeichen dl { display: grid; grid-template-columns: 7.2em 1fr; gap: 1px var(--a2); margin: 0; }
+.aktenzeichen dl {
+  display: grid;
+  grid-template-columns: 8.6em 1fr;
+  gap: 0;
+  margin: 0;
+}
 .aktenzeichen dt {
   text-transform: uppercase; letter-spacing: .1em;
-  font-size: calc(.68rem * var(--skala));
+  font-size: calc(.66rem * var(--skala));
   color: var(--tinte-schwach);
-  padding-top: .16em;
+  padding: 4px var(--a2);
+  border-top: 1px solid var(--tinte-schwach);
+  border-right: 1px solid var(--tinte-schwach);
+  background: color-mix(in srgb, var(--tinte) 7%, transparent);
 }
-.aktenzeichen dd { margin: 0; word-break: break-word; }
+.aktenzeichen dd {
+  margin: 0;
+  padding: 4px var(--a2);
+  border-top: 1px solid var(--tinte-schwach);
+  word-break: break-word;
+}
+.aktenzeichen dl > :nth-child(-n+2) { border-top: 0; }
 
 /* --- Fliesstext ----------------------------------------------------------- */
 
@@ -156,8 +246,8 @@
 .blatt h2 {
   font-size: calc(1.28rem * var(--skala));
   margin: var(--a7) 0 var(--a3);
-  padding-bottom: var(--a1);
-  border-bottom: 1px solid var(--pap-kante);
+  padding-bottom: var(--h2-abstand);
+  border-bottom: var(--h2-linie);
 }
 .blatt h3 { font-size: calc(1.08rem * var(--skala)); margin: var(--a6) 0 var(--a2); }
 .blatt h4 {
@@ -202,9 +292,9 @@
 figure { margin: var(--a6) 0; }
 figure .rahmen {
   padding: var(--a2);
-  background: color-mix(in srgb, var(--pap-hell) 68%, #fff);
+  background: var(--pap-erhoben);
   border: 1px solid var(--pap-kante);
-  box-shadow: 0 3px 9px rgba(60,45,20,.28);
+  box-shadow: 0 3px 9px rgba(0,0,0,.22);
   transform: rotate(-.35deg);
 }
 figure img { display: block; width: 100%; height: auto; }
@@ -313,7 +403,7 @@ td.c, th.c { text-align: center; }
 
 .infokasten {
   margin: var(--a5) 0;
-  border: 1px solid var(--tinte-mittel);
+  border: var(--kasten-rahmen);
   border-top-width: 3px;
   border-radius: 2px;
   background: rgba(255,255,255,.2);
@@ -415,7 +505,7 @@ td.c, th.c { text-align: center; }
   margin: var(--a5) 0;
   border: 1px solid var(--tinte-schwach);
   border-radius: 2px;
-  background: color-mix(in srgb, var(--pap-hell) 80%, #fff);
+  background: var(--pap-erhoben);
   overflow: hidden;
 }
 .lochstreifen .kopf {
@@ -618,6 +708,14 @@ hr.trenner {
   #papierblatt {
     overflow: visible; background: #fff; box-shadow: none; color: #000;
   }
+  #papierblatt { padding: 0; background: #fff; }
+  #papierblatt > .blatt {
+    max-width: none; border: 0; box-shadow: none; background: #fff; padding: 0;
+  }
+  #papierblatt > .blatt::before,
+  #papierblatt > .blatt::after { display: none; }
+  .aktenzeichen { background: none; border-color: #000; }
+  .aktenzeichen dt, .aktenzeichen dd { border-color: #000; background: none; }
   .blatt { max-width: none; padding: 0; }
   .aktenkopf { border-color: #000; }
   .stempel { color: #000; border-color: #000; background: none; transform: none;
