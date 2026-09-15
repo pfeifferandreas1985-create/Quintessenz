@@ -99,6 +99,6 @@ Wachstum. Deckt sich mit der Hardware-Empfehlung.
 ## Gemeinsame Nutzung mit AI-ARK
 
 Beide Projekte nutzen dieselben ZIMs und PDFs. **Einmal laden, zweimal nutzen:**
-AI-ARK `03_KNOWLEDGE/` ist die Quelle, ark-pi `knowledge/` bekommt eine Kopie
+AI-ARK `03_KNOWLEDGE/` ist die Quelle, Quintessenz `knowledge/` bekommt eine Kopie
 per `rsync`. Der Embedding-Index wird auf dem AI-ARK-Rechner gebaut (GPU) und
 auf die Pi-SSD kopiert.

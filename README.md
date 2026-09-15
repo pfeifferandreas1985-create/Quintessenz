@@ -1,4 +1,6 @@
-# ark-pi — Offline-Wissensassistent auf dem Raspberry Pi
+# Quintessenz — Offline-Wissensassistent auf dem Raspberry Pi
+
+> *Quintessenz* — das Wesentliche, auf das sich alles reduzieren lässt. Hier: das Wissen, das bleibt, wenn alles andere wegfällt.
 
 > Eine Box, die ohne Internet Fragen beantwortet — mit einem lokalen Sprachmodell,
 > das in einer Offline-Wissensbasis nachschlägt statt zu raten.
@@ -20,7 +22,7 @@ Netz per Browser erreichbar.
 
 ## Warum nicht einfach AI-ARK?
 
-| | AI-ARK | ark-pi |
+| | AI-ARK | Quintessenz |
 |---|---|---|
 | Rolle | Vollarchiv, 500 GB Modelle, Workstation-Klasse | Tragbare Notfallbox, ein Modell, ein Zweck |
 | Hardware | Beliebiger PC mit viel RAM/GPU | Pi 5, 16 GB, ~15 W |
@@ -28,7 +30,7 @@ Netz per Browser erreichbar.
 | Stärke | Die besten offenen Modelle, Coding, Analyse | Immer an, überall, fast umsonst im Betrieb |
 | Schwäche | Braucht einen Rechner, der im Ernstfall vielleicht nicht läuft | 2-B-Modell — formuliert gut, denkt wenig |
 
-Beide teilen sich die Wissensbasis (ZIM-Dateien, Dokumente). ark-pi ist das,
+Beide teilen sich die Wissensbasis (ZIM-Dateien, Dokumente). Quintessenz ist das,
 was man in die Tasche steckt, wenn die Workstation nicht mitkommt.
 
 ## Dokumente

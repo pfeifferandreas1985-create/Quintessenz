@@ -3,7 +3,7 @@
 ## Zielbild
 
 Eine Kiste von der Größe eines Taschenbuchs. Einschalten, 60 Sekunden warten,
-mit dem Handy auf `http://ark.local` gehen, Frage stellen. Die Antwort kommt aus
+mit dem Handy auf `http://quintessenz.local` gehen, Frage stellen. Die Antwort kommt aus
 einer lokalen Wissensbasis, formuliert von einem lokalen Sprachmodell, mit
 Quellenangabe auf den Abschnitt, aus dem sie stammt. Kein Internet, kein Konto,
 kein Abo. Läuft vier Stunden an einer 100-Wh-Powerbank oder unbegrenzt an einem
@@ -39,7 +39,7 @@ Eingabefeld, keine Konfiguration.**
 
 ```
  Handy / Laptop im WLAN der Box
-          │  http://ark.local
+          │  http://quintessenz.local
           ▼
  ┌─────────────────────────────────────────────────────┐
  │  Weboberfläche (ein Eingabefeld, Quellen, Verlauf)  │
@@ -74,9 +74,9 @@ Frage an LLM → Antwort mit Verweisen → Klick auf Verweis öffnet den Kiwix-A
 | **1 — Trockenlauf** | Stack auf dem vorhandenen PC nachbauen, bevor Hardware gekauft wird | RAG über 3 ZIMs funktioniert, Latenz gemessen | 1 Wochenende |
 | **2 — Hardware** | Pi 5 16 GB + NVMe + Kühler beschaffen, Potato OS oder Pi OS flashen | Pi antwortet im Browser | 1 Abend + Lieferzeit |
 | **3 — Wissensbasis** | ZIMs, PDFs, Karten laden; Embedding-Index aufbauen | Alle Prioritäts-Hoch-Quellen durchsuchbar | 1–2 Wochenenden (Indexierung läuft nachts) |
-| **4 — Oberfläche** | Ein-Feld-UI mit Quellenanzeige, mDNS `ark.local`, WLAN-Hotspot-Modus | Bedienbar ohne Anleitung | 1 Wochenende |
+| **4 — Oberfläche** | Ein-Feld-UI mit Quellenanzeige, mDNS `quintessenz.local`, WLAN-Hotspot-Modus | Bedienbar ohne Anleitung | 1 Wochenende |
 | **5 — Härtung** | Read-only-Root, Watchdog, Backup-Skript, Gehäuse, Powerbank-Test | 72-h-Dauertest bestanden | 1 Wochenende |
-| **6 — Weitergabe** | Image-Datei + Kurzanleitung, die jemand anderes flashen kann | `ark-pi.img.xz` + 1 Seite PDF | 1 Abend |
+| **6 — Weitergabe** | Image-Datei + Kurzanleitung, die jemand anderes flashen kann | `Quintessenz.img.xz` + 1 Seite PDF | 1 Abend |
 
 **Phase 1 ist der wichtigste Schritt:** Er kostet nichts und beantwortet die
 Frage, ob ein 2-B-Modell mit RAG für die eigenen Anwendungsfälle tatsächlich

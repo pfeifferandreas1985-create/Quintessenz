@@ -26,7 +26,7 @@ Weitergabe (Phase 6) ist ein eigenes Image vermutlich sauberer.
 - PCIe Gen 3 aktivieren (`dtparam=pciex1_gen=3`) — inoffiziell, aber verbreitet;
   bei Instabilität zurück auf Gen 2
 - Read-only-Root mit Overlay-FS ab Phase 5 (Schutz gegen Stromabriss)
-- mDNS: `ark.local` via avahi
+- mDNS: `quintessenz.local` via avahi
 - WLAN-Hotspot-Modus (hostapd/NetworkManager), falls kein Router vorhanden:
   Handy verbindet sich direkt mit der Box
 
@@ -106,7 +106,7 @@ Hybrid — vermutlich der pragmatische Weg. → 05_OFFENE-FRAGEN.md, Frage 5.
 - Log nach RAM (`journald` volatile), SSD schonen
 - Temperatur-/Throttling-Überwachung (`vcgencmd get_throttled`) in der UI anzeigen
 - Backup-Skript: `rsync` der Wissensbasis + Index auf externe SSD, mit Prüfsummen
-- Image bauen: `rpi-image-gen` oder `pi-gen` für reproduzierbares `ark-pi.img.xz`
+- Image bauen: `rpi-image-gen` oder `pi-gen` für reproduzierbares `Quintessenz.img.xz`
 
 ## Was aus Project NOMAD übernommen werden kann
 
