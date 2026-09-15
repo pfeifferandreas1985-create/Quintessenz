@@ -1,0 +1,21 @@
+# Modelle und Archive gehoeren nicht ins Repo
+*.gguf
+*.zim
+*.pmtiles
+*.bin
+*.safetensors
+models/
+zim/
+# Betriebssystem / Editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+# Logs
+*.log
