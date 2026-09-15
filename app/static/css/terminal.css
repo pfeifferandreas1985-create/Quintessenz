@@ -281,6 +281,28 @@ body {
   color: var(--phos-dim);
 }
 
+/* Gruppenkopf am Eingang: gestanztes Schild, Bestandszahl, auslaufende
+   Linie. Kein Klickziel - die Gruppe ist eine Ueberschrift, keine Seite. */
+.gruppenkopf {
+  display: flex; align-items: center; gap: var(--a2);
+  margin: var(--a5) 0 var(--a1);
+  padding-bottom: var(--a1);
+  border-bottom: 1px solid var(--phos-schwach);
+}
+.gruppenkopf:first-child { margin-top: 0; }
+.gruppenkopf .schild { letter-spacing: .24em; }
+.gruppenkopf .zahl {
+  margin-left: auto;
+  font-size: calc(var(--t-klein) * .92);
+  color: var(--phos-schwach);
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+.gruppenkopf + .liste { margin-bottom: var(--a2); }
+.gruppenkopf + .liste .eintrag:last-child { border-bottom: 0; }
+
+#pfad .still { color: var(--phos-schwach); }
+
 /* Abschnittsueberschrift im Terminal */
 .abschnitt {
   display: flex; align-items: center; gap: var(--a2);
@@ -476,12 +498,17 @@ body {
 
 /* --- Handy und kleine Displays ------------------------------------------- */
 
-/* Unter 560 px reicht die Breite nicht fuer vier Spalten: die Bestandszahl
-   rutscht unter den Namen, das Schild bekommt die volle Zeile. */
-@media (max-width: 560px) {
+/* Schmale Terminalspalte - unter 560 px (Handy) UND in der 7-Zoll-Klasse,
+   wo die Spalte nur 352 px breit ist. Vier Spalten passen dort nicht: die
+   Bestandszahl rutscht unter den Namen, damit Schild und Titel ungekuerzt
+   und ohne Trennung im Wort stehen. */
+@media (max-width: 560px), (min-width: 900px) and (max-width: 1199px) {
   .eintrag { grid-template-columns: .9em 2em minmax(0, 1fr); row-gap: 2px; }
   .eintrag .zahl { grid-column: 3; text-align: left; }
+  .eintrag:has(.zahl:empty) { grid-template-columns: .9em 2em minmax(0, 1fr); }
   .schild { letter-spacing: .1em; }
+}
+@media (max-width: 560px) {
   html, body { font-size: 17px; }
 }
 .schild { overflow: hidden; text-overflow: ellipsis; }

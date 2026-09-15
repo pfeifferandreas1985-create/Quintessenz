@@ -53,7 +53,7 @@ Demo-Akten und markiert alle Themen als „wartet auf Beschaffung".
 
 | | |
 |---|---|
-| 16 Bereiche, 104 Themen | aus `doku/WISSENSUEBERSICHT.md` abgeleitet (`tools/gen_bereiche.py`) |
+| 16 Bereiche in 6 Gruppen, 104 Themen | aus `doku/WISSENSUEBERSICHT.md` abgeleitet (`tools/gen_bereiche.py`); Gruppen sind Überschriften, keine Ebene |
 | 68 echte Akten | aus `own/fahrzeuge/fahrzeuge.db` und `own/rebuild/rebuild_trees.db` |
 | 7 Demo-Akten | ZIM-Artikel, Stack-Exchange-Fall, PDF-Kapitel — auf dem Papier als DEMO gestempelt |
 | Volltextsuche | über den Speicher, ~2 ms bei 75 Akten; wird später FTS5 |
