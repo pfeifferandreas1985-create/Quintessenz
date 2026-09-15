@@ -42,6 +42,7 @@ was man in die Tasche steckt, wenn die Workstation nicht mitkommt.
 | [docs/03_SOFTWARE.md](docs/03_SOFTWARE.md) | OS, Inferenz, Kiwix, RAG-Pipeline, Oberfläche |
 | [docs/04_WISSENSBASIS.md](docs/04_WISSENSBASIS.md) | Was rein muss, priorisiert nach Bereich, mit Quellen |
 | [docs/05_OFFENE-FRAGEN.md](docs/05_OFFENE-FRAGEN.md) | Was vor dem Kauf geklärt werden muss |
+| [docs/06_TERMINAL-AUFTRAG.md](docs/06_TERMINAL-AUFTRAG.md) | Arbeitsauftrag für die Oberfläche: Offline-Wissensbibliothek im Atompunk-Stil (Terminal + Papier) |
 
 ## Verwandt
 
