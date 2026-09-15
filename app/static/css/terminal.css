@@ -13,7 +13,7 @@ html, body {
   background: var(--term-gehaeuse);
   color: var(--phos);
   font-family: var(--f-term);
-  font-size: 18px;
+  font-size: calc(18px * var(--term-groesse));
   -webkit-text-size-adjust: 100%;
   overscroll-behavior: none;
 }
@@ -46,6 +46,16 @@ body {
     inset 0 1px 0 rgba(255,255,255,.07),
     inset 0 -2px 6px rgba(0,0,0,.6),
     0 18px 44px rgba(0,0,0,.55);
+}
+
+/* #geraet::after ist fuer die Dekoration des jeweiligen Geraets reserviert:
+   Noppen, Messingschrauben, HUD-Winkel, Lichtkante. Siehe themen.css. */
+#geraet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 /* Chromkante, sparsam */
@@ -219,13 +229,20 @@ body {
   gap: var(--a2);
   padding: var(--a3) var(--a2) var(--a3) 0;
   cursor: pointer;
-  border-bottom: 1px solid var(--phos-hauch);
+  border-bottom: var(--eintrag-trenn);
+  box-shadow: inset var(--eintrag-marke) 0 0 -1px transparent;
   color: var(--phos-dim);
-  transition: background var(--uebergang), color var(--uebergang);
+  transition: background var(--uebergang), color var(--uebergang),
+              box-shadow var(--uebergang);
 }
 .eintrag:last-child { border-bottom: 0; }
-.eintrag .zeiger { color: transparent; font-weight: 700; }
-.eintrag .name { color: var(--phos); letter-spacing: .02em; }
+.eintrag .zeiger { color: transparent; font-weight: 700; font-size: .92em; }
+.eintrag .zeiger::before { content: var(--zeiger); }
+.eintrag .name {
+  color: var(--phos);
+  letter-spacing: var(--term-spur);
+  text-transform: var(--term-vers);
+}
 .eintrag .zahl {
   font-size: calc(var(--t-klein) * .92);
   color: var(--phos-schwach);
@@ -242,6 +259,7 @@ body {
 .eintrag:hover, .eintrag[aria-selected="true"] {
   background: var(--phos-hauch);
   color: var(--phos);
+  box-shadow: inset var(--eintrag-marke) 0 0 0 var(--phos);
 }
 .eintrag:hover .zeiger, .eintrag[aria-selected="true"] .zeiger { color: var(--phos); }
 .eintrag[aria-selected="true"] .pikto { opacity: 1; }
@@ -259,11 +277,12 @@ body {
   white-space: nowrap;
   max-width: 100%;
   padding: 2px 7px;
-  border-radius: var(--r-schild);
+  border: var(--schild-rahmen);
+  border-radius: var(--schild-radius);
   font-family: var(--f-schild);
   font-weight: 600;
   font-size: var(--t-klein);
-  letter-spacing: .18em;
+  letter-spacing: var(--schild-spur);
   color: var(--term-bg);
   background: linear-gradient(180deg, var(--phos-hell), var(--phos));
   box-shadow: inset 0 -1px 0 rgba(0,0,0,.35);
@@ -411,17 +430,28 @@ body {
 
 /* --- Knoepfe am Gehaeuse (Bakelit) --------------------------------------- */
 
+/* Die Knopfleiste ragte in die Papierspalte, weil sie nicht umbrechen
+   durfte und die Knoepfe nicht schrumpfen konnten. Beides behoben:
+   sie bleibt jetzt in jedem Fall innerhalb des Gehaeuses. */
 #knopfleiste {
   flex: none;
-  display: flex; align-items: center; gap: var(--a2);
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--a1) var(--a2);
   padding: var(--a3) var(--a1) var(--a1);
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 .knopf {
   all: unset;
   cursor: pointer;
   display: inline-flex; align-items: center; gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding: 5px 10px;
-  border-radius: 999px;
+  border-radius: var(--knopf-radius);
   white-space: nowrap;
   font-family: var(--f-schild);
   font-size: calc(var(--t-klein) * .9);
