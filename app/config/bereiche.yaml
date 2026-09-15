@@ -1,0 +1,672 @@
+# bereiche.yaml - Navigationsebene 1 und 2 des QUINTESSENZ TERMINALs.
+#
+# ERZEUGT von tools/gen_bereiche.py aus doku/WISSENSUEBERSICHT.md.
+# Haendische Aenderungen an Titeln/Themen sind erlaubt, gehen aber bei einem
+# erneuten Lauf des Generators verloren. Kuratierte Einstiegsakten und die
+# Quellenzuordnung stehen in quellen.yaml und bleiben davon unberuehrt.
+#
+# Quelle: WISSENSUEBERSICHT.md
+
+bereiche:
+  - id: elektrotechnik-und-elektronik
+    nr: 1
+    titel: "Elektrotechnik und Elektronik"
+    schild: "ELEKTROTECHNIK"
+    piktogramm: blitz
+    themen:
+      - id: grundlagen
+        titel: "Grundlagen: Ohm, Kirchhoff, Wechselstrom, Drehstrom, Leistung, Blindleistung"
+        tiefe: [LEHRBUCH]
+        sprache: "DE/EN"
+        quellen_text: "Wikibooks Elektrotechnik, Lessons in Electric Circuits Bd. 1–2, Wikipedia"
+      - id: formelsammlung-elektrotechnik
+        titel: "Formelsammlung Elektrotechnik"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Wikibooks, eigenes Tabellenbuch (SQLite)"
+      - id: schaltzeichen-nach-iec-60617
+        titel: "Schaltzeichen nach IEC 60617"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Wikipedia, Commons-Symboltafel, KiCad-Bibliothek"
+      - id: leitungsdimensionierung-strombelastbarkeit
+        titel: "Leitungsdimensionierung, Strombelastbarkeit, Spannungsfall, Kurzschluss, Selektivität (IEC-60364-Systematik)"
+        tiefe: [REFERENZ]
+        sprache: "EN/DE"
+        quellen_text: "ABB Installation Handbook, Schneider Installation Guide, Lapp/Helukabel-Tabellen"
+      - id: schutzmassnahmen-fuenf-sicherheitsregeln
+        titel: "Schutzmaßnahmen, fünf Sicherheitsregeln, Prüffristen, Schutzklassen, Schutzarten IP"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "DGUV Vorschrift 3, DGUV 203-xxx, TRBS"
+      - id: halbleiter-dioden-transistoren-mosfet
+        titel: "Halbleiter, Dioden, Transistoren, MOSFET, Thyristor, Triac, IGBT"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "DE/EN"
+        quellen_text: "Lessons Bd. 3, NEETS Mod. 7, Elektronik-Kompendium, Datenblätter"
+      - id: operationsverstaerker-filter-regler
+        titel: "Operationsverstärker, Filter, Regler, Analogtechnik"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "TI Op Amps for Everyone, ADI Linear Circuit Design, Pocket Reference"
+      - id: digitaltechnik
+        titel: "Digitaltechnik: Gatter, Flipflops, Zähler, Zahlensysteme"
+        tiefe: [LEHRBUCH]
+        sprache: "DE/EN"
+        quellen_text: "Lessons Bd. 4, Wikibooks Digitale Schaltungstechnik, NEETS Mod. 13"
+      - id: datenblaetter-ca-200-standardbauteile
+        titel: "Datenblätter ca. 200 Standardbauteile + eigene Projektteile"
+        tiefe: [REFERENZ]
+        sprache: "EN"
+        quellen_text: "Herstellerdatenblätter"
+      - id: konkrete-schaltungsprobleme-warum-schwingt
+        titel: "Konkrete Schaltungsprobleme (\"warum schwingt mein Regler\", \"MOSFET wird heiß\")"
+        tiefe: [FALL]
+        sprache: "EN"
+        quellen_text: "Electrical Engineering Stack Exchange (ca. 180.000 Fragen)"
+      - id: netzteile-batterien-laderegler-inverter
+        titel: "Netzteile, Batterien, Laderegler, Inverter"
+        tiefe: [PRAXIS]
+        sprache: "EN/DE"
+        quellen_text: "Victron-Handbücher, NEETS, Wikipedia"
+
+  - id: mechanik-und-maschinenelemente
+    nr: 2
+    titel: "Mechanik und Maschinenelemente"
+    schild: "MECHANIK"
+    piktogramm: zahnrad
+    themen:
+      - id: statik-festigkeitslehre-kinematik-dynamik
+        titel: "Statik, Festigkeitslehre, Kinematik, Dynamik"
+        tiefe: [LEHRBUCH]
+        sprache: "EN/DE"
+        quellen_text: "OpenStax University Physics, Wikibooks Technische Mechanik, Wikipedia"
+      - id: waelzlager
+        titel: "Wälzlager: Auswahl, Lebensdauer, Passungen, Schmierung"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "SKF-Hauptkatalog, Schaeffler HR1"
+      - id: toleranzen-iso-286-passungen-gewinde
+        titel: "Toleranzen (ISO 286), Passungen, Gewinde (ISO metrisch, Rohr, Trapez)"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Wikipedia, eigene berechnete Tabellen"
+      - id: werkstoffkennwerte-stahl-edelstahl
+        titel: "Werkstoffkennwerte Stahl, Edelstahl, Aluminium, Kunststoffe"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Hersteller-Datenblätter, eigene Werkstofftabelle (ca. 150 Werkstoffe)"
+      - id: getriebe-zahnraeder-riemen-kupplungen
+        titel: "Getriebe, Zahnräder, Riemen, Kupplungen, Antriebsauslegung"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "DE/EN"
+        quellen_text: "SEW Praxis der Antriebsauslegung, Wikipedia, Machinery's Handbook (alt)"
+      - id: zerspanung-schweissen-haerten-schmieden
+        titel: "Zerspanung, Schweißen, Härten, Schmieden"
+        tiefe: [PRAXIS]
+        sprache: "DE/EN"
+        quellen_text: "Wikipedia, Wikibooks Werkstoffkunde, Farm Blacksmithing, Gingery (gekauft)"
+      - id: fahrzeug-und-motorreparatur
+        titel: "Fahrzeug- und Motorreparatur"
+        tiefe: [PRAXIS, FALL]
+        sprache: "EN/DE"
+        quellen_text: "Motor Vehicle Maintenance SE, TM 9-8000, iFixit"
+
+  - id: antriebstechnik-regelung-sensorik
+    nr: 3
+    titel: "Antriebstechnik, Regelung, Sensorik"
+    schild: "ANTRIEBE"
+    piktogramm: regler
+    themen:
+      - id: dc-schritt-servo-bldc-asynchronmotoren
+        titel: "DC-, Schritt-, Servo-, BLDC-, Asynchronmotoren: Aufbau, Kennlinien, Ansteuerung"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "NEETS Mod. 5/15, Microchip AN885/AN907, Trinamic, Hawkins (alt)"
+      - id: frequenzumrichter
+        titel: "Frequenzumrichter: Funktion, Parametrierung, Fehlercodes (Siemens G120/V20, Danfoss)"
+        tiefe: [REFERENZ]
+        sprache: "DE/EN"
+        quellen_text: "Danfoss Facts Worth Knowing, Siemens-Handbücher"
+      - id: regelungstechnik-pid-einstellregeln
+        titel: "Regelungstechnik, PID, Einstellregeln, Stabilität"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "EN/DE"
+        quellen_text: "Åström/Murray Feedback Systems, Wikibooks Regelungstechnik, eigene Karte"
+      - id: 4-20-ma-thermoelemente-typ
+        titel: "4–20 mA, Thermoelemente (Typ J/K/T-Tabellen), Pt100/Pt1000-Tabellen, Näherungsschalter, Encoder"
+        tiefe: [REFERENZ]
+        sprache: "DE/EN"
+        quellen_text: "WIKA-Handbuch, NIST ITS-90, ifm/P+F-Broschüren, eigene SQLite-Tabellen"
+      - id: pneumatik-hydraulik
+        titel: "Pneumatik, Hydraulik: Symbole, Ventile, Zylinder, Schaltpläne"
+        tiefe: [LEHRBUCH]
+        sprache: "EN/DE"
+        quellen_text: "NAVEDTRA 14105 Fluid Power, Festo/SMC-Broschüren, eigene ISO-1219-Tafel"
+
+  - id: sps-und-automatisierung
+    nr: 4
+    titel: "SPS und Automatisierung"
+    schild: "SPS"
+    piktogramm: relais
+    themen:
+      - id: iec-61131-3
+        titel: "IEC 61131-3: ST, KOP, FUP, AWL, Ablaufsprache"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "DE/EN"
+        quellen_text: "PLCopen Coding Guidelines, Beckhoff InfoSys, CODESYS-Hilfe, Siemens STEP 7"
+      - id: ueber-500-fertige-st-bausteine
+        titel: "Über 500 fertige ST-Bausteine mit Quellcode (Regler, Zeit, Mathematik, Gebäude, Netzwerk)"
+        tiefe: [REFERENZ]
+        sprache: "DE/EN"
+        quellen_text: "OSCAT Basic/Building/Network"
+      - id: siemens-s7-1200-1500
+        titel: "Siemens S7-1200/1500: Systemhandbuch, Befehle, Kommunikation"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Siemens-Handbücher"
+      - id: beckhoff-twincat-komplett
+        titel: "Beckhoff TwinCAT komplett"
+        tiefe: [REFERENZ]
+        sprache: "DE/EN"
+        quellen_text: "InfoSys offline (3–6 GB)"
+      - id: relaislogik-als-sps-ersatz-selbsthaltung
+        titel: "Relaislogik als SPS-Ersatz, Selbsthaltung, Verriegelung"
+        tiefe: [PRAXIS]
+        sprache: "DE"
+        quellen_text: "eigenes Material, Wikipedia"
+
+  - id: mess-und-prueftechnik-fehlersuche
+    nr: 5
+    titel: "Mess- und Prüftechnik, Fehlersuche"
+    schild: "MESSTECHNIK"
+    piktogramm: messgeraet
+    themen:
+      - id: oszilloskop-grundlagen-tastkoepfe-triggern
+        titel: "Oszilloskop-Grundlagen, Tastköpfe, Triggern"
+        tiefe: [LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "Tektronix XYZs, R&S Fundamentals"
+      - id: multimeter-isolationsmessung-waermebild
+        titel: "Multimeter, Isolationsmessung, Wärmebild"
+        tiefe: [PRAXIS]
+        sprache: "DE"
+        quellen_text: "Fluke-Broschüren"
+      - id: diagnosebaeume
+        titel: "Diagnosebäume: Motor läuft nicht, FU-Fehler, Sensor liefert Unsinn, SPS nicht in RUN, Netzteil schaltet ab"
+        tiefe: [PRAXIS]
+        sprache: "DE"
+        quellen_text: "eigenes Material"
+      - id: kalibrieren-ohne-referenzgeraete-eispunkt
+        titel: "Kalibrieren ohne Referenzgeräte (Eispunkt, Siedepunkt, Wassersäule)"
+        tiefe: [PRAXIS]
+        sprache: "DE"
+        quellen_text: "eigenes Material, rebuild_trees.db"
+
+  - id: programmierung-und-linux
+    nr: 6
+    titel: "Programmierung und Linux"
+    schild: "PROGRAMMIERUNG"
+    piktogramm: lochkarte
+    themen:
+      - id: c
+        titel: "C: Sprache, Standardbibliothek, Embedded-Stil"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "Modern C, Beej's Guide, cppreference, DevDocs C/C++, Barr Coding Standard, avr-libc"
+      - id: python-3-komplett-automatisierung
+        titel: "Python 3 komplett + Automatisierung"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "EN/DE"
+        quellen_text: "Offizielle Doku, DevDocs Python, Automate the Boring Stuff, Wikibooks"
+      - id: bash-shell-systemd-netzwerk-debian
+        titel: "Bash, Shell, systemd, Netzwerk, Debian/Raspberry Pi OS"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "Debian Handbook, The Linux Command Line, ArchWiki, DevDocs Bash, man-pages"
+      - id: konkrete-fehler-und-konfigurationsfragen
+        titel: "Konkrete Fehler und Konfigurationsfragen"
+        tiefe: [FALL]
+        sprache: "EN"
+        quellen_text: "Unix & Linux SE, Ask Ubuntu, Super User, Raspberry Pi SE, Arduino SE"
+      - id: arduino-raspberry-pi-esp32-rp2040
+        titel: "Arduino, Raspberry Pi, ESP32, RP2040"
+        tiefe: [REFERENZ, FALL]
+        sprache: "EN"
+        quellen_text: "Pi-Dokumentation, Datenblätter, Arduino SE"
+      - id: installierbare-software-fuer-den-pi
+        titel: "Installierbare Software für den Pi ohne Internet"
+        tiefe: [REFERENZ]
+        sprache: "–"
+        quellen_text: "pip-Wheels, .deb-Pakete, llama.cpp, kiwix-tools, Quellcode"
+    ausschluss:
+      - "Stack Overflow (80 GB, optional), IDE-Doku, kommerzielle Bücher"
+
+  - id: medizin
+    nr: 7
+    titel: "Medizin"
+    schild: "MEDIZIN"
+    piktogramm: kreuz
+    themen:
+      - id: krankheiten-symptome-medikamente-anatomie
+        titel: "Krankheiten, Symptome, Medikamente, Anatomie: ca. 50.000 Artikel mit Bildern"
+        tiefe: [REFERENZ]
+        sprache: "EN/DE"
+        quellen_text: "WikiMed EN (+ DE, falls verfügbar)"
+      - id: behandlung-ohne-arzt
+        titel: "Behandlung ohne Arzt: Untersuchung, häufige Krankheiten, Geburt, Kinder, Zähne"
+        tiefe: [PRAXIS]
+        sprache: "EN/DE"
+        quellen_text: "Hesperian Where There Is No Doctor / Dentist / Women / Midwives, dt. Ausgabe"
+      - id: erste-hilfe-reanimation-aktuelle-erc
+        titel: "Erste Hilfe, Reanimation (aktuelle ERC-Leitlinien), Wundversorgung, Frakturen"
+        tiefe: [PRAXIS]
+        sprache: "DE"
+        quellen_text: "ERC 2021 deutsch, DGUV 204-006, Wikibooks Erste Hilfe"
+      - id: blutungskontrolle-tourniquet-thorax-schock
+        titel: "Blutungskontrolle, Tourniquet, Thorax, Schock (taktisch und zivil)"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "TCCC, TECC, Stop the Bleed, FM 21-11 / TC 4-02.1"
+      - id: chirurgie-ohne-klinik-anaesthesie-mit
+        titel: "Chirurgie ohne Klinik, Anästhesie mit einfachen Mitteln"
+        tiefe: [LEHRBUCH, PRAXIS]
+        sprache: "EN"
+        quellen_text: "Emergency War Surgery, WHO Surgical Care, WHO Anaesthesia, Primary Surgery"
+      - id: medikamente-dosierungen-erwachsene-kinder
+        titel: "Medikamente, Dosierungen Erwachsene/Kinder, Wechselwirkungen"
+        tiefe: [REFERENZ]
+        sprache: "EN/DE"
+        quellen_text: "WHO Model Formulary, Essential Medicines List, MSF Essential Drugs, OpenStax Pharmacology, eigene Dosistabelle"
+      - id: infektionskrankheiten-hygiene
+        titel: "Infektionskrankheiten, Hygiene, Wasserqualität, Quarantäne"
+        tiefe: [REFERENZ]
+        sprache: "EN/DE"
+        quellen_text: "WHO Drinking-water, CDC, RKI, zimgit-medicine"
+      - id: anatomie-und-physiologie-vollstaendig
+        titel: "Anatomie und Physiologie vollständig"
+        tiefe: [LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "OpenStax A&P 2e"
+      - id: verlaengerte-versorgung-ueber-tage-ohne
+        titel: "Verlängerte Versorgung über Tage ohne Abtransport"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "Prolonged Field Care"
+    ausschluss:
+      - "Fachinformationen einzelner Präparate (nur die der eigenen Hausapotheke), Labormedizin, Bildgebung"
+
+  - id: survival-und-grundversorgung
+    nr: 8
+    titel: "Survival und Grundversorgung"
+    schild: "SURVIVAL"
+    piktogramm: zelt
+    themen:
+      - id: wasser-finden-filtern-entkeimen-chlor
+        titel: "Wasser finden, filtern, entkeimen (Chlor, SODIS, Biosand, Abkochen)"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "zimgit-water, SODIS, CAWST, WHO"
+      - id: nahrung
+        titel: "Nahrung: Einkochen, Trocknen, Fermentieren, Räuchern, Haltbarkeit"
+        tiefe: [PRAXIS]
+        sprache: "EN/DE"
+        quellen_text: "USDA Home Canning, NCHFP, zimgit-food, BZfE"
+      - id: pflanzen-und-pilze-erkennen-mit
+        titel: "Pflanzen und Pilze erkennen (mit Bildern)"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Wikipedia DE maxi, eigene Themen-ZIMs"
+      - id: feuer-unterschlupf-orientierung-signale
+        titel: "Feuer, Unterschlupf, Orientierung, Signale, Klima"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "FM 21-76/ATP 3-50.21, zimgit-post-disaster, Outdoors SE"
+      - id: landwirtschaft
+        titel: "Landwirtschaft: Boden, Saatgut, Fruchtfolge, Kleintiere, Zugtiere"
+        tiefe: [LEHRBUCH, FALL]
+        sprache: "EN"
+        quellen_text: "FAO-Publikationen, Gardening SE, Farmers of Forty Centuries, Wikibooks"
+      - id: bauen-holz-haus-reparieren
+        titel: "Bauen, Holz, Haus reparieren"
+        tiefe: [PRAXIS, FALL]
+        sprache: "EN/DE"
+        quellen_text: "Home Improvement SE, Woodworking SE, TM 5-704, wikiHow"
+      - id: alltagsanleitungen-aller-art-ca-30
+        titel: "Alltagsanleitungen aller Art (ca. 30.000)"
+        tiefe: [PRAXIS]
+        sprache: "DE"
+        quellen_text: "wikiHow DE"
+      - id: angepasste-technik-fuer-einfache-mittel
+        titel: "Angepasste Technik für einfache Mittel (Öfen, Pumpen, Solar, Sanitär)"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "Appropedia, Low-tech Magazine, VITA Village Technology"
+
+  - id: energie-und-infrastruktur
+    nr: 9
+    titel: "Energie und Infrastruktur"
+    schild: "ENERGIE"
+    piktogramm: atom
+    themen:
+      - id: pv-anlagen-auslegen-inselsysteme-batterien
+        titel: "PV-Anlagen auslegen, Inselsysteme, Batterien, LiFePO4, BMS"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "Sandia Handbook, Victron Wiring Unlimited, energypedia, Zellen-Datenblätter"
+      - id: generatoren-verbrennungsmotoren
+        titel: "Generatoren, Verbrennungsmotoren, Lichtmaschinen"
+        tiefe: [LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "TM 9-8000, TM 5-6115, Hawkins"
+      - id: holzgas-biogas-wasserkraft-windkraft
+        titel: "Holzgas, Biogas, Wasserkraft, Windkraft"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "FEMA Wood Gas, Sasse Biogas, Practical Action Micro-Hydro"
+      - id: pumpen-wasserversorgung-sanitaer-kompost
+        titel: "Pumpen, Wasserversorgung, Sanitär, Kompost-Toilette, Abwasser"
+        tiefe: [LEHRBUCH, PRAXIS]
+        sprache: "EN"
+        quellen_text: "Grundfos Pump Handbook, Eawag Compendium, Humanure Handbook, Akvopedia"
+
+  - id: kommunikation
+    nr: 10
+    titel: "Kommunikation"
+    schild: "KOMMUNIKATION"
+    piktogramm: antenne
+    themen:
+      - id: amateurfunk-theorie-pruefungsfragen-n-e
+        titel: "Amateurfunk-Theorie, Prüfungsfragen N/E/A, Bandpläne, Frequenzplan"
+        tiefe: [REFERENZ, LEHRBUCH]
+        sprache: "DE/EN"
+        quellen_text: "BNetzA, DARC, Amateur Radio SE"
+      - id: antennenbau-wellenausbreitung
+        titel: "Antennenbau, Wellenausbreitung"
+        tiefe: [LEHRBUCH]
+        sprache: "EN/DE"
+        quellen_text: "NEETS Mod. 10, Wikipedia, eigene Rechenkarten"
+      - id: notfunk-frequenzen-pmr-cb-marine
+        titel: "Notfunk-Frequenzen (PMR, CB, Marine, Flug, Wetter), Morse, Buchstabiertafel"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "eigene Tabellen, Wikipedia"
+      - id: meshtastic-reticulum-lora
+        titel: "Meshtastic, Reticulum, LoRa: Doku, Firmware, Flasher"
+        tiefe: [REFERENZ]
+        sprache: "EN"
+        quellen_text: "Meshtastic Docs, Reticulum Manual, Semtech-Datenblätter"
+      - id: lokales-netz-ohne-internet-aufbauen
+        titel: "Lokales Netz ohne Internet aufbauen (WLAN-AP, DNS, Kiwix freigeben)"
+        tiefe: [PRAXIS]
+        sprache: "DE/EN"
+        quellen_text: "Debian Handbook, eigene HowTos"
+      - id: funkdisziplin-meldeschemata-sitrep-medevac
+        titel: "Funkdisziplin, Meldeschemata (SITREP, MEDEVAC)"
+        tiefe: [REFERENZ]
+        sprache: "EN/DE"
+        quellen_text: "FM 24-18, FM 6-99, eigene Karten"
+
+  - id: militaerische-grundlagen-defensiv
+    nr: 11
+    titel: "Militärische Grundlagen (defensiv)"
+    schild: "SCHUTZ"
+    piktogramm: schild
+    themen:
+      - id: wachdienst-beobachtung-deckung-tarnung
+        titel: "Wachdienst, Beobachtung, Deckung, Tarnung, Meldungen"
+        tiefe: [PRAXIS]
+        sprache: "EN/DE"
+        quellen_text: "FM 22-6, FM 21-75, FM 20-3, Reibert-Zusammenfassung"
+      - id: objektschutz-zugangskontrolle
+        titel: "Objektschutz, Zugangskontrolle, Gebäudesicherung"
+        tiefe: [LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "ATP 3-39.32, FEMA 426/427, FM 3-06, FM 90-10"
+      - id: ied-und-sprengfallen-erkennen-abstand
+        titel: "IED und Sprengfallen erkennen, Abstand, Melden"
+        tiefe: [REFERENZ]
+        sprache: "EN"
+        quellen_text: "DHS/FEMA IED Awareness, UNMAS Lexicon, FM 5-31 Erkennungskapitel"
+      - id: abc-schutz
+        titel: "ABC-Schutz: Atemschutz improvisieren, Räume abdichten, Dekontamination"
+        tiefe: [PRAXIS]
+        sprache: "EN/DE"
+        quellen_text: "FM 3-11.x, BBK, BfS, SSK"
+      - id: strahlenschutz-improvisiertes-dosimeter
+        titel: "Strahlenschutz, improvisiertes Dosimeter (Kearny Fallout Meter), Schutzraum"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "Nuclear War Survival Skills"
+      - id: quarantaene-epidemie-umgang-mit-toten
+        titel: "Quarantäne, Epidemie, Umgang mit Toten"
+        tiefe: [REFERENZ]
+        sprache: "DE/EN"
+        quellen_text: "RKI, WHO/PAHO, Sphere Handbook"
+      - id: karte-kompass-sternnavigation-marsch
+        titel: "Karte, Kompass, Sternnavigation, Marsch, Fußpflege"
+        tiefe: [LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "TC 3-25.26, FM 21-18"
+      - id: notwehrrecht-stgb-bgb
+        titel: "Notwehrrecht (StGB, BGB), Verhältnismäßigkeit"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "gesetze-im-internet.de, eigene Zusammenfassung"
+      - id: fuehrung-auftragstaktik-entscheidung-unter
+        titel: "Führung, Auftragstaktik, Entscheidung unter Stress"
+        tiefe: [LEHRBUCH]
+        sprache: "EN/DE"
+        quellen_text: "ADP 6-0, ADP 6-22, Reibert-Zusammenfassung"
+    ausschluss:
+      - "Waffen, Schießausbildung, Angriffstaktik, Bauanleitungen, Bundeswehr-Vorschriften im Original"
+
+  - id: zivilisationsneustart
+    nr: 12
+    titel: "Zivilisationsneustart"
+    schild: "NEUSTART"
+    piktogramm: amboss
+    themen:
+      - id: was-nach-dem-kollaps-wie
+        titel: "Was nach dem Kollaps wie lange nutzbar bleibt, Neustart-Reihenfolge"
+        tiefe: [LEHRBUCH]
+        sprache: "DE/EN"
+        quellen_text: "Dartnell The Knowledge (gekauft), THE BOOK (gekauft)"
+      - id: abhaengigkeitsbaeume
+        titel: "Abhängigkeitsbäume: 10 Kerntechnologien (Motor, Generator, Trafo, Draht, Lager, Akku, Funk, Schalter, SPS-Ersatz, Sensoren) bis zum Rohstoff, mit minimaler Produktionsgröße und 9 Prozessanleitungen"
+        tiefe: [REFERENZ, PRAXIS]
+        sprache: "DE"
+        quellen_text: "rebuild_trees.db (eigenes Material, bereits vorhanden)"
+      - id: metallurgie
+        titel: "Metallurgie: Holzkohle, Schmelzofen, Guss, Schmieden, Härten, Drahtziehen, Drehbank aus Schrott"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "Gingery (gekauft), Farm Blacksmithing, Hawkins, FAO Charcoal, Machinery's Handbook alt"
+      - id: chemie
+        titel: "Chemie: Säuren, Laugen, Soda, Seife, Glas, Kalk, Zement"
+        tiefe: [REFERENZ]
+        sprache: "EN"
+        quellen_text: "Henley's Formulas, Rogers Industrial Chemistry, Thorpe, Practical Action"
+      - id: textil-leder-papier-druck
+        titel: "Textil, Leder, Papier, Druck"
+        tiefe: [PRAXIS]
+        sprache: "EN"
+        quellen_text: "Hand-Loom Weaving, USDA Bulletins, Practical Action Papermaking"
+      - id: fruehe-elektrotechnik-von-grund-auf
+        titel: "Frühe Elektrotechnik von Grund auf (Generatoren, Motoren, Telegraf, Röhrenfunk um 1917–1928)"
+        tiefe: [LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "Hawkins Electrical Guide, Radio Amateur's Handbook 1926–28"
+      - id: arzneimittel-anaesthesie-chirurgie-mit
+        titel: "Arzneimittel, Anästhesie, Chirurgie mit einfachen Mitteln"
+        tiefe: [LEHRBUCH]
+        sprache: "EN"
+        quellen_text: "WHO Anaesthesia, Primary Surgery, King's Dispensatory"
+      - id: gemeinschaft-organisieren-hygiene
+        titel: "Gemeinschaft organisieren, Hygiene-Mindeststandards, Bildung"
+        tiefe: [REFERENZ]
+        sprache: "EN"
+        quellen_text: "Sphere Handbook, UNHCR Handbook, UNESCO, OpenStax"
+    ausschluss:
+      - "Waffen-, Sprengstoff-, Kerntechnik, Drogensynthese"
+
+  - id: allgemeinwissen-sprache-literatur
+    nr: 13
+    titel: "Allgemeinwissen, Sprache, Literatur"
+    schild: "ALLGEMEIN"
+    piktogramm: buch
+    themen:
+      - id: deutsche-wikipedia-komplett-mit-bildern
+        titel: "Deutsche Wikipedia komplett mit Bildern"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "wikipedia_de_all_maxi"
+        umfang: "2,9 Mio. Artikel"
+      - id: englische-wikipedia-komplett-ohne-bilder
+        titel: "Englische Wikipedia komplett, ohne Bilder"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "wikipedia_en_all_nopic"
+        umfang: "6,9 Mio. Artikel"
+      - id: woerterbuch-deutsch-bedeutung-uebersetzung
+        titel: "Wörterbuch Deutsch (Bedeutung, Übersetzung, Grammatik)"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Wiktionary DE"
+        umfang: "1 Mio. Einträge"
+      - id: lehrbuecher-und-kurse-aller-faecher
+        titel: "Lehrbücher und Kurse aller Fächer"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Wikibooks DE/EN, Wikiversity DE"
+        umfang: "5.000"
+      - id: weltliteratur-gemeinfrei-bis-ca-1929
+        titel: "Weltliteratur gemeinfrei (bis ca. 1929)"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Gutenberg EN/DE"
+        umfang: "75.000 + 3.500 Bücher"
+      - id: physik-fragen
+        titel: "Physik-Fragen"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Physics SE"
+        umfang: "250.000 Fragen"
+
+  - id: karten-und-navigation
+    nr: 14
+    titel: "Karten und Navigation"
+    schild: "KARTEN"
+    piktogramm: kompass
+    themen:
+      - id: strassen-wege-gebaeude-gewaesser
+        titel: "Straßen, Wege, Gebäude, Gewässer, Landnutzung, Ortsnamen, alle Zoomstufen"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "PMTiles Europa, DACH, Deutschland"
+        umfang: "Europa komplett"
+      - id: routing-auto-rad-fuss-offline
+        titel: "Routing Auto/Rad/Fuß offline"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "GraphHopper mit Deutschland-Graph"
+        umfang: "Deutschland"
+      - id: suchbare-orte
+        titel: "Suchbare Orte: Trinkwasser, Brunnen, Quellen, Apotheken, Krankenhäuser, Tankstellen, Baumärkte, Feuerwehr, Notunterkünfte, Elektriker, Schmiede"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "POI-SQLite aus OSM"
+        umfang: "Deutschland"
+      - id: hoehenlinien-relief
+        titel: "Höhenlinien, Relief"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "optional OpenTopoMap"
+        umfang: "DACH"
+    ausschluss:
+      - "Satellitenbilder, Luftbilder, Live-Daten"
+
+  - id: ki-faehigkeiten
+    nr: 15
+    titel: "KI-Fähigkeiten"
+    schild: "MASCHINE"
+    piktogramm: gehirn
+    themen:
+      - id: fragen-beantworten-mit-quellenbezug-rag
+        titel: "Fragen beantworten mit Quellenbezug (RAG)"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Qwen3.5-9B + Qwen3-Embedding"
+        umfang: "\"Wie lege ich einen 5,5-kW-Motor an 400 V ab, Leitungslänge 40 m?\" → Antwort mit Verweis auf Tabelle"
+      - id: deutsch-englisch-uebersetzen-und
+        titel: "Deutsch/Englisch übersetzen und zusammenfassen"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Qwen3.5-9B, Gemma 4 E4B"
+        umfang: "englische Handbücher auf Deutsch lesen"
+      - id: fotos-verstehen
+        titel: "Fotos verstehen"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Gemma 4 E4B"
+        umfang: "Typenschild fotografieren → Motordaten; Schaltplanausschnitt erklären"
+      - id: sprache-eingeben-vorlesen
+        titel: "Sprache eingeben / vorlesen"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "whisper.cpp, Piper"
+        umfang: "Bedienung mit schmutzigen Händen"
+      - id: code-schreiben-und-erklaeren
+        titel: "Code schreiben und erklären"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "Qwen3.5-9B"
+        umfang: "C, Python, Structured Text, Bash"
+      - id: scans-durchsuchbar-machen
+        titel: "Scans durchsuchbar machen"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        quellen_text: "tesseract deu/eng"
+        umfang: "eigene Papierunterlagen einlesen"
+      - id: grenzen
+        titel: "Grenzen"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        umfang: "ca. 2–3 Token/s beim 9B-Modell auf dem Pi; kein Internet-Faktenabgleich; Modell kann irren, deshalb immer Quelle anzeigen"
+
+  - id: eigene-fahrzeuge
+    nr: 16
+    titel: "Eigene Fahrzeuge"
+    schild: "FAHRZEUGE"
+    piktogramm: schraubenschluessel
+    themen:
+      - id: land-rover-defender-110-td5
+        titel: "Land Rover Defender 110 TD5 (1998–2006)"
+        tiefe: [REFERENZ, PRAXIS]
+        sprache: "DE"
+        beschreibung: "Werkstatthandbuch komplett mit Schaltplänen, Ersatzteilkatalog mit Explosionszeichnungen und Teilenummern je Baugruppe, Diagnose (Nanocom), Füllmengen, Drehmomente, Wartungsplan, bekannte Schwachstellen (Öl im Steuergerätestecker, Injektordichtungen, Ölpumpenschraube, Kopfriss, Rahmenrost)"
+        quellen_text: "Workshop Manual + Electrical Library (Brooklands), Parts Catalogue STC9021CC, lrcat/Britpart/Paddock-Zeichnungen, Haynes 3017, Fahrzeugakte"
+      - id: rover-mini-cooper-1-3i
+        titel: "Rover Mini Cooper 1.3i MPi \"British Open Classic\" (1999)"
+        tiefe: [REFERENZ, PRAXIS]
+        sprache: "DE"
+        beschreibung: "Werkstatthandbuch inkl. MPi-Nachtrag, MEMS-2J-Schaltplan, Explosionszeichnungen aller Baugruppen mit Nummern, Fahrwerkseinstellung (Gummikonen, Kugelgelenke), Rostschwerpunkte (Schweller, A-Säulen, hinterer Hilfsrahmen)"
+        quellen_text: "Rover Workshop Manual (Brooklands), Mini Parts Catalogue, minispares.com-Zeichnungen, Haynes 0646, Fahrzeugakte"
+      - id: vespa-v50-n-v5a1t-1963
+        titel: "Vespa V50 N, V5A1T (1963)"
+        tiefe: [REFERENZ, PRAXIS]
+        sprache: "DE"
+        beschreibung: "Piaggio-Werkstatthandbuch, Original-Ersatzteilkatalog mit Explosionszeichnungen, Bedienungsanleitung 1963, aktuelle Teilenummern (SIP, Scooter Center), Zündung einstellen, Vergaser SHB 16/10 bedüsen, Motor teilen, Falschluft suchen"
+        quellen_text: "scooterhelp.com-Scans, SIP/Scooter-Center-Zeichnungen, Bucheli, GSF-Wiki, Fahrzeugakte"
+      - id: alle-drei
+        titel: "Alle drei: Fahrzeugakten (bereits vorhanden)"
+        tiefe: [REFERENZ]
+        sprache: "DE"
+        beschreibung: "Kenndaten, Füllmengen, Drehmomente, Einstellwerte (40), Stückliste Verschleißteile mit OEM-Nummern (68), Schwachstellen mit Abhilfe (25), Wartungsplan (24), Dokumentenliste (18), Logbuch"
+        quellen_text: "own/fahrzeuge/fahrzeuge.db + Fahrzeugakte_*.md; Werte aus dem Gedächtnis sind als \"prüfen\" markiert"
+      - id: allgemein-kfz
+        titel: "Allgemein Kfz"
+        tiefe: [LEHRBUCH, FALL]
+        sprache: "DE"
+        beschreibung: "Motor-, Getriebe-, Bremsen-, Elektrikreparatur, Fehlersuche"
+        quellen_text: "Motor Vehicle Maintenance SE, TM 9-8000, iFixit"
