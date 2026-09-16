@@ -20,7 +20,7 @@ Stand 2026-09-16. Alle Dateien sind Privatkopien fuer den Eigengebrauch; Quelle 
 
 | Bereich | Dateien | MB | Ablage |
 |---|---|---|---|
-| Handbuecher, Kataloge, Schaltplaene (PDF) | 2 | 5 | pdf/fahrzeuge/mini/ |
+| Handbuecher, Kataloge, Schaltplaene (PDF) | 3 | 79 | pdf/fahrzeuge/mini/ |
 | Explosionszeichnungen, einheitlich gesetzt | 22 | 38 | pdf/fahrzeuge/mini/explosionszeichnungen/ |
 | forenwissen (Artikel/Threads als PDF) | 7 | 38 | own/fahrzeuge/mini_forenwissen/ |
 | Teileliste (CSV, 6411 Positionen) | 1 | 0.7 | own/fahrzeuge/minispares_teileliste.csv |
@@ -28,6 +28,8 @@ Stand 2026-09-16. Alle Dateien sind Privatkopien fuer den Eigengebrauch; Quelle 
 **Kaufempfehlung (nicht geladen):**
 - Brooklands/Rover: Mini Workshop Manual 1992-2000 inkl. MPi (RCL0193) - Nachdruck, falls gedruckt gewuenscht
 - Mini Parts Catalogue 1990-2000 (British Motor Heritage) - gedruckt; digital durch Minispares-Katalog gedeckt
+
+**Nachtrag 16.09.2026:** Mini Sport Catalogue 2019/20 (Mini Sport Ltd, Padiham; 196 S., Teile, Restaurierung, Tuning, Zubehoer; mit Textebene) vom Nutzer geliefert - ergaenzt den Minispares-Katalog um einen zweiten Haendlerkatalog mit Bildern und Artikelnummern.
 - Haynes 0646 Mini 1969-2001
 
 ## Vespa V50 N, V5A1T (1963)
