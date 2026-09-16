@@ -11,7 +11,7 @@ Erwartete Größe Voll: ca. 330 GB (ohne Optionen), bis 480 GB mit Stack Overflo
 | `zim/` | Kiwix-ZIM-Dateien + `library.xml` + `MANIFEST.sha256` | `tools/download_zim.sh` |
 | `pdf/` | Handbücher, Datenblätter, Public-Domain-Klassiker, nach Modul sortiert | `tools/pdf_sources.csv` (manuell) |
 | `db/` | SQLite: PDF-Volltextindex, Embeddings (sqlite-vec), POI-Datenbank | eigene RAG-Pipeline |
-| `maps/` | PMTiles Europa/DACH/Deutschland, Basemap-Assets, PBF, Routing-Graph | `tools/maps.sh` |
+| `maps/` | PMTiles Planet (138 GB, Zoom 0-15) sowie Europa/DACH/Deutschland daraus extrahiert, POI-SQLite, Basemap-Assets, PBF, Routing-Graph | `tools/ddbox_fetch.py maps`, `tools/poi_build.py` |
 | `models/` | GGUF/GGML/ONNX-Modelle | `tools/download_models.sh` |
 | `src/` | Software-Spiegel: pip-Wheels, APT-Teilspiegel, Firmware, Quellcode, Beckhoff InfoSys | manuell |
 | `own/` | eigenes Material je Modul: `mech`, `med`, `surv`, `mil`, `rebuild`, `fahrzeuge` | Git-Repo empfohlen |
@@ -25,7 +25,7 @@ Erwartete Größe Voll: ca. 330 GB (ohne Optionen), bis 480 GB mit Stack Overflo
 1. Werkzeuge installieren: `aria2`, `curl`, `libxml2-utils` (xmllint), `zim-tools` (zimcheck, zimwriterfs), `kiwix-tools` (kiwix-manage, kiwix-serve), `par2`, `python3`, `pip install huggingface_hub[cli] osmium`, `pmtiles`-CLI, Java 17 (Routing), Docker (zimit, mwoffliner).
 2. ZIM-Dateien: `tools/download_zim.sh D:/DoomsdayBox/zim 3` – läuft Tage, ist wiederaufnehmbar. Erst Priorität 1 (`... 1`), dann Rest.
 3. Modelle: `tools/download_models.sh D:/DoomsdayBox/models 3` – vorher Gemma-Lizenz auf huggingface.co annehmen und `hf auth login`.
-4. Karten: `tools/maps.sh D:/DoomsdayBox/maps` – Europa-Extrakt ca. 30 GB; GraphHopper-Import anschließend von Hand starten (Befehl wird ausgegeben).
+4. Karten: `python tools/ddbox_fetch.py maps --root D:/DoomsdayBox --ark D:/AI-ARK` – Planet 138 GB (fortsetzbar, `tools/planet_download.py`), Ausschnitte lokal per `pmtiles extract planet_*.pmtiles <region>.pmtiles --bbox=...`; POI-Datenbank `tools/poi_build.py`; GraphHopper-Import anschließend von Hand (Befehl wird ausgegeben).
 5. PDFs: `tools/pdf_sources.csv` abarbeiten. Spalte `zielordner` gibt den Ablageort vor. Komprimieren:
    `gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -dNOPAUSE -dBATCH -sOutputFile=out.pdf in.pdf` (150 DPI; Zeichnungs-Scans bei 200 DPI belassen).
    Scans durchsuchbar machen: `ocrmypdf -l deu+eng in.pdf out.pdf`.
