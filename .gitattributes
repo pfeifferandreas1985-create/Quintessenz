@@ -1,0 +1,12 @@
+* text=auto
+*.py text eol=lf
+*.sh text eol=lf
+*.sha256 text eol=lf
+*.tsv text eol=lf
+*.csv text eol=lf
+*.yml text eol=lf
+*.ps1 text eol=crlf
+*.gguf binary
+*.zim binary
+*.pmtiles binary
+*.pdf binary
