@@ -431,36 +431,14 @@ def phase_maps(a):
                  dest / "routing" / "config.yml", a.root)
     poi = dest / "poi.sqlite"
     if pbf.exists() and not poi.exists():
-        try:
-            import osmium, sqlite3
-            log(a.root, "baue POI-SQLite aus germany-latest.osm.pbf (pyosmium, dauert 20-60 min)")
-            KEYS = {"amenity": {"drinking_water", "pharmacy", "hospital", "clinic", "doctors", "fuel", "fire_station",
-                                "police", "shelter"},
-                    "shop": {"hardware", "doityourself", "electronics", "agrarian", "farm"},
-                    "craft": {"electrician", "metal_construction", "blacksmith"},
-                    "man_made": {"water_well", "water_tower"}, "natural": {"spring"}}
-            con = sqlite3.connect(str(poi))
-            con.execute("CREATE TABLE poi(id INTEGER PRIMARY KEY, lat REAL, lon REAL, kind TEXT, name TEXT, tags TEXT)")
-
-            class H(osmium.SimpleHandler):
-                def node(self, n):
-                    t = dict(n.tags)
-                    for k, vals in KEYS.items():
-                        if t.get(k) in vals:
-                            con.execute("INSERT OR IGNORE INTO poi VALUES(?,?,?,?,?,?)",
-                                        (n.id, n.location.lat, n.location.lon, t[k], t.get("name"), json.dumps(t, ensure_ascii=False)))
-                            break
-            H().apply_file(str(pbf))
-            con.execute("CREATE INDEX idx_kind ON poi(kind)"); con.execute("CREATE INDEX idx_pos ON poi(lat, lon)")
-            con.commit()
-            log(a.root, f"    POI: {con.execute('select count(*) from poi').fetchone()[0]} Eintraege")
-            con.close()
-        except ImportError:
-            offen.append("POI-SQLite (pip install osmium, dann maps erneut)")
-        except Exception as e:
-            offen.append(f"POI-SQLite ({type(e).__name__})"); poi.unlink(missing_ok=True)
+        # Punkte + Flaechen, gefiltert in C++; Details und Kategorien in tools/poi_build.py
+        log(a.root, "baue POI-SQLite aus germany-latest.osm.pbf (poi_build.py, 10-30 min)")
+        rc = subprocess.run([sys.executable, str(Path(__file__).resolve().parent / "poi_build.py"),
+                             str(pbf), str(poi)]).returncode
+        if rc != 0:
+            offen.append("POI-SQLite (poi_build.py fehlgeschlagen; pip install osmium>=4, dann maps erneut)")
     offen.append("GraphHopper-Import (java -Xmx8g -jar ... import config.yml, 1-2 h)")
-    lines = [f"{sha256(f)}  {f.name}" for f in sorted(dest.glob("*.pmtiles")) + sorted(dest.glob("*.pbf"))]
+    lines = [f"{sha256(f)}  {f.name}" for f in sorted(dest.glob("*.pmtiles")) + sorted(dest.glob("*.pbf")) + sorted(dest.glob("*.sqlite"))]
     (dest / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     logbuch(a.root, f"Phase C Karten ({a.regions})", f"offen: {'; '.join(offen)}")
 

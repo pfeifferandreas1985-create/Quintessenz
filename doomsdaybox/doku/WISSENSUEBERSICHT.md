@@ -11,7 +11,7 @@ Stand 2026-09-15. Status: **geplant**, Beschaffung läuft noch nicht (D: ist FAT
 | Lehrbücher (Wikibooks DE/EN) | ca. 5.000 Bücher/Kurse |
 | Reparaturanleitungen (iFixit DE/EN) | ca. 100.000 Anleitungen |
 | Bücher Project Gutenberg | ca. 75.000 englisch, 3.500 deutsch |
-| Praxisanleitungen (wikiHow DE, Appropedia) | ca. 30.000 + 10.000 |
+| Praxisanleitungen (wikiHow DE, Appropedia) | 22.272 + ca. 10.000 |
 | Medizin (WikiMed) | ca. 50.000 Artikel EN, ca. 10.000 DE, mit Bildern |
 | PDF-Handbücher, Kataloge, Datenblätter | ca. 500–1.500 Dokumente |
 | Karten | Europa vollständig (Straßen, Wege, Gebäude, Gewässer), Deutschland mit Routing und POI |
@@ -119,7 +119,7 @@ Legende Tiefe: **Referenz** = Nachschlagen (Werte, Tabellen, Definitionen) · **
 | Feuer, Unterschlupf, Orientierung, Signale, Klima | FM 21-76/ATP 3-50.21, zimgit-post-disaster, Outdoors SE | Praxis | EN |
 | Landwirtschaft: Boden, Saatgut, Fruchtfolge, Kleintiere, Zugtiere | FAO-Publikationen, Gardening SE, Farmers of Forty Centuries, Wikibooks | Lehrbuch + Q&A | EN |
 | Bauen, Holz, Haus reparieren | Home Improvement SE, Woodworking SE, TM 5-704, wikiHow | Q&A + Praxis | EN/DE |
-| Alltagsanleitungen aller Art (ca. 30.000) | wikiHow DE | Praxis | DE |
+| Alltagsanleitungen aller Art (22.272 Artikel) | wikiHow DE, eigenes ZIM per zimit (Kiwix bietet wikiHow DE nicht mehr an) | Praxis | DE |
 | Angepasste Technik für einfache Mittel (Öfen, Pumpen, Solar, Sanitär) | Appropedia, Low-tech Magazine, VITA Village Technology | Praxis | EN |
 
 ### 2.9 Energie und Infrastruktur
