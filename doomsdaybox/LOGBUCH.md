@@ -39,3 +39,9 @@
 | 2026-09-16 17:24 | Phase C Karten (deutschland) | offen: GraphHopper-Import (java -Xmx8g -jar ... import config.yml, 1-2 h) |
 | 2026-09-16 17:50 | maps/poi.sqlite | Neu gebaut mit tools/poi_build.py: Punkte + Flaechen, 61 Kategorien, 430 MB, FTS5-Namenssuche. Krankenhaeuser 2.173 (vorher 266), Feuerwehren 29.094 (vorher 9.214). Ins MANIFEST aufgenommen |
 | 2026-09-16 21:30 | pdf/fahrzeuge/mini/ | Mini Sport Catalogue 2019/20 (196 S., 74 MB, minisport.com) vom Nutzer geliefert -> Mini-MPi_Teilekatalog-Mini-Sport-2019-20_minisport.pdf; MANIFEST, pdf_sources.csv, Bericht ergaenzt; nach C:\D-Sicherung gespiegelt |
+| 2026-09-16 22:44 | maps/planet_20260915.pmtiles | Protomaps-Planet komplett: 138,0 GB, Header geprueft (Zoom 0-15, 177,7 Mio Kacheleintraege, Build 2026-09-15). Lokale Extraktion DACH + Europa gestartet |
+| 2026-09-16 23:31 | maps/dach.pmtiles, maps/europa.pmtiles | Lokal aus dem Planet extrahiert (pmtiles extract, 7,5 min / 38 min): DACH 10,1 GB (1,70 Mio Kacheln), Europa 48,5 GB (23,3 Mio Kacheln), beide Zoom 0-15, Header geprueft. Planet 138 GB bleibt als Weltkarte. Prueufsummen werden nachgetragen |
+| 2026-09-16 23:40 | wikiHow-Crawl | de.wikihow.com drosselt seit ca. 22:50 (15.953x 'possibly rate limited', 4.067 Fehlseiten bei 13.732 geladenen). Container pausiert (docker pause), Fortsetzung nach Abkuehlpause; Fehlseiten spaeter in zweitem Durchgang mit 1 Worker nachladen |
+| 2026-09-17 00:40 | maps/MANIFEST.sha256 | Prueufsummen dach, europa, planet_20260915 nachgetragen (6 Eintraege) |
+| 2026-09-17 00:02 | Phase A ZIM bis Prio 3 | 6 neu (20.6 GB), 1 fehlgeschlagen, nicht gefunden: - |
+| 2026-09-17 00:55 | zim/ | ZIM-Lauf Prio 3 beendet: 38 ZIMs, library.xml 38, MANIFEST auf LF umgestellt. Gutenberg EN bei 4,5 GB AUFGEGEBEN: Kiwix-Spiegel beendet Verbindung sauber vorzeitig, download() zaehlte das 6x als Fehlversuch ohne Meldung. Fix: Fortschritt setzt Zaehler zurueck + Logzeile. Gutenberg EN fortsetzbar neu gestartet |

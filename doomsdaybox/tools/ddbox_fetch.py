@@ -143,6 +143,11 @@ def download(url, dest, root, stage=None, retries=6):
                             last = time.time()
             if not total or tmp.stat().st_size >= total:
                 break
+            # Server hat die Verbindung sauber, aber vorzeitig beendet (Kiwix-Spiegel tun das bei
+            # Langlaeufern). Solange Daten kamen, zaehlt das nicht als Fehlversuch.
+            log(root, f"    Verbindung vorzeitig beendet bei {tmp.stat().st_size / 1e9:.2f} GB, setze fort")
+            if got > 0:
+                attempt = 0
         except (urllib.error.URLError, ConnectionError, TimeoutError, OSError) as e:
             log(root, f"    Unterbrechung ({type(e).__name__}), Versuch {attempt}/{retries}, warte 30 s")
             time.sleep(30)
