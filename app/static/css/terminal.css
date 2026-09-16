@@ -1,0 +1,575 @@
+/* ===========================================================================
+   WELT 1: TERMINAL
+   Navigation, Suche, Chat. Monochromer Roehrenmonitor in einem Bakelitgehaeuse.
+   Alles hier darf leuchten, flackern und Scanlines haben. Auf dem Papier
+   (papier.css) ist davon nichts erlaubt.
+   =========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--term-gehaeuse);
+  color: var(--phos);
+  font-family: var(--f-term);
+  font-size: calc(18px * var(--term-groesse));
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  display: grid;
+  grid-template-columns: var(--term-breite) 1fr;
+  gap: var(--a4);
+  padding: var(--a4);
+  background-image:
+    radial-gradient(120% 80% at 50% 0%, var(--term-gehaeuse-h) 0%,
+                    var(--term-gehaeuse-t) 65%);
+}
+
+:focus-visible { outline: 2px solid var(--phos); outline-offset: 2px; }
+
+/* --- Bakelitgehaeuse mit Roehrenbezel ------------------------------------ */
+
+#geraet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: var(--r-bezel);
+  padding: var(--a3);
+  background:
+    linear-gradient(180deg, var(--term-gehaeuse-h) 0%, var(--term-gehaeuse) 18%,
+                    var(--term-gehaeuse-t) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 -2px 6px rgba(0,0,0,.6),
+    0 18px 44px rgba(0,0,0,.55);
+}
+
+/* #geraet::after ist fuer die Dekoration des jeweiligen Geraets reserviert:
+   Noppen, Messingschrauben, HUD-Winkel, Lichtkante. Siehe themen.css. */
+#geraet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Chromkante, sparsam */
+#geraet::before {
+  content: "";
+  position: absolute; inset: 6px;
+  border-radius: calc(var(--r-bezel) - 5px);
+  border: 1px solid rgba(180,175,165,.13);
+  pointer-events: none;
+}
+
+#schirm {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: calc(var(--r-bezel) - 8px);
+  background:
+    radial-gradient(130% 100% at 50% 40%, var(--term-bg-hoch) 0%, var(--term-bg) 55%,
+                    var(--term-bg-tief) 100%);
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,.9),
+    inset 0 0 130px var(--phos-hauch);
+  overflow: hidden;
+}
+
+/* Scanlines */
+#schirm::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: var(--raster);
+  opacity: var(--scanline-deckkraft);
+}
+
+/* Vignette und Glaswoelbung */
+#schirm::after {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: 41;
+  pointer-events: none;
+  background:
+    radial-gradient(115% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%),
+    linear-gradient(115deg, rgba(255,255,255,.035) 0%, transparent 38%);
+}
+
+@keyframes flackern {
+  0%,96%,100% { opacity: 1; }
+  97%         { opacity: .93; }
+  98%         { opacity: 1; }
+  99%         { opacity: .96; }
+}
+#schirmtext {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--a4) var(--a4) var(--a2);
+  text-shadow: 0 0 calc(7px * var(--bloom-staerke)) var(--phos-glut);
+  animation: flackern 9s infinite steps(1);
+  animation-play-state: var(--flacker, 1) ;
+}
+:root[data-effekte="aus"] #schirmtext { animation: none; text-shadow: none; }
+
+/* --- Kopf: Marke, Uhr, Pfad ---------------------------------------------- */
+
+#kopf { flex: none; }
+
+.marke {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--a3);
+  font-family: var(--f-schild);
+  font-weight: 600;
+  font-size: var(--t-klein);
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--phos-dim);
+  border-bottom: var(--strich);
+  padding-bottom: var(--a2);
+}
+.marke b { color: var(--phos); font-weight: 600; }
+.marke .uhr { letter-spacing: .12em; font-family: var(--f-term); font-size: var(--t-normal); }
+
+/* Pfadanzeige EINGANG > BEREICH > THEMA > AKTE */
+#pfad {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--a1);
+  padding: var(--a2) 0;
+  font-size: var(--t-klein);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--phos-schwach);
+  min-height: 1.9em;
+}
+#pfad button {
+  all: unset; cursor: pointer;
+  color: var(--phos-dim);
+  padding: 1px 2px;
+  border-radius: 2px;
+}
+#pfad button:hover, #pfad button:focus-visible { color: var(--phos); background: var(--phos-hauch); }
+#pfad .jetzt { color: var(--phos); }
+#pfad .teiler { opacity: .5; }
+
+/* --- Suchzeile ------------------------------------------------------------ */
+
+#suchfeld {
+  flex: none;
+  display: flex; align-items: center; gap: var(--a2);
+  margin: var(--a1) 0 var(--a3);
+  padding: var(--a2) var(--a3);
+  border: 1px solid var(--phos-schwach);
+  border-radius: var(--r-knopf);
+  background: rgba(51,255,102,.035);
+}
+#suchfeld:focus-within { border-color: var(--phos-dim); background: var(--phos-hauch); }
+#suchfeld .anfrage { color: var(--phos-dim); }
+#suchfeld input {
+  all: unset;
+  flex: 1; min-width: 0;
+  font-family: var(--f-term);
+  font-size: var(--t-gross);
+  color: var(--phos);
+  caret-color: transparent;
+}
+#suchfeld input::placeholder { color: var(--phos-schwach); }
+
+@keyframes blinken { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+.cursor {
+  display: inline-block;
+  width: .55em; height: 1.05em;
+  background: var(--phos);
+  vertical-align: -.16em;
+  animation: blinken 1.05s steps(1) infinite;
+}
+:root[data-effekte="aus"] .cursor { animation-duration: 1.6s; }
+
+/* --- Scrollbereich -------------------------------------------------------- */
+
+#bildschirminhalt {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--phos-schwach) transparent;
+  padding-right: var(--a1);
+}
+#bildschirminhalt::-webkit-scrollbar { width: 8px; }
+#bildschirminhalt::-webkit-scrollbar-thumb {
+  background: var(--phos-schwach); border-radius: 4px;
+}
+
+/* --- Menueliste: der Kern der Bedienung ----------------------------------- */
+
+/* Piktogramme: ohne Groessenangabe rendert ein <svg> als 300x150. Immer setzen. */
+.pikto {
+  width: 1.15em; height: 1.15em;
+  flex: none;
+  display: inline-block;
+  vertical-align: -.18em;
+}
+
+.liste { list-style: none; margin: 0; padding: 0; }
+
+.eintrag {
+  display: grid;
+  grid-template-columns: 1.1em 2.2em minmax(0, 1fr) minmax(0, 5.4em);
+  align-items: center;
+  gap: var(--a2);
+  padding: var(--a3) var(--a2) var(--a3) 0;
+  cursor: pointer;
+  border-bottom: var(--eintrag-trenn);
+  box-shadow: inset var(--eintrag-marke) 0 0 -1px transparent;
+  color: var(--phos-dim);
+  transition: background var(--uebergang), color var(--uebergang),
+              box-shadow var(--uebergang);
+}
+.eintrag:last-child { border-bottom: 0; }
+.eintrag .zeiger { color: transparent; font-weight: 700; font-size: .92em; }
+.eintrag .zeiger::before { content: var(--zeiger); }
+.eintrag .name {
+  color: var(--phos);
+  letter-spacing: var(--term-spur);
+  text-transform: var(--term-vers);
+}
+.eintrag .zahl {
+  font-size: calc(var(--t-klein) * .92);
+  color: var(--phos-schwach);
+  letter-spacing: .04em;
+  text-align: right;
+  line-height: 1.35;
+}
+.eintrag .name { line-height: 1.32; overflow-wrap: break-word; }
+/* Eintraege ohne Bestandszahl (verwandte Akten, Verlauf) geben die vierte
+   Spalte frei - sonst bricht der Titel unnoetig mitten im Wort. */
+.eintrag:has(.zahl:empty) { grid-template-columns: 1.1em 2.2em minmax(0, 1fr) 0; }
+.eintrag .name .schild { margin-bottom: 2px; }
+.eintrag .pikto { width: 1.85em; height: 1.85em; opacity: .8; }
+.eintrag:hover, .eintrag[aria-selected="true"] {
+  background: var(--phos-hauch);
+  color: var(--phos);
+  box-shadow: inset var(--eintrag-marke) 0 0 0 var(--phos);
+}
+.eintrag:hover .zeiger, .eintrag[aria-selected="true"] .zeiger { color: var(--phos); }
+.eintrag[aria-selected="true"] .pikto { opacity: 1; }
+.eintrag[aria-selected="true"] .zahl { color: var(--phos-dim); }
+.eintrag.leer { opacity: .45; cursor: default; }
+.eintrag.leer:hover { background: none; }
+
+/* Klammerschreibweise [ ] */
+.klammer::before { content: "[ "; color: var(--phos-schwach); }
+.klammer::after  { content: " ]"; color: var(--phos-schwach); }
+
+/* Gestanztes Metallschild fuer Bereichsnamen */
+.schild {
+  display: inline-block;
+  white-space: nowrap;
+  max-width: 100%;
+  padding: 2px 7px;
+  border: var(--schild-rahmen);
+  border-radius: var(--schild-radius);
+  font-family: var(--f-schild);
+  font-weight: 600;
+  font-size: var(--t-klein);
+  letter-spacing: var(--schild-spur);
+  color: var(--term-bg);
+  background: linear-gradient(180deg, var(--phos-hell), var(--phos));
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.35);
+  text-shadow: none;
+}
+
+/* Tiefe-Stempel klein im Terminal */
+.tiefe {
+  font-family: var(--f-schild);
+  font-size: calc(var(--t-klein) * .88);
+  letter-spacing: .14em;
+  padding: 1px 5px;
+  border: 1px solid var(--phos-schwach);
+  border-radius: 2px;
+  color: var(--phos-dim);
+}
+
+/* Gruppenkopf am Eingang: gestanztes Schild, Bestandszahl, auslaufende
+   Linie. Kein Klickziel - die Gruppe ist eine Ueberschrift, keine Seite. */
+.gruppenkopf {
+  display: flex; align-items: center; gap: var(--a2);
+  margin: var(--a5) 0 var(--a1);
+  padding-bottom: var(--a1);
+  border-bottom: 1px solid var(--phos-schwach);
+}
+.gruppenkopf:first-child { margin-top: 0; }
+.gruppenkopf .schild { letter-spacing: .24em; }
+.gruppenkopf .zahl {
+  margin-left: auto;
+  font-size: calc(var(--t-klein) * .92);
+  color: var(--phos-schwach);
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+.gruppenkopf + .liste { margin-bottom: var(--a2); }
+.gruppenkopf + .liste .eintrag:last-child { border-bottom: 0; }
+
+#pfad .still { color: var(--phos-schwach); }
+
+/* Abschnittsueberschrift im Terminal */
+.abschnitt {
+  display: flex; align-items: center; gap: var(--a2);
+  margin: var(--a5) 0 var(--a2);
+  font-family: var(--f-schild);
+  font-size: var(--t-klein);
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--phos-schwach);
+}
+.abschnitt::after { content: ""; flex: 1; height: 1px; background: var(--phos-hauch); }
+.abschnitt:first-child { margin-top: 0; }
+
+.hinweis {
+  color: var(--phos-schwach);
+  font-size: var(--t-klein);
+  line-height: 1.55;
+  margin: var(--a3) 0;
+}
+
+/* --- Zeigerinstrumente (Gauges) ------------------------------------------ */
+
+.instrumente {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--a2);
+  margin: 0 0 var(--a3);
+}
+.gauge {
+  border: 1px solid var(--phos-hauch);
+  border-radius: var(--r-knopf);
+  padding: var(--a1) var(--a1) var(--a2);
+  text-align: center;
+  background: rgba(51,255,102,.03);
+}
+.gauge svg { display: block; margin: 0 auto; }
+.gauge .wert {
+  font-size: var(--t-normal); color: var(--phos); letter-spacing: .04em;
+}
+.gauge .marke {
+  display: block; border: 0; padding: 0;
+  font-family: var(--f-schild);
+  font-size: calc(var(--t-klein) * .84);
+  letter-spacing: .16em;
+  color: var(--phos-schwach);
+}
+
+/* --- Aktenwerkzeuge in der Randleiste ------------------------------------ */
+
+.werkzeuge { display: grid; gap: var(--a1); margin: var(--a3) 0; }
+.werkzeug {
+  all: unset;
+  display: flex; align-items: center; gap: var(--a2);
+  padding: var(--a2) var(--a2);
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--r-knopf);
+  color: var(--phos-dim);
+  font-size: var(--t-normal);
+}
+.werkzeug:hover, .werkzeug:focus-visible {
+  border-color: var(--phos-schwach); background: var(--phos-hauch); color: var(--phos);
+}
+.werkzeug[aria-pressed="true"] { color: var(--phos); border-color: var(--phos-dim); }
+.werkzeug .taste {
+  margin-left: auto;
+  font-size: var(--t-klein);
+  color: var(--phos-schwach);
+  border: 1px solid var(--phos-hauch);
+  border-radius: 2px;
+  padding: 0 4px;
+}
+
+/* Inhaltsverzeichnis der Akte */
+.toc { list-style: none; margin: 0; padding: 0; font-size: var(--t-klein); }
+.toc li a {
+  display: block;
+  padding: 3px 0 3px var(--a2);
+  color: var(--phos-dim);
+  text-decoration: none;
+  border-left: 1px solid var(--phos-hauch);
+}
+.toc li a:hover { color: var(--phos); border-left-color: var(--phos); background: var(--phos-hauch); }
+.toc li.e3 a { padding-left: var(--a4); }
+.toc li.e4 a { padding-left: var(--a5); opacity: .8; }
+
+/* --- Fusszeile mit Tastenhilfe ------------------------------------------- */
+
+#fuss {
+  flex: none;
+  display: flex; flex-wrap: wrap; gap: var(--a1) var(--a3);
+  padding-top: var(--a2);
+  margin-top: var(--a2);
+  border-top: var(--strich);
+  font-size: calc(var(--t-klein) * .92);
+  color: var(--phos-schwach);
+  letter-spacing: .06em;
+}
+#fuss kbd {
+  font-family: var(--f-term);
+  color: var(--phos-dim);
+  border: 1px solid var(--phos-hauch);
+  border-radius: 2px;
+  padding: 0 4px;
+}
+
+/* --- Knoepfe am Gehaeuse (Bakelit) --------------------------------------- */
+
+/* Die Knopfleiste ragte in die Papierspalte, weil sie nicht umbrechen
+   durfte und die Knoepfe nicht schrumpfen konnten. Beides behoben:
+   sie bleibt jetzt in jedem Fall innerhalb des Gehaeuses. */
+#knopfleiste {
+  flex: none;
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--a1) var(--a2);
+  padding: var(--a3) var(--a1) var(--a1);
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+.knopf {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 5px 10px;
+  border-radius: var(--knopf-radius);
+  white-space: nowrap;
+  font-family: var(--f-schild);
+  font-size: calc(var(--t-klein) * .9);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #C9C3B8;
+  background: linear-gradient(180deg, var(--term-gehaeuse-h), var(--term-gehaeuse-t));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 2px 5px rgba(0,0,0,.5);
+}
+.knopf:hover, .knopf:focus-visible { color: var(--phos); }
+.knopf[aria-pressed="true"] {
+  color: var(--term-bg);
+  background: linear-gradient(180deg, var(--phos-hell), var(--phos));
+}
+.knopf .led {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #3B352C;
+  box-shadow: inset 0 0 2px rgba(0,0,0,.8);
+}
+.knopf[aria-pressed="true"] .led { background: var(--term-bg); }
+
+/* --- Bootsequenz ---------------------------------------------------------- */
+
+#boot {
+  position: fixed; inset: 0; z-index: 900;
+  background: var(--term-bg);
+  color: var(--phos);
+  font-family: var(--f-term);
+  font-size: var(--t-gross);
+  padding: 6vh 6vw;
+  line-height: 1.65;
+  overflow: hidden;
+}
+#boot::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: var(--raster);
+  opacity: var(--scanline-deckkraft);
+}
+#boot .zeile { opacity: 0; animation: einblenden .12s forwards; }
+@keyframes einblenden { to { opacity: 1; } }
+#boot .ok { color: var(--phos-hell); }
+#boot .ueberspringen {
+  position: absolute; right: 4vw; bottom: 4vh;
+  color: var(--phos-schwach); font-size: var(--t-klein); letter-spacing: .14em;
+}
+
+/* Atomsymbol als Ladeanzeige */
+@keyframes kreisen { to { transform: rotate(360deg); } }
+.atom { width: 1.5em; height: 1.5em; vertical-align: -.3em; }
+.atom .bahn { animation: kreisen 2.4s linear infinite; transform-origin: 50% 50%; }
+.atom .bahn:nth-child(2) { animation-duration: 3.1s; animation-direction: reverse; }
+.atom .bahn:nth-child(3) { animation-duration: 3.9s; }
+:root[data-effekte="aus"] .atom .bahn { animation: none; }
+
+/* --- Modellantwort (RAG): immer im Terminal, nie auf Papier -------------- */
+
+.maschine {
+  border: 1px solid var(--phos-schwach);
+  border-left-width: 3px;
+  border-radius: var(--r-knopf);
+  padding: var(--a3);
+  margin: var(--a3) 0;
+  background: rgba(51,255,102,.04);
+  font-size: var(--t-normal);
+  line-height: 1.6;
+}
+.maschine .kopf {
+  font-family: var(--f-schild);
+  font-size: calc(var(--t-klein) * .9);
+  letter-spacing: .2em;
+  color: var(--phos-schwach);
+  margin-bottom: var(--a2);
+}
+
+/* --- Handy und kleine Displays ------------------------------------------- */
+
+/* Schmale Terminalspalte - unter 560 px (Handy) UND in der 7-Zoll-Klasse,
+   wo die Spalte nur 352 px breit ist. Vier Spalten passen dort nicht: die
+   Bestandszahl rutscht unter den Namen, damit Schild und Titel ungekuerzt
+   und ohne Trennung im Wort stehen. */
+@media (max-width: 560px), (min-width: 900px) and (max-width: 1199px) {
+  .eintrag { grid-template-columns: .9em 2em minmax(0, 1fr); row-gap: 2px; }
+  .eintrag .zahl { grid-column: 3; text-align: left; }
+  .eintrag:has(.zahl:empty) { grid-template-columns: .9em 2em minmax(0, 1fr); }
+  .schild { letter-spacing: .1em; }
+}
+@media (max-width: 560px) {
+  html, body { font-size: 17px; }
+}
+.schild { overflow: hidden; text-overflow: ellipsis; }
+
+
+/* 7-Zoll-Klasse (1024x600): weiter nebeneinander, aber schmaleres Terminal.
+   Unter 900 px wird gestapelt - dort verdraengt das Papier das Terminal. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  /* Satzspiegel braucht hier keine Sonderregel mehr - 64ch passen sich
+     von selbst an, und max-width erzwingt nie einen Ueberlauf. */
+  :root { --term-breite: 352px; }
+  body { padding: var(--a2); gap: var(--a2); }
+  #geraet { padding: var(--a2); border-radius: 16px; }
+  #schirmtext { padding: var(--a3) var(--a3) var(--a1); }
+  .blatt { padding: var(--a5) var(--a4) var(--a7); }
+  #knopfleiste { padding: var(--a2) var(--a1) 0; }
+}
+
+@media (max-width: 899px) {
+  body {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    padding: var(--a2);
+    gap: var(--a2);
+  }
+  #geraet { min-height: 0; }
+  /* Papier faehrt ueber das Terminal, sobald eine Akte offen ist */
+  body[data-ansicht="akte"] #geraet { display: none; }
+  body[data-ansicht="akte"] { grid-template-columns: 1fr; }
+  body:not([data-ansicht="akte"]) #papierblatt { display: none; }
+  .blatt { padding: var(--a5) var(--a4) var(--a7); }
+  #zurueck-terminal { display: inline-flex; }
+}
+#zurueck-terminal { display: none; }

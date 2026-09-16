@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="de" data-thema="phosphor" data-kontrast="normal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="QUINTESSENZ TERMINAL - Offline-Wissensbibliothek">
+<title>QUINTESSENZ TERMINAL</title>
+<link rel="stylesheet" href="/static/css/tokens.css?v=__FASSUNG__">
+<link rel="stylesheet" href="/static/css/terminal.css?v=__FASSUNG__">
+<link rel="stylesheet" href="/static/css/themen.css?v=__FASSUNG__">
+<link rel="stylesheet" href="/static/css/papier.css?v=__FASSUNG__">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='3' fill='%2333FF66'/><ellipse cx='12' cy='12' rx='10' ry='4' fill='none' stroke='%2333FF66' stroke-width='1.5'/><ellipse cx='12' cy='12' rx='10' ry='4' fill='none' stroke='%2333FF66' stroke-width='1.5' transform='rotate(60 12 12)'/><ellipse cx='12' cy='12' rx='10' ry='4' fill='none' stroke='%2333FF66' stroke-width='1.5' transform='rotate(120 12 12)'/></svg>">
+</head>
+<body data-ansicht="eingang">
+
+<!-- ====================== BOOTSEQUENZ (ueberspringbar) ==================== -->
+<div id="boot" role="status" aria-live="polite" hidden>
+  <div id="bootzeilen"></div>
+  <div class="ueberspringen">BELIEBIGE TASTE / TIPPEN = &Uuml;BERSPRINGEN</div>
+</div>
+
+<!-- ============================ WELT 1: TERMINAL ========================== -->
+<div id="geraet">
+  <div id="schirm">
+    <div id="schirmtext">
+
+      <div id="kopf">
+        <div class="marke">
+          <span><b>QUINTESSENZ</b> TERMINAL</span>
+          <span class="uhr" id="uhr">--:--</span>
+        </div>
+        <nav id="pfad" aria-label="Pfad"></nav>
+      </div>
+
+      <form id="suchfeld" role="search" autocomplete="off">
+        <span class="anfrage" aria-hidden="true">&gt;</span>
+        <input id="suche" name="q" type="search" enterkeyhint="search"
+               placeholder="SUCHBEGRIFF EINGEBEN" aria-label="Archiv durchsuchen">
+        <span class="cursor" id="suchcursor" aria-hidden="true"></span>
+      </form>
+
+      <main id="bildschirminhalt" tabindex="-1"></main>
+
+      <div id="fuss">
+        <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> w&auml;hlen</span>
+        <span><kbd>&crarr;</kbd> &ouml;ffnen</span>
+        <span><kbd>Esc</kbd> zur&uuml;ck</span>
+        <span><kbd>/</kbd> suchen</span>
+        <span><kbd>?</kbd> Hilfe</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="themenwahl" role="listbox" aria-label="Ger&auml;t w&auml;hlen"></div>
+
+  <div id="knopfleiste">
+    <button class="knopf" id="k-thema" type="button" aria-expanded="false"
+            title="Ger&auml;t w&auml;hlen (Taste T)"><span class="led"></span>Ger&auml;t</button>
+    <button class="knopf" id="k-effekte" type="button" aria-pressed="true"
+            title="Scanlines, Bloom und Flackern"><span class="led"></span>Effekte</button>
+    <button class="knopf" id="k-schrift" type="button"
+            title="Schriftgr&ouml;&szlig;e">A+</button>
+    <button class="knopf" id="k-kontrast" type="button" aria-pressed="false"
+            title="Hoher Kontrast auf dem Papier"><span class="led"></span>Kontrast</button>
+  </div>
+</div>
+
+<!-- ============================= WELT 2: PAPIER =========================== -->
+<section id="papierblatt" aria-label="Aktenblatt">
+  <div class="papier-leer">
+    <!-- Atomsymbol inline, nicht per <use>: nur so lassen sich die Bahnen
+         von aussen animieren (Shadow-DOM eines <use> ist nicht stylebar). -->
+    <svg class="atom" viewBox="0 0 24 24" aria-hidden="true"
+         fill="none" stroke="currentColor" stroke-width="1.4">
+      <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/>
+      <g class="bahn"><ellipse cx="12" cy="12" rx="10" ry="4.1"/></g>
+      <g class="bahn"><ellipse cx="12" cy="12" rx="10" ry="4.1" transform="rotate(60 12 12)"/></g>
+      <g class="bahn"><ellipse cx="12" cy="12" rx="10" ry="4.1" transform="rotate(120 12 12)"/></g>
+    </svg>
+    <div class="gross">Kein Blatt eingelegt</div>
+    <p>W&auml;hlen Sie links einen Bereich, ein Thema und eine Akte.<br>
+       Der gew&auml;hlte Eintrag wird hier gedruckt.</p>
+  </div>
+</section>
+
+<!-- ======================== OVERLAY: ORIGINAL EINSEHEN ==================== -->
+<div id="overlay" role="dialog" aria-modal="true" aria-label="Originalquelle">
+  <div class="leiste">
+    <span id="overlay-titel">ORIGINAL</span>
+    <button class="knopf" id="overlay-zu" type="button" style="margin-left:auto">Schlie&szlig;en (Esc)</button>
+  </div>
+  <iframe id="overlay-rahmen" title="Originalquelle" sandbox="allow-same-origin"></iframe>
+</div>
+
+<script src="/static/js/app.js?v=__FASSUNG__" type="module"></script>
+</body>
+</html>

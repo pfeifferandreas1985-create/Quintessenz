@@ -6,8 +6,79 @@
 > das in einer Offline-Wissensbasis nachschlägt statt zu raten.
 > Tragbar, stromsparend, redundant. Der kleine Bruder von AI-ARK.
 
-**Status:** Konzeptphase — nichts gebaut, nichts bestellt. Dieses Repo sammelt
-die Idee, die Entscheidungen und die offenen Fragen, bevor Geld fließt.
+**Status:** Konzept steht, die Oberfläche läuft als Prototyp.
+`app/` enthält das QUINTESSENZ TERMINAL — die Weboberfläche, die alle Quellen
+in einem einheitlichen Stil darstellt. Die Wissensbasis selbst wird gerade
+beschafft; `ingest/` ist noch leer.
+
+---
+
+## Start in fünf Minuten
+
+Voraussetzung: Python 3.11 oder neuer. Sonst nichts — kein Node, kein Docker,
+keine Datenbank.
+
+```bash
+git clone https://github.com/pfeifferandreas1985-create/Quintessenz.git
+cd Quintessenz
+python -m venv .venv && . .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python tools/fetch_fonts.py                        # einmalig, 287 kB, OFL
+python -m uvicorn server:app --app-dir app --host 0.0.0.0 --port 8000
+```
+
+Dann `http://localhost:8000` aufrufen. Von einem anderen Gerät im WLAN:
+`http://<IP-des-Rechners>:8000`.
+
+### Wo liegen die Daten?
+
+`app/pfade.py` sucht in dieser Reihenfolge und nimmt den ersten Ordner, der
+tatsächlich Inhalt hat:
+
+1. `$QUINTESSENZ_DATEN`
+2. `/srv/box` — auf dem Pi
+3. `D:\DoomsdayBox` — auf dem PC
+4. `C:\D-Sicherung\DoomsdayBox` — Sicherungskopie
+
+Ein anderer Pfad:
+
+```bash
+QUINTESSENZ_DATEN=/pfad/zur/box python -m uvicorn server:app --app-dir app
+```
+
+Findet sich nichts, startet die Anwendung trotzdem — sie zeigt dann nur die
+Demo-Akten und markiert alle Themen als „wartet auf Beschaffung".
+
+### Was der Prototyp heute kann
+
+| | |
+|---|---|
+| 16 Bereiche in 6 Gruppen, 104 Themen | aus `doku/WISSENSUEBERSICHT.md` abgeleitet (`tools/gen_bereiche.py`); Gruppen sind Überschriften, keine Ebene |
+| 68 echte Akten | aus `own/fahrzeuge/fahrzeuge.db` und `own/rebuild/rebuild_trees.db` |
+| 7 Demo-Akten | ZIM-Artikel, Stack-Exchange-Fall, PDF-Kapitel — auf dem Papier als DEMO gestempelt |
+| Volltextsuche | über den Speicher, ~2 ms bei 75 Akten; wird später FTS5 |
+| Terminal- und Papieransicht | nebeneinander ab 900 px, gestapelt darunter |
+| 10 Geräte (Themes) | jedes stellt Röhre **und** Papier um; Knopf *Gerät*, Taste `G` oder `T` |
+| Tastatur, Touch, Druckansicht | vollständig |
+
+Noch **nicht** angeschlossen: ZIM-, PDF- und Stack-Exchange-Adapter, RAG-Chat,
+Vorlesen, Kartentisch, Werkstatt. Die Schnittstelle dafür steht in
+`app/adapters/basis.py`.
+
+### Auf dem Pi
+
+```bash
+sudo cp deploy/quintessenz.service /etc/systemd/system/
+sudo systemctl enable --now quintessenz
+```
+
+### Dokumentation
+
+| Datei | Inhalt |
+|---|---|
+| [docs/CONFIG.md](docs/CONFIG.md) | Bereiche, Themen und Quellen pflegen |
+| [docs/DESIGN.md](docs/DESIGN.md) | Designsystem: Farben, Schriften, Abstände, Bausteine, Effekte |
+| [docs/05_OFFENE-FRAGEN.md](docs/05_OFFENE-FRAGEN.md) | was noch zu entscheiden ist |
 
 ---
 

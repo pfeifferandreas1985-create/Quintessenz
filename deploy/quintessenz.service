@@ -1,0 +1,60 @@
+# /etc/systemd/system/quintessenz.service
+#
+#   sudo cp deploy/quintessenz.service /etc/systemd/system/
+#   sudo systemctl enable --now quintessenz
+#   journalctl -u quintessenz -f
+#
+# Logs gehen an das Journal, das auf der Box im RAM liegt
+# (/etc/systemd/journald.conf: Storage=volatile). Die NVMe wird dadurch
+# nicht von Schreibvorgaengen belastet, die niemand liest.
+
+[Unit]
+Description=QUINTESSENZ TERMINAL - Offline-Wissensbibliothek
+Documentation=https://github.com/pfeifferandreas1985-create/Quintessenz
+After=network-online.target
+Wants=network-online.target
+# kiwix-serve liefert die Suche ueber die grossen ZIMs. Fehlt er, startet
+# die Anwendung trotzdem und blendet die betroffenen Quellen aus.
+After=kiwix-serve.service
+
+[Service]
+Type=exec
+User=box
+Group=box
+WorkingDirectory=/opt/quintessenz
+
+Environment=QUINTESSENZ_DATEN=/srv/box
+Environment=QUINTESSENZ_KIWIX=http://127.0.0.1:8888
+Environment=QUINTESSENZ_LLAMA=http://127.0.0.1:8080
+Environment=PYTHONUNBUFFERED=1
+
+ExecStart=/opt/quintessenz/.venv/bin/python -m uvicorn server:app \
+          --app-dir /opt/quintessenz/app \
+          --host 0.0.0.0 --port 8000 \
+          --workers 1 --timeout-keep-alive 30 \
+          --log-level warning
+
+# Watchdog: uvicorn meldet sich nicht selbst, deshalb ueberwacht systemd
+# nur den Prozess und startet ihn bei Absturz neu.
+Restart=on-failure
+RestartSec=3
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+# Absicherung. Die Anwendung schreibt nichts ausser nach /srv/box/db.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+ReadWritePaths=/srv/box/db
+ReadOnlyPaths=/srv/box /opt/quintessenz
+
+# Auf dem Pi 5 mit 16 GB reichlich bemessen; schuetzt gegen Ausreisser.
+MemoryMax=1G
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

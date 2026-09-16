@@ -1,0 +1,218 @@
+/* ===========================================================================
+   QUINTESSENZ TERMINAL - Designtokens
+   Eine einzige Stelle fuer Farben, Schriften, Abstaende, Effekte.
+   Aenderungen hier wirken auf beide Welten (TERMINAL und PAPIER).
+   Dokumentiert in docs/DESIGN.md.
+   =========================================================================== */
+
+:root {
+  /* --- TERMINAL: Roehrenmonitor, monochrom ------------------------------- */
+  --term-bg:        #0B0F0A;
+  --term-bg-tief:   #070A06;          /* Innenrand des Schirms */
+  --term-gehaeuse:  #191612;          /* Bakelit */
+  --term-gehaeuse-h:#2A2621;          /* Bakelit, Lichtkante */
+  --term-gehaeuse-t:#120F0C;          /* Bakelit, Schattenkante */
+  --term-bg-hoch:   #0E140C;          /* Schirmmitte, leicht aufgehellt */
+  --term-chrom:     #6E6A63;
+
+  --phos:           #33FF66;          /* Phosphorgruen, Standard */
+  --phos-hell:      #9DFFC0;
+  --phos-dim:       rgba(51,255,102,.58);
+  --phos-schwach:   rgba(51,255,102,.28);
+  --phos-hauch:     rgba(51,255,102,.10);
+  --phos-glut:      rgba(51,255,102,.34);   /* Bloom */
+
+  --term-warn:      #FFB000;
+  --term-rot:       #FF5B48;
+
+  /* --- PAPIER: gedrucktes Blatt ------------------------------------------ */
+  --pap-hell:       #E8DCC0;
+  --pap-dunkel:     #D9CBA3;
+  --pap-kante:      #C4B48C;
+  --tinte:          #1E1A14;
+  --tinte-mittel:   #433B2E;
+  --tinte-schwach:  #6B6151;
+  --stempel:        #8B2E1F;
+  --stempel-blass:  rgba(139,46,31,.16);
+  --warn-gelb:      #E3B505;
+  --warn-schwarz:   #171310;
+
+  /* --- Schriften --------------------------------------------------------- *
+   * Alle lokal unter static/fonts/ (OFL). Fehlt eine Datei, greift still
+   * der naechste Eintrag der Liste - die Anwendung bleibt benutzbar.       */
+  --f-term:   "VT323", "Share Tech Mono", ui-monospace, "Cascadia Mono",
+              "DejaVu Sans Mono", Consolas, monospace;
+  --f-schild: "Jost", "League Spartan", "Futura", "Avenir Next",
+              "Segoe UI", system-ui, sans-serif;
+  --f-akte:   "Courier Prime", "Courier New", ui-monospace, monospace;
+  --f-buch:   "Libre Baskerville", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --f-code:   "Courier Prime", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* --- Groessen ---------------------------------------------------------- */
+  --skala:            1;                       /* Nutzer-Schriftskalierung */
+  --t-klein:          calc(0.78rem * var(--skala));
+  --t-normal:         calc(0.95rem * var(--skala));
+  --t-gross:          calc(1.15rem * var(--skala));
+  --pap-text:         calc(1.02rem * var(--skala));
+  --pap-zeile:        1.72;
+  /* Zeilenlaenge in ch, nicht in rem: 1ch ist die Breite der Ziffer 0 in der
+     GERADE geltenden Schrift. So bleibt die Zeile bei etwa 70 Zeichen, egal
+     ob ein Geraet auf Libre Baskerville, Jost oder Courier Prime druckt.
+     In rem gemessen waren es je nach Geraet 80 bis 115 Zeichen.
+     Gemessen: 58ch ergeben 72 Zeichen bei Libre Baskerville und 71 bei
+     Jost. Bei einer Schreibmaschinenschrift ist 1ch exakt ein Zeichen -
+     REGENSCHAUER setzt deshalb 72ch (siehe themen.css). */
+  --pap-breite:       58ch;
+
+  /* --- Abstaende: 4-px-Raster -------------------------------------------- */
+  --a0: 2px;  --a1: 4px;  --a2: 8px;  --a3: 12px; --a4: 16px;
+  --a5: 24px; --a6: 32px; --a7: 48px; --a8: 64px;
+
+  /* --- Rahmen und Kanten -------------------------------------------------- */
+  --r-bezel:   22px;                  /* Roehrenrundung */
+  --r-knopf:   4px;
+  --r-schild:  3px;
+  --strich:    1px solid var(--phos-schwach);
+
+  /* --- FORM ---------------------------------------------------------------
+   * Damit ein Geraet mehr sein kann als eine andere Palette. Jedes Thema in
+   * themen.css setzt diese Werte neu: Schrift, Cursorzeichen, Schildform,
+   * Instrumentenbauart, Trennlinien, Papierlagen.                          */
+  --term-groesse:   1;            /* Schriftfaktor im Terminal */
+  --term-spur:      .02em;        /* Laufweite der Menuenamen */
+  --term-vers:      none;         /* text-transform der Menuenamen */
+  --zeiger:         ">";          /* Cursorzeichen vor dem gewaehlten Eintrag */
+  --eintrag-trenn:  1px solid var(--phos-hauch);
+  --eintrag-marke:  0;            /* Breite des Balkens am gewaehlten Eintrag */
+  --schild-radius:  3px;
+  --schild-spur:    .18em;
+  --schild-rahmen:  none;
+  --knopf-radius:   999px;
+  --gauge-art:      nadel;        /* nadel | ring | balken | saeule */
+
+  /* --- BRETT ---------------------------------------------------------------
+   * Die rechte Seite ist ein ZEICHENBRETT, nicht eine Papierflaeche. Auf
+   * dem Brett liegt der Bogen als eigenes Blatt mit Schattenwurf und
+   * Klammern. --brett ist die Brettflaeche, --brett-deko die Ausstattung
+   * (Zeichenschiene oben, Massstab am linken Rand). Beides ohne Scrollen:
+   * der Hintergrund eines Scrollbereichs bleibt stehen, der Bogen wandert. */
+  --brett:        #2A2A24;
+  --brett-kante:  rgba(0,0,0,.5);
+  --schiene:      #8A8A82;        /* Zeichenschiene, Metall */
+  --brett-deko:
+    /* Zeichenschiene quer ueber den Kopf des Bretts */
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--schiene) 80%, #fff) 0 2px,
+      var(--schiene) 2px 9px,
+      color-mix(in srgb, var(--schiene) 55%, #000) 9px 13px,
+      rgba(0,0,0,.34) 13px 17px,
+      transparent 17px) top / 100% 17px no-repeat,
+    /* Massstab am linken Rand: alle 10 px ein Strich, alle 50 px ein langer */
+    repeating-linear-gradient(180deg,
+      color-mix(in srgb, var(--schiene) 70%, transparent) 0 1px,
+      transparent 1px 10px) left 3px top 17px / 6px 100% repeat-y,
+    repeating-linear-gradient(180deg,
+      color-mix(in srgb, var(--schiene) 90%, transparent) 0 1px,
+      transparent 1px 50px) left 3px top 17px / 11px 100% repeat-y;
+  --brett-polster: 34px 20px 64px;
+  --bogen-schatten: 0 2px 4px rgba(0,0,0,.28), 0 12px 28px rgba(0,0,0,.42);
+  --klammer:      #B9B9B0;        /* Blattklammern */
+
+  /* --- PAPIER: Reissbrett --------------------------------------------------
+   * Das Blatt ist ein Zeichnungsbogen, kein Brief: feines Raster, ein
+   * Zeichnungsrahmen und ein Schriftfeld als Aktenkopf. Jedes Geraet
+   * faerbt das ein - GITTERNETZ dreht es zur echten Blaupause um.        */
+  --raster-fein:    rgba(38,78,116,.07);
+  --raster-grob:    rgba(38,78,116,.13);
+  --raster-weite:   22px;         /* feines Raster */
+  --raster-grob-weite: 110px;     /* jede fuenfte Linie kraeftiger */
+  --rahmen-staerke: 2px;          /* Zeichnungsrahmen */
+  --rahmen-farbe:   var(--tinte-mittel);
+  --pap-erhoben:    color-mix(in srgb, var(--pap-hell) 68%, #fff);
+
+  /* --- PAPIER: zusaetzliche Lagen ------------------------------------------ */
+  --blatt-textur:
+    repeating-linear-gradient(0deg,  var(--raster-grob) 0 1px, transparent 1px var(--raster-grob-weite)),
+    repeating-linear-gradient(90deg, var(--raster-grob) 0 1px, transparent 1px var(--raster-grob-weite)),
+    repeating-linear-gradient(0deg,  var(--raster-fein) 0 1px, transparent 1px var(--raster-weite)),
+    repeating-linear-gradient(90deg, var(--raster-fein) 0 1px, transparent 1px var(--raster-weite));
+  --blatt-rand:     none;         /* Randstreifen: Lochung, Perforation, Zierlinie */
+  --blatt-rand-breite: 0px;
+  --h2-linie:       1px solid var(--pap-kante);
+  --h2-abstand:     var(--a1);
+  --stempel-dreh:   -1.4deg;
+  --kasten-rahmen:  1px solid var(--tinte-mittel);
+
+  /* --- Effektschalter (von app.js gesetzt) -------------------------------- */
+  /* Muster der Schirmoberflaeche. Jedes Thema setzt sein eigenes:
+     Zeilensprung, Gitter, Regen, Punktraster oder gar keins. */
+  --raster: repeating-linear-gradient(180deg, rgba(0,0,0,.55) 0 1px, transparent 1px 3px);
+  --scanline-deckkraft: .16;
+  --bloom-staerke: 1;
+  --flacker: 1;
+  --term-breite: 452px;
+  --uebergang: 180ms;
+}
+
+/* Effekte aus: keine Scanlines, kein Bloom, kein Flackern.
+   Standard auf Displays unter 8 Zoll, siehe app.js. */
+:root[data-effekte="aus"] {
+  --scanline-deckkraft: 0;
+  --bloom-staerke: 0;
+  --flacker: 0;
+}
+
+/* Nutzer hat im Betriebssystem weniger Bewegung angefordert */
+@media (prefers-reduced-motion: reduce) {
+  :root { --flacker: 0; --uebergang: 0ms; }
+}
+
+/* Hoher Kontrast: Papier wird weisser, Tinte schwarz. Kontrast > 12:1 */
+:root[data-kontrast="hoch"] {
+  --pap-hell: #F6F1E4; --pap-dunkel: #ECE5D2; --pap-kante: #B8A87F;
+  --tinte: #100D09; --tinte-mittel: #2A241B; --tinte-schwach: #4A4234;
+}
+
+/* ---------------------------------------------------------------------------
+   Schriften. Die Dateien werden mit tools/fetch_fonts.py geholt (OFL).
+   Fehlen sie, faellt jede Regel still auf den naechsten Stack-Eintrag zurueck.
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: "VT323";
+  src: url("../fonts/VT323-Regular.woff2") format("woff2");
+  font-weight: 400; font-display: swap;
+}
+/* Jost als Variable Font: eine Datei deckt 100-900 ab. */
+@font-face {
+  font-family: "Jost";
+  src: url("../fonts/Jost-Variable.woff2") format("woff2-variations"),
+       url("../fonts/Jost-Variable.woff2") format("woff2");
+  font-weight: 100 900; font-display: swap;
+}
+@font-face {
+  font-family: "Courier Prime";
+  src: url("../fonts/CourierPrime-Regular.woff2") format("woff2");
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: "Courier Prime";
+  src: url("../fonts/CourierPrime-Bold.woff2") format("woff2");
+  font-weight: 700; font-display: swap;
+}
+@font-face {
+  font-family: "Courier Prime";
+  src: url("../fonts/CourierPrime-Italic.woff2") format("woff2");
+  font-style: italic; font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: "Libre Baskerville";
+  src: url("../fonts/LibreBaskerville-Variable.woff2") format("woff2-variations"),
+       url("../fonts/LibreBaskerville-Variable.woff2") format("woff2");
+  font-weight: 400 700; font-display: swap;
+}
+@font-face {
+  font-family: "Libre Baskerville";
+  src: url("../fonts/LibreBaskerville-Italic-Variable.woff2") format("woff2-variations"),
+       url("../fonts/LibreBaskerville-Italic-Variable.woff2") format("woff2");
+  font-style: italic; font-weight: 400 700; font-display: swap;
+}
