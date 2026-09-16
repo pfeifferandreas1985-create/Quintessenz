@@ -46,7 +46,7 @@ def manifest(ordner):
     for f in sorted(Path(ordner).rglob("*")):
         if f.is_file() and f.name != "MANIFEST.sha256" and not f.name.endswith(".part"):
             lines.append(f"{sha(f)}  {f.relative_to(ordner).as_posix()}")
-    (Path(ordner) / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (Path(ordner) / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     return len(lines)
 
 

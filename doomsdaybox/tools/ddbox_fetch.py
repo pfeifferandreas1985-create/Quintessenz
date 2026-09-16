@@ -173,7 +173,7 @@ def manifest_add(folder, fname, digest):
     lines = m.read_text(encoding="utf-8").splitlines() if m.exists() else []
     lines = [l for l in lines if not l.endswith("  " + fname)]
     lines.append(f"{digest}  {fname}")
-    m.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    m.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def manifest_has(folder, fname):
@@ -293,10 +293,10 @@ def phase_zim(a):
 MODELS = [  # prio, repo, include-Muster, Zweck
     (1, "unsloth/Qwen3.5-9B-GGUF", "*Q4_K_M*.gguf", "Hauptmodell Text"),
     (1, "unsloth/gemma-4-E4B-it-GGUF", "*Q4_K_M*.gguf", "Bild+Audio-Modell"),
-    (1, "unsloth/gemma-4-E4B-it-GGUF", "mmproj*", "Projektor E4B"),
+    (1, "unsloth/gemma-4-E4B-it-GGUF", "mmproj-F16.gguf", "Projektor E4B"),
     (1, "Qwen/Qwen3-Embedding-0.6B-GGUF", "*Q8_0*.gguf", "Embedding RAG"),
     (2, "unsloth/gemma-4-E2B-it-GGUF", "*Q4_K_M*.gguf", "Notmodell"),
-    (2, "unsloth/gemma-4-E2B-it-GGUF", "mmproj*", "Projektor E2B"),
+    (2, "unsloth/gemma-4-E2B-it-GGUF", "mmproj-F16.gguf", "Projektor E2B"),
     (2, "unsloth/Qwen3.5-0.8B-GGUF", "*Q8_0*.gguf", "Kleinstmodell"),
     (2, "nomic-ai/nomic-embed-text-v1.5-GGUF", "*Q8_0*.gguf", "Embedding-Notnagel"),
     (2, "ggerganov/whisper.cpp", "ggml-medium.bin", "Sprache->Text"),
@@ -351,7 +351,7 @@ def phase_models(a):
     for f in sorted(dest.rglob("*")):
         if f.is_file() and f.suffix in (".gguf", ".bin", ".onnx", ".json") and f.name != "MANIFEST.sha256":
             lines.append(f"{sha256(f)}  {f.relative_to(dest).as_posix()}")
-    (dest / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (dest / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     logbuch(a.root, f"Phase B Modelle bis Prio {a.max_prio}",
             f"{n_copy} aus AI-ARK kopiert, {n_dl} geladen, {n_fail} fehlgeschlagen")
 
@@ -461,7 +461,7 @@ def phase_maps(a):
             offen.append(f"POI-SQLite ({type(e).__name__})"); poi.unlink(missing_ok=True)
     offen.append("GraphHopper-Import (java -Xmx8g -jar ... import config.yml, 1-2 h)")
     lines = [f"{sha256(f)}  {f.name}" for f in sorted(dest.glob("*.pmtiles")) + sorted(dest.glob("*.pbf"))]
-    (dest / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (dest / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     logbuch(a.root, f"Phase C Karten ({a.regions})", f"offen: {'; '.join(offen)}")
 
 
@@ -494,7 +494,7 @@ def phase_software(a):
             log(a.root, f"Pi OS Lite: {fname}")
             if download(final, img / fname, a.root, a.stage):
                 try:
-                    (img / (fname + ".sha256")).write_text(http_text(final + ".sha256"), encoding="utf-8")
+                    (img / (fname + ".sha256")).write_text(http_text(final + ".sha256"), encoding="utf-8", newline="\n")
                 except Exception:
                     offen.append("Pi OS .sha256")
         except Exception as e:
@@ -548,7 +548,7 @@ def phase_software(a):
                  "ocrmypdf, tesseract-ocr-deu) - braucht arm64-System")
     lines = [f"{sha256(f)}  {f.relative_to(dest).as_posix()}"
              for f in sorted(dest.rglob("*")) if f.is_file() and f.name != "MANIFEST.sha256"]
-    (dest / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (dest / "MANIFEST.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     logbuch(a.root, "Phase D Software Pi", f"offen: {'; '.join(offen)}")
 
 
