@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DoomsdayBox – Wissensübersicht (Szenario Voll)</title>
+<style>
+  :root{--bg:#f6f4ee;--fg:#1e2a30;--muted:#5d6b72;--line:#d8d3c6;--card:#fff;--acc:#a0522d;--ok:#2e7d32;--warn:#b26a00;--bad:#b3261e;--tag:#e9e4d6}
+  @media (prefers-color-scheme:dark){:root{--bg:#161a1d;--fg:#e6e2d8;--muted:#a3a89e;--line:#343b40;--card:#1f2529;--acc:#e0895f;--tag:#2b3237}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  header{background:var(--card);border-bottom:2px solid var(--acc);padding:22px 28px}
+  header h1{margin:0 0 4px;font-size:26px}
+  header p{margin:0;color:var(--muted)}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 28px 60px}
+  nav{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:0 0 22px;display:flex;flex-wrap:wrap;gap:6px 14px}
+  nav a{color:var(--acc);text-decoration:none;font-size:14px}
+  nav a:hover{text-decoration:underline}
+  h2{font-size:20px;margin:34px 0 10px;padding-top:8px;border-top:1px solid var(--line)}
+  h3{font-size:16px;margin:22px 0 8px;color:var(--acc)}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 18px;margin:12px 0}
+  table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:14px}
+  th,td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}
+  th{background:var(--tag);font-weight:600}
+  tr:nth-child(even) td{background:rgba(0,0,0,.02)}
+  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:12px 0}
+  .kpi div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+  .kpi b{display:block;font-size:20px;color:var(--acc)}
+  .kpi span{color:var(--muted);font-size:13px}
+  .tag{display:inline-block;background:var(--tag);border-radius:4px;padding:0 6px;font-size:12px;margin-right:4px;white-space:nowrap}
+  .ok{color:var(--ok);font-weight:600}.warn{color:var(--warn);font-weight:600}.bad{color:var(--bad);font-weight:600}
+  .note{border-left:4px solid var(--warn);background:var(--card);padding:10px 14px;margin:14px 0;border-radius:0 6px 6px 0}
+  .legend{color:var(--muted);font-size:13px;margin:4px 0 10px}
+  ul{margin:6px 0 10px 20px}
+  footer{color:var(--muted);font-size:13px;margin-top:40px;border-top:1px solid var(--line);padding-top:10px}
+  @media print{nav,header p{display:none}body{font-size:12px}h2{page-break-before:auto}}
+</style>
+</head>
+<body>
+<header>
+  <h1>DoomsdayBox – Wissensübersicht</h1>
+  <p>Was das lokale Internet kann · Szenario „Voll“ · Raspberry Pi 5, 16 GB, 1 TB NVMe · Stand 15.09.2026</p>
+</header>
+<div class="wrap">
+
+<div class="note"><b>Status:</b> geplant. Vom Wissensarchiv ist noch nichts geladen, Laufwerk D: ist weiterhin FAT32 (4-GB-Grenze). Diese Übersicht beschreibt den Zustand nach Abschluss der Voll-Beschaffung (ca. 300 GB). Bereits vorhanden: Abhängigkeitsbäume, Spezifikation, Skripte, Laufzeitsoftware (AI-ARK).</div>
+
+<nav>
+  <a href="#blick">Auf einen Blick</a><a href="#et">Elektrotechnik</a><a href="#mech">Mechanik</a><a href="#antrieb">Antriebe/Regelung/Sensorik</a><a href="#sps">SPS</a><a href="#mess">Messtechnik</a><a href="#prog">Programmierung/Linux</a><a href="#med">Medizin</a><a href="#surv">Survival</a><a href="#energie">Energie</a><a href="#komm">Kommunikation</a><a href="#mil">Militär (defensiv)</a><a href="#rebuild">Zivilisationsneustart</a><a href="#allg">Allgemeinwissen</a><a href="#karten">Karten</a><a href="#ki">KI-Fähigkeiten</a><a href="#fahrzeuge">Eigene Fahrzeuge</a><a href="#fehlt">Was fehlt</a><a href="#heute">Heute vorhanden</a>
+</nav>
+
+<h2 id="blick">1. Auf einen Blick</h2>
+<div class="kpi">
+  <div><b>2,9 Mio. + 6,9 Mio.</b><span>Wikipedia-Artikel DE (mit Bildern) + EN (Text)</span></div>
+  <div><b>3–4 Mio.</b><span>gelöste Fachfragen, 16 Stack-Exchange-Bereiche</span></div>
+  <div><b>5.000</b><span>Lehrbücher und Kurse (Wikibooks DE/EN)</span></div>
+  <div><b>100.000</b><span>Reparaturanleitungen (iFixit DE/EN)</span></div>
+  <div><b>78.500</b><span>Bücher (Gutenberg EN + DE)</span></div>
+  <div><b>40.000</b><span>Praxisanleitungen (wikiHow DE, Appropedia)</span></div>
+  <div><b>50.000</b><span>Medizin-Artikel mit Bildern (WikiMed)</span></div>
+  <div><b>500–1.500</b><span>PDF-Handbücher, Kataloge, Datenblätter</span></div>
+  <div><b>Europa</b><span>Karten komplett; Deutschland mit Routing und Orts-Suche</span></div>
+  <div><b>4 + 3</b><span>Sprach-/Bildmodelle + Embedding, Sprache→Text, Text→Sprache</span></div>
+  <div><b>DE / EN</b><span>Sprachen; Modelle übersetzen live</span></div>
+  <div><b>ca. 300 GB</b><span>Gesamtgröße Voll</span></div>
+</div>
+<p><b>Zugriff:</b> Browser im WLAN der Box. Volltextsuche über alle Enzyklopädien und Foren (Kiwix), Suche über PDFs (SQLite), Chat mit dem Sprachmodell, das in den Quellen nachschlägt (RAG), Karte im Browser (MapLibre).</p>
+<p class="legend"><b>Legende Tiefe:</b> <span class="tag">Referenz</span> Nachschlagen (Werte, Tabellen, Definitionen) · <span class="tag">Lehrbuch</span> systematisch lernen · <span class="tag">Praxis</span> Schritt-für-Schritt · <span class="tag">Q&amp;A</span> konkrete Problemfälle mit Lösungen</p>
+
+<h2>2. Wissensbereiche im Detail</h2>
+
+<section class="card" id="et">
+<h3>2.1 Elektrotechnik und Elektronik</h3>
+<table><tr><th style="width:38%">Was du nachschlagen kannst</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>Grundlagen: Ohm, Kirchhoff, Wechselstrom, Drehstrom, Leistung, Blindleistung</td><td>Wikibooks Elektrotechnik, Lessons in Electric Circuits Bd. 1–2, Wikipedia</td><td>Lehrbuch</td><td>DE/EN</td></tr>
+<tr><td>Formelsammlung Elektrotechnik</td><td>Wikibooks, eigenes Tabellenbuch (SQLite)</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Schaltzeichen nach IEC 60617</td><td>Wikipedia, Commons-Symboltafel, KiCad-Bibliothek</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Leitungsdimensionierung, Strombelastbarkeit, Spannungsfall, Kurzschluss, Selektivität (IEC-60364-Systematik)</td><td>ABB Installation Handbook, Schneider Installation Guide, Lapp/Helukabel-Tabellen</td><td>Referenz</td><td>EN/DE</td></tr>
+<tr><td>Schutzmaßnahmen, fünf Sicherheitsregeln, Prüffristen, Schutzklassen, IP-Schutzarten</td><td>DGUV Vorschrift 3, DGUV 203-xxx, TRBS</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Halbleiter: Dioden, Transistoren, MOSFET, Thyristor, Triac, IGBT</td><td>Lessons Bd. 3, NEETS Mod. 7, Elektronik-Kompendium, Datenblätter</td><td>Lehrbuch + Referenz</td><td>DE/EN</td></tr>
+<tr><td>Operationsverstärker, Filter, Regler, Analogtechnik</td><td>TI Op Amps for Everyone, ADI Linear Circuit Design, Pocket Reference</td><td>Lehrbuch + Referenz</td><td>EN</td></tr>
+<tr><td>Digitaltechnik: Gatter, Flipflops, Zähler, Zahlensysteme</td><td>Lessons Bd. 4, Wikibooks Digitale Schaltungstechnik, NEETS Mod. 13</td><td>Lehrbuch</td><td>DE/EN</td></tr>
+<tr><td>Datenblätter ca. 200 Standardbauteile + eigene Projektteile</td><td>Herstellerdatenblätter</td><td>Referenz</td><td>EN</td></tr>
+<tr><td>Konkrete Schaltungsprobleme („warum schwingt mein Regler“, „MOSFET wird heiß“)</td><td>Electrical Engineering Stack Exchange (ca. 180.000 Fragen)</td><td>Q&amp;A</td><td>EN</td></tr>
+<tr><td>Netzteile, Batterien, Laderegler, Inverter</td><td>Victron-Handbücher, NEETS, Wikipedia</td><td>Praxis</td><td>EN/DE</td></tr>
+</table>
+</section>
+
+<section class="card" id="mech">
+<h3>2.2 Mechanik und Maschinenelemente</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>Statik, Festigkeitslehre, Kinematik, Dynamik</td><td>OpenStax University Physics, Wikibooks Technische Mechanik, Wikipedia</td><td>Lehrbuch</td><td>EN/DE</td></tr>
+<tr><td>Wälzlager: Auswahl, Lebensdauer, Passungen, Schmierung</td><td>SKF-Hauptkatalog, Schaeffler HR1</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Toleranzen (ISO 286), Passungen, Gewinde (metrisch, Rohr, Trapez)</td><td>Wikipedia, eigene berechnete Tabellen</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Werkstoffkennwerte Stahl, Edelstahl, Aluminium, Kunststoffe</td><td>Hersteller-Datenblätter, eigene Werkstofftabelle (ca. 150 Werkstoffe)</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Getriebe, Zahnräder, Riemen, Kupplungen, Antriebsauslegung</td><td>SEW Praxis der Antriebsauslegung, Wikipedia, Machinery's Handbook (alt)</td><td>Lehrbuch + Referenz</td><td>DE/EN</td></tr>
+<tr><td>Zerspanung, Schweißen, Härten, Schmieden</td><td>Wikipedia, Wikibooks Werkstoffkunde, Farm Blacksmithing, Gingery (gekauft)</td><td>Praxis</td><td>DE/EN</td></tr>
+<tr><td>Fahrzeug- und Motorreparatur</td><td>Motor Vehicle Maintenance SE, TM 9-8000, iFixit</td><td>Q&amp;A + Praxis</td><td>EN/DE</td></tr>
+</table>
+</section>
+
+<section class="card" id="antrieb">
+<h3>2.3 Antriebstechnik, Regelung, Sensorik</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>DC-, Schritt-, Servo-, BLDC-, Asynchronmotoren: Aufbau, Kennlinien, Ansteuerung</td><td>NEETS Mod. 5/15, Microchip AN885/AN907, Trinamic, Hawkins (alt)</td><td>Lehrbuch + Referenz</td><td>EN</td></tr>
+<tr><td>Frequenzumrichter: Funktion, Parametrierung, Fehlercodes (Siemens G120/V20, Danfoss)</td><td>Danfoss Facts Worth Knowing, Siemens-Handbücher</td><td>Referenz</td><td>DE/EN</td></tr>
+<tr><td>Regelungstechnik, PID, Einstellregeln, Stabilität</td><td>Åström/Murray Feedback Systems, Wikibooks Regelungstechnik, eigene Karte</td><td>Lehrbuch + Referenz</td><td>EN/DE</td></tr>
+<tr><td>4–20 mA, Thermoelemente (Typ J/K/T-Tabellen), Pt100/Pt1000-Tabellen, Näherungsschalter, Encoder</td><td>WIKA-Handbuch, NIST ITS-90, ifm/P+F-Broschüren, eigene SQLite-Tabellen</td><td>Referenz</td><td>DE/EN</td></tr>
+<tr><td>Pneumatik, Hydraulik: Symbole, Ventile, Zylinder, Schaltpläne</td><td>NAVEDTRA 14105 Fluid Power, Festo/SMC-Broschüren, eigene ISO-1219-Tafel</td><td>Lehrbuch</td><td>EN/DE</td></tr>
+</table>
+</section>
+
+<section class="card" id="sps">
+<h3>2.4 SPS und Automatisierung</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>IEC 61131-3: ST, KOP, FUP, AWL, Ablaufsprache</td><td>PLCopen Coding Guidelines, Beckhoff InfoSys, CODESYS-Hilfe, Siemens STEP 7</td><td>Lehrbuch + Referenz</td><td>DE/EN</td></tr>
+<tr><td>Über 500 fertige ST-Bausteine mit Quellcode (Regler, Zeit, Mathematik, Gebäude, Netzwerk)</td><td>OSCAT Basic/Building/Network</td><td>Referenz + Code</td><td>DE/EN</td></tr>
+<tr><td>Siemens S7-1200/1500: Systemhandbuch, Befehle, Kommunikation</td><td>Siemens-Handbücher</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Beckhoff TwinCAT komplett</td><td>InfoSys offline (3–6 GB)</td><td>Referenz</td><td>DE/EN</td></tr>
+<tr><td>Relaislogik als SPS-Ersatz: Selbsthaltung, Verriegelung, Zeitglieder</td><td>eigenes Material, Wikipedia</td><td>Praxis</td><td>DE</td></tr>
+</table>
+</section>
+
+<section class="card" id="mess">
+<h3>2.5 Mess- und Prüftechnik, Fehlersuche</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>Oszilloskop-Grundlagen, Tastköpfe, Triggern</td><td>Tektronix XYZs, R&amp;S Fundamentals</td><td>Lehrbuch</td><td>EN</td></tr>
+<tr><td>Multimeter, Isolationsmessung, Wärmebild</td><td>Fluke-Broschüren</td><td>Praxis</td><td>DE</td></tr>
+<tr><td>Diagnosebäume: Motor läuft nicht, FU-Fehler, Sensor liefert Unsinn, SPS nicht in RUN, Netzteil schaltet ab</td><td>eigenes Material</td><td>Praxis</td><td>DE</td></tr>
+<tr><td>Kalibrieren ohne Referenzgeräte (Eispunkt, Siedepunkt, Wassersäule, Pendel)</td><td>eigenes Material, rebuild_trees.db</td><td>Praxis</td><td>DE</td></tr>
+</table>
+</section>
+
+<section class="card" id="prog">
+<h3>2.6 Programmierung und Linux</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>C: Sprache, Standardbibliothek, Embedded-Stil</td><td>Modern C, Beej's Guide, cppreference, DevDocs C/C++, Barr Coding Standard, avr-libc</td><td>Lehrbuch + Referenz</td><td>EN</td></tr>
+<tr><td>Python 3 komplett + Automatisierung</td><td>Offizielle Doku, DevDocs Python, Automate the Boring Stuff, Wikibooks</td><td>Lehrbuch + Referenz</td><td>EN/DE</td></tr>
+<tr><td>Bash, Shell, systemd, Netzwerk, Debian/Raspberry Pi OS</td><td>Debian Handbook, The Linux Command Line, ArchWiki, DevDocs Bash, man-pages</td><td>Lehrbuch + Referenz</td><td>EN</td></tr>
+<tr><td>Konkrete Fehler und Konfigurationsfragen</td><td>Unix &amp; Linux SE, Ask Ubuntu, Super User, Raspberry Pi SE, Arduino SE</td><td>Q&amp;A</td><td>EN</td></tr>
+<tr><td>Arduino, Raspberry Pi, ESP32, RP2040</td><td>Pi-Dokumentation, Datenblätter, Arduino SE</td><td>Referenz + Q&amp;A</td><td>EN</td></tr>
+<tr><td>Installierbare Software für den Pi ohne Internet</td><td>pip-Wheels, .deb-Pakete, llama.cpp, kiwix-tools, Quellcode</td><td>–</td><td>–</td></tr>
+<tr><td class="bad">Nicht enthalten</td><td colspan="3">Stack Overflow (80 GB, optional), IDE-Dokumentation, kommerzielle Bücher</td></tr>
+</table>
+</section>
+
+<section class="card" id="med">
+<h3>2.7 Medizin</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>Krankheiten, Symptome, Medikamente, Anatomie: ca. 50.000 Artikel mit Bildern</td><td>WikiMed EN (+ DE, falls verfügbar)</td><td>Referenz</td><td>EN/DE</td></tr>
+<tr><td>Behandlung ohne Arzt: Untersuchung, häufige Krankheiten, Geburt, Kinder, Zähne</td><td>Hesperian: Where There Is No Doctor / Dentist / Women / Midwives, dt. Ausgabe</td><td>Praxis</td><td>EN/DE</td></tr>
+<tr><td>Erste Hilfe, Reanimation (aktuelle ERC-Leitlinien), Wundversorgung, Frakturen</td><td>ERC 2021 deutsch, DGUV 204-006, Wikibooks Erste Hilfe</td><td>Praxis</td><td>DE</td></tr>
+<tr><td>Blutungskontrolle, Tourniquet, Thorax, Schock (taktisch und zivil)</td><td>TCCC, TECC, Stop the Bleed, FM 21-11 / TC 4-02.1</td><td>Praxis</td><td>EN</td></tr>
+<tr><td>Chirurgie ohne Klinik, Anästhesie mit einfachen Mitteln</td><td>Emergency War Surgery, WHO Surgical Care, WHO Anaesthesia, Primary Surgery</td><td>Lehrbuch + Praxis</td><td>EN</td></tr>
+<tr><td>Medikamente, Dosierungen Erwachsene/Kinder, Wechselwirkungen</td><td>WHO Model Formulary, Essential Medicines List, MSF Essential Drugs, OpenStax Pharmacology, eigene Dosistabelle</td><td>Referenz</td><td>EN/DE</td></tr>
+<tr><td>Infektionskrankheiten, Hygiene, Wasserqualität, Quarantäne</td><td>WHO Drinking-water, CDC, RKI, zimgit-medicine</td><td>Referenz</td><td>EN/DE</td></tr>
+<tr><td>Anatomie und Physiologie vollständig</td><td>OpenStax A&amp;P 2e</td><td>Lehrbuch</td><td>EN</td></tr>
+<tr><td>Verlängerte Versorgung über Tage ohne Abtransport</td><td>Prolonged Field Care</td><td>Praxis</td><td>EN</td></tr>
+<tr><td class="bad">Nicht enthalten</td><td colspan="3">Fachinformationen einzelner Präparate (nur die der eigenen Hausapotheke), Labormedizin, Bildgebung</td></tr>
+</table>
+</section>
+
+<section class="card" id="surv">
+<h3>2.8 Survival und Grundversorgung</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>Wasser finden, filtern, entkeimen (Chlor, SODIS, Biosand, Abkochen)</td><td>zimgit-water, SODIS, CAWST, WHO</td><td>Praxis</td><td>EN</td></tr>
+<tr><td>Nahrung: Einkochen, Trocknen, Fermentieren, Räuchern, Haltbarkeit</td><td>USDA Home Canning, NCHFP, zimgit-food, BZfE</td><td>Praxis</td><td>EN/DE</td></tr>
+<tr><td>Pflanzen und Pilze erkennen (mit Bildern)</td><td>Wikipedia DE maxi, eigene Themen-ZIMs</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Feuer, Unterschlupf, Orientierung, Signale, Klima</td><td>FM 21-76/ATP 3-50.21, zimgit-post-disaster, Outdoors SE</td><td>Praxis</td><td>EN</td></tr>
+<tr><td>Landwirtschaft: Boden, Saatgut, Fruchtfolge, Kleintiere, Zugtiere</td><td>FAO-Publikationen, Gardening SE, Farmers of Forty Centuries, Wikibooks</td><td>Lehrbuch + Q&amp;A</td><td>EN</td></tr>
+<tr><td>Bauen, Holz, Haus reparieren</td><td>Home Improvement SE, Woodworking SE, TM 5-704, wikiHow</td><td>Q&amp;A + Praxis</td><td>EN/DE</td></tr>
+<tr><td>Alltagsanleitungen aller Art (ca. 30.000)</td><td>wikiHow DE</td><td>Praxis</td><td>DE</td></tr>
+<tr><td>Angepasste Technik für einfache Mittel (Öfen, Pumpen, Solar, Sanitär)</td><td>Appropedia, Low-tech Magazine, VITA Village Technology</td><td>Praxis</td><td>EN</td></tr>
+</table>
+</section>
+
+<section class="card" id="energie">
+<h3>2.9 Energie und Infrastruktur</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>PV-Anlagen auslegen, Inselsysteme, Batterien, LiFePO4, BMS</td><td>Sandia Handbook, Victron Wiring Unlimited, energypedia, Zellen-Datenblätter</td><td>Lehrbuch + Referenz</td><td>EN</td></tr>
+<tr><td>Generatoren, Verbrennungsmotoren, Lichtmaschinen</td><td>TM 9-8000, TM 5-6115, Hawkins</td><td>Lehrbuch</td><td>EN</td></tr>
+<tr><td>Holzgas, Biogas, Wasserkraft, Windkraft</td><td>FEMA Wood Gas, Sasse Biogas, Practical Action Micro-Hydro</td><td>Praxis</td><td>EN</td></tr>
+<tr><td>Pumpen, Wasserversorgung, Sanitär, Kompost-Toilette, Abwasser</td><td>Grundfos Pump Handbook, Eawag Compendium, Humanure Handbook, Akvopedia</td><td>Lehrbuch + Praxis</td><td>EN</td></tr>
+</table>
+</section>
+
+<section class="card" id="komm">
+<h3>2.10 Kommunikation</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>Amateurfunk-Theorie, Prüfungsfragen N/E/A, Bandpläne, Frequenzplan</td><td>BNetzA, DARC, Amateur Radio SE</td><td>Lehrbuch + Referenz</td><td>DE/EN</td></tr>
+<tr><td>Antennenbau, Wellenausbreitung</td><td>NEETS Mod. 10, Wikipedia, eigene Rechenkarten</td><td>Lehrbuch</td><td>EN/DE</td></tr>
+<tr><td>Notfunk-Frequenzen (PMR, CB, Marine, Flug, Wetter), Morse, Buchstabiertafel</td><td>eigene Tabellen, Wikipedia</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Meshtastic, Reticulum, LoRa: Doku, Firmware, Flasher</td><td>Meshtastic Docs, Reticulum Manual, Semtech-Datenblätter</td><td>Referenz + Software</td><td>EN</td></tr>
+<tr><td>Lokales Netz ohne Internet (WLAN-AP, DNS, Kiwix freigeben)</td><td>Debian Handbook, eigene HowTos</td><td>Praxis</td><td>DE/EN</td></tr>
+<tr><td>Funkdisziplin, Meldeschemata (SITREP, MEDEVAC)</td><td>FM 24-18, FM 6-99, eigene Karten</td><td>Referenz</td><td>EN/DE</td></tr>
+</table>
+</section>
+
+<section class="card" id="mil">
+<h3>2.11 Militärische Grundlagen (defensiv)</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>Wachdienst, Beobachtung, Deckung, Tarnung, Meldungen</td><td>FM 22-6, FM 21-75, FM 20-3, Reibert-Zusammenfassung</td><td>Praxis</td><td>EN/DE</td></tr>
+<tr><td>Objektschutz, Zugangskontrolle, Gebäudesicherung</td><td>ATP 3-39.32, FEMA 426/427, FM 3-06, FM 90-10</td><td>Lehrbuch</td><td>EN</td></tr>
+<tr><td>IED und Sprengfallen erkennen, Abstand, Melden</td><td>DHS/FEMA IED Awareness, UNMAS Lexicon, FM 5-31 Erkennungskapitel</td><td>Referenz</td><td>EN</td></tr>
+<tr><td>ABC-Schutz: Atemschutz improvisieren, Räume abdichten, Dekontamination</td><td>FM 3-11.x, BBK, BfS, SSK</td><td>Praxis</td><td>EN/DE</td></tr>
+<tr><td>Strahlenschutz, improvisiertes Dosimeter (Kearny Fallout Meter), Schutzraum</td><td>Nuclear War Survival Skills</td><td>Praxis</td><td>EN</td></tr>
+<tr><td>Quarantäne, Epidemie, Umgang mit Toten</td><td>RKI, WHO/PAHO, Sphere Handbook</td><td>Referenz</td><td>DE/EN</td></tr>
+<tr><td>Karte, Kompass, Sternnavigation, Marsch, Fußpflege</td><td>TC 3-25.26, FM 21-18</td><td>Lehrbuch</td><td>EN</td></tr>
+<tr><td>Notwehrrecht (StGB, BGB), Verhältnismäßigkeit</td><td>gesetze-im-internet.de, eigene Zusammenfassung</td><td>Referenz</td><td>DE</td></tr>
+<tr><td>Führung, Auftragstaktik, Entscheidung unter Stress</td><td>ADP 6-0, ADP 6-22, Reibert-Zusammenfassung</td><td>Lehrbuch</td><td>EN/DE</td></tr>
+<tr><td class="bad">Nicht enthalten</td><td colspan="3">Waffen, Schießausbildung, Angriffstaktik, Bauanleitungen, Bundeswehr-Vorschriften im Original</td></tr>
+</table>
+</section>
+
+<section class="card" id="rebuild">
+<h3>2.12 Zivilisationsneustart</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Tiefe</th><th>Sprache</th></tr>
+<tr><td>Was nach dem Kollaps wie lange nutzbar bleibt, Neustart-Reihenfolge</td><td>Dartnell The Knowledge (gekauft), THE BOOK (gekauft)</td><td>Lehrbuch</td><td>DE/EN</td></tr>
+<tr><td><b>Abhängigkeitsbäume:</b> 10 Kerntechnologien (Motor, Generator, Trafo, Draht, Lager, Akku, Funk, Schalter, SPS-Ersatz, Sensoren) bis zum Rohstoff, mit minimaler Produktionsgröße und 9 Prozessanleitungen</td><td>rebuild_trees.db (eigenes Material, <span class="ok">bereits vorhanden</span>)</td><td>Referenz + Praxis</td><td>DE</td></tr>
+<tr><td>Metallurgie: Holzkohle, Schmelzofen, Guss, Schmieden, Härten, Drahtziehen, Drehbank aus Schrott</td><td>Gingery (gekauft), Farm Blacksmithing, Hawkins, FAO Charcoal, Machinery's Handbook alt</td><td>Praxis</td><td>EN</td></tr>
+<tr><td>Chemie: Säuren, Laugen, Soda, Seife, Glas, Kalk, Zement</td><td>Henley's Formulas, Rogers Industrial Chemistry, Thorpe, Practical Action</td><td>Referenz</td><td>EN</td></tr>
+<tr><td>Textil, Leder, Papier, Druck</td><td>Hand-Loom Weaving, USDA Bulletins, Practical Action Papermaking</td><td>Praxis</td><td>EN</td></tr>
+<tr><td>Frühe Elektrotechnik von Grund auf (Generatoren, Motoren, Telegraf, Röhrenfunk um 1917–1928)</td><td>Hawkins Electrical Guide, Radio Amateur's Handbook 1926–28</td><td>Lehrbuch</td><td>EN</td></tr>
+<tr><td>Arzneimittel, Anästhesie, Chirurgie mit einfachen Mitteln</td><td>WHO Anaesthesia, Primary Surgery, King's Dispensatory</td><td>Lehrbuch</td><td>EN</td></tr>
+<tr><td>Gemeinschaft organisieren, Hygiene-Mindeststandards, Bildung</td><td>Sphere Handbook, UNHCR Handbook, UNESCO, OpenStax</td><td>Referenz</td><td>EN</td></tr>
+<tr><td class="bad">Nicht enthalten</td><td colspan="3">Waffen-, Sprengstoff-, Kerntechnik, Drogensynthese</td></tr>
+</table>
+</section>
+
+<section class="card" id="allg">
+<h3>2.13 Allgemeinwissen, Sprache, Literatur</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Umfang</th></tr>
+<tr><td>Deutsche Wikipedia komplett mit Bildern</td><td>wikipedia_de_all_maxi</td><td>2,9 Mio. Artikel</td></tr>
+<tr><td>Englische Wikipedia komplett, ohne Bilder</td><td>wikipedia_en_all_nopic</td><td>6,9 Mio. Artikel</td></tr>
+<tr><td>Wörterbuch Deutsch (Bedeutung, Übersetzung, Grammatik)</td><td>Wiktionary DE</td><td>1 Mio. Einträge</td></tr>
+<tr><td>Lehrbücher und Kurse aller Fächer</td><td>Wikibooks DE/EN, Wikiversity DE</td><td>5.000</td></tr>
+<tr><td>Weltliteratur gemeinfrei (bis ca. 1929)</td><td>Gutenberg EN/DE</td><td>75.000 + 3.500 Bücher</td></tr>
+<tr><td>Physik-Fragen</td><td>Physics SE</td><td>250.000 Fragen</td></tr>
+</table>
+</section>
+
+<section class="card" id="karten">
+<h3>2.14 Karten und Navigation</h3>
+<table><tr><th style="width:38%">Was</th><th>Quelle</th><th>Umfang</th></tr>
+<tr><td>Straßen, Wege, Gebäude, Gewässer, Landnutzung, Ortsnamen, alle Zoomstufen</td><td>PMTiles Europa, DACH, Deutschland</td><td>Europa komplett</td></tr>
+<tr><td>Routing Auto/Rad/Fuß offline</td><td>GraphHopper mit Deutschland-Graph</td><td>Deutschland</td></tr>
+<tr><td>Suchbare Orte: Trinkwasser, Brunnen, Quellen, Apotheken, Krankenhäuser, Tankstellen, Baumärkte, Feuerwehr, Notunterkünfte, Elektriker, Schmiede</td><td>POI-SQLite aus OSM</td><td>Deutschland</td></tr>
+<tr><td>Höhenlinien, Relief</td><td>optional OpenTopoMap</td><td>DACH</td></tr>
+<tr><td class="bad">Nicht enthalten</td><td colspan="2">Satellitenbilder, Luftbilder, Live-Daten</td></tr>
+</table>
+</section>
+
+<section class="card" id="ki">
+<h3>2.15 KI-Fähigkeiten</h3>
+<table><tr><th style="width:30%">Fähigkeit</th><th>Modell</th><th>Was es bedeutet</th></tr>
+<tr><td>Fragen beantworten mit Quellenbezug (RAG)</td><td>Qwen3.5-9B + Qwen3-Embedding</td><td>„Wie lege ich einen 5,5-kW-Motor an 400 V ab, Leitungslänge 40 m?“ → Antwort mit Verweis auf Tabelle</td></tr>
+<tr><td>Deutsch/Englisch übersetzen und zusammenfassen</td><td>Qwen3.5-9B, Gemma 4 E4B</td><td>englische Handbücher auf Deutsch lesen</td></tr>
+<tr><td>Fotos verstehen</td><td>Gemma 4 E4B</td><td>Typenschild fotografieren → Motordaten; Schaltplanausschnitt erklären</td></tr>
+<tr><td>Sprache eingeben / vorlesen</td><td>whisper.cpp, Piper</td><td>Bedienung mit schmutzigen Händen</td></tr>
+<tr><td>Code schreiben und erklären</td><td>Qwen3.5-9B</td><td>C, Python, Structured Text, Bash</td></tr>
+<tr><td>Scans durchsuchbar machen</td><td>tesseract deu/eng</td><td>eigene Papierunterlagen einlesen</td></tr>
+<tr><td class="warn">Grenzen</td><td colspan="2">ca. 2–3 Token/s beim 9B-Modell auf dem Pi; kein Internet-Faktenabgleich; das Modell kann irren, deshalb immer Quelle anzeigen</td></tr>
+</table>
+</section>
+
+<section class="card" id="fahrzeuge">
+<h3>2.16 Eigene Fahrzeuge</h3>
+<table><tr><th style="width:22%">Fahrzeug</th><th>Was du nachschlagen kannst</th><th>Quelle</th><th>Tiefe</th></tr>
+<tr><td><b>Land Rover Defender 110 TD5</b><br>(1998–2006)</td><td>Werkstatthandbuch komplett mit Schaltplänen, Ersatzteilkatalog mit Explosionszeichnungen und Teilenummern je Baugruppe, Diagnose (Nanocom), Füllmengen, Drehmomente, Wartungsplan, bekannte Schwachstellen (Öl im Steuergerätestecker, Injektordichtungen, Ölpumpenschraube, Kopfriss, Rahmenrost)</td><td>Workshop Manual + Electrical Library (Brooklands), Parts Catalogue STC9021CC, lrcat/Britpart/Paddock-Zeichnungen, Haynes 3017, Fahrzeugakte</td><td>Referenz + Praxis</td></tr>
+<tr><td><b>Rover Mini Cooper 1.3i MPi „British Open Classic“</b><br>(1999)</td><td>Werkstatthandbuch inkl. MPi-Nachtrag, MEMS-2J-Schaltplan, Explosionszeichnungen aller Baugruppen mit Nummern, Fahrwerkseinstellung (Gummikonen, Kugelgelenke), Rostschwerpunkte (Schweller, A-Säulen, hinterer Hilfsrahmen)</td><td>Rover Workshop Manual (Brooklands), Mini Parts Catalogue, minispares.com-Zeichnungen, Haynes 0646, Fahrzeugakte</td><td>Referenz + Praxis</td></tr>
+<tr><td><b>Vespa V50 N, V5A1T</b><br>(1963)</td><td>Piaggio-Werkstatthandbuch, Original-Ersatzteilkatalog mit Explosionszeichnungen, Bedienungsanleitung 1963, aktuelle Teilenummern (SIP, Scooter Center), Zündung einstellen, Vergaser SHB 16/10 bedüsen, Motor teilen, Falschluft suchen</td><td>scooterhelp.com-Scans, SIP/Scooter-Center-Zeichnungen, Bucheli, GSF-Wiki, Fahrzeugakte</td><td>Referenz + Praxis</td></tr>
+<tr><td><b>Fahrzeugakten</b> <span class="ok">bereits vorhanden</span></td><td>Kenndaten, Füllmengen, Drehmomente, Einstellwerte (40), Stückliste Verschleißteile mit OEM-Nummern (68), Schwachstellen mit Abhilfe (25), Wartungsplan (24), Dokumentenliste (18), Logbuch</td><td><code>own/fahrzeuge/fahrzeuge.db</code> + <code>Fahrzeugakte_*.md</code>; Werte aus dem Gedächtnis sind als <span class="warn">⚠ prüfen</span> markiert</td><td>Referenz</td></tr>
+<tr><td>Allgemein Kfz</td><td>Motor-, Getriebe-, Bremsen-, Elektrikreparatur, Fehlersuche</td><td>Motor Vehicle Maintenance SE, TM 9-8000, iFixit</td><td>Q&amp;A + Lehrbuch</td></tr>
+</table>
+</section>
+
+<h2 id="fehlt">3. Was bewusst fehlt</h2>
+<section class="card">
+<ul>
+<li>DIN/VDE/IEC-Normen im Original (nur eigene Zusammenfassungen und IEC-nahe Herstellerhandbücher).</li>
+<li>Kommerzielle Tabellenbücher und Standardwerke (Europa, Roloff/Matek, Dubbel, Reibert, Dartnell, Gingery): nur, wenn du sie kaufst und selbst ablegst.</li>
+<li>Stack Overflow (80 GB), Wikipedia EN mit Bildern (110 GB): optional, nicht im Standardumfang.</li>
+<li>Videos, Kurse, Podcasts jeglicher Art.</li>
+<li>Aktuelle Nachrichten, Wetterdaten, Preise, alles Zeitkritische.</li>
+<li>Fachinformationen zu Medikamenten außer denen der eigenen Hausapotheke.</li>
+<li>Waffen, Sprengstoff, Kerntechnik, Angriffstaktik, Drogensynthese.</li>
+</ul>
+</section>
+
+<h2 id="heute">4. Was heute schon da ist</h2>
+<section class="card">
+<table><tr><th>Bestand</th><th>Ort</th><th>Status</th></tr>
+<tr><td>Abhängigkeitsbäume (53 Technologien, 78 Kanten, 9 Prozesse)</td><td><code>D:\DoomsdayBox\own\rebuild\rebuild_trees.db</code></td><td class="ok">vorhanden</td></tr>
+<tr><td>Fahrzeugakten Defender 110 TD5, Mini Cooper MPi 1999, Vespa V50 1963 (40 Kenndaten, 68 Teile, 25 Schwachstellen, 24 Wartungspunkte, 18 Dokumente)</td><td><code>D:\DoomsdayBox\own\fahrzeuge\</code></td><td class="ok">vorhanden</td></tr>
+<tr><td>Spezifikation, Übergabe, Skripte, Quellenlisten</td><td><code>D:\DoomsdayBox\doku</code>, <code>tools</code></td><td class="ok">vorhanden</td></tr>
+<tr><td>llama.cpp (Win/Linux/ARM64), Ollama, kiwix-tools (Win/Linux/aarch64), kiwix-desktop</td><td><code>D:\AI-ARK\00_RUNTIME</code></td><td class="ok">vorhanden</td></tr>
+<tr><td>Modelle</td><td><code>D:\AI-ARK\01_MODELS</code></td><td class="warn">15 GB Fragmente, durch FAT32 abgebrochen</td></tr>
+<tr><td>ZIMs, PDFs, Karten, Pi-Modelle</td><td>–</td><td class="bad">0 %, wartet auf Neuformatierung von D:</td></tr>
+</table>
+</section>
+
+<footer>DoomsdayBox · Wissensübersicht Szenario Voll · erstellt 15.09.2026 · Quelle: doku/Wissensdatenbank_Doomsday_Box_Spezifikation.md · Sicherungskopie: C:\D-Sicherung\DoomsdayBox\doku</footer>
+</div>
+</body>
+</html>

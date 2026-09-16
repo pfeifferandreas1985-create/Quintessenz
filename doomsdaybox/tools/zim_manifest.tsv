@@ -1,0 +1,41 @@
+prefix	category	prio	size_gb	note
+wikipedia_de_all_maxi	wikipedia	1	45	Wikipedia DE mit Bildern
+wikipedia_en_all_nopic	wikipedia	3	55	Wikipedia EN Text
+wikipedia_en_medicine_maxi	wikipedia	1	1.7	WikiMed EN
+wikipedia_de_medicine_maxi	wikipedia	1	1.0	WikiMed DE, falls im Katalog; sonst mwoffliner
+wikibooks_de_all_maxi	wikibooks	1	1.3	Wikibooks DE
+wikibooks_en_all_maxi	wikibooks	2	4	Wikibooks EN
+wiktionary_de_all_maxi	wiktionary	3	1	Woerterbuch DE
+wikiversity_de_all_maxi	wikiversity	3	0.5	Wikiversity DE
+electronics.stackexchange.com_en_all	stack_exchange	1	2	Electrical Engineering SE
+arduino.stackexchange.com_en_all	stack_exchange	2	0.4	Arduino SE
+raspberrypi.stackexchange.com_en_all	stack_exchange	2	0.3	Raspberry Pi SE
+engineering.stackexchange.com_en_all	stack_exchange	2	0.2	Engineering SE
+unix.stackexchange.com_en_all	stack_exchange	2	2.5	Unix & Linux SE
+askubuntu.com_en_all	stack_exchange	2	3.5	Ask Ubuntu
+superuser.com_en_all	stack_exchange	3	4	Super User
+physics.stackexchange.com_en_all	stack_exchange	3	3	Physics SE
+diy.stackexchange.com_en_all	stack_exchange	2	1	Home Improvement SE
+mechanics.stackexchange.com_en_all	stack_exchange	2	0.3	Motor Vehicle Maintenance SE
+gardening.stackexchange.com_en_all	stack_exchange	2	0.2	Gardening SE
+outdoors.stackexchange.com_en_all	stack_exchange	2	0.15	Outdoors SE
+ham.stackexchange.com_en_all	stack_exchange	2	0.1	Amateur Radio SE
+woodworking.stackexchange.com_en_all	stack_exchange	3	0.1	Woodworking SE
+medicalsciences.stackexchange.com_en_all	stack_exchange	3	0.1	Medical Sciences SE
+ifixit_de_all	ifixit	2	2	iFixit DE
+ifixit_en_all	ifixit	3	3.5	iFixit EN
+gutenberg_de_all	gutenberg	3	2.5	Gutenberg DE
+gutenberg_en_all	gutenberg	3	65	Gutenberg EN
+wikihow_de_maxi	wikihow	2	3	wikiHow DE
+appropedia_en_all_maxi	other	2	2	Appropedia
+lowtechmagazine.com_en_all	other	2	0.3	Low-tech Magazine
+energypedia_en_all_maxi	other	2	0.3	energypedia
+archlinux_en_all_maxi	other	2	0.2	ArchWiki
+devdocs_en_c	devdocs	1	0.02	DevDocs C
+devdocs_en_cpp	devdocs	1	0.1	DevDocs C++
+devdocs_en_python	devdocs	1	0.1	DevDocs Python
+devdocs_en_bash	devdocs	1	0.01	DevDocs Bash
+zimgit-post-disaster_en	other	1	0.6	Post-Disaster Sammlung
+zimgit-water_en	other	1	0.05	Wasser
+zimgit-food-preparation_en	other	1	0.2	Nahrung
+zimgit-medicine_en	other	1	0.07	Medizin

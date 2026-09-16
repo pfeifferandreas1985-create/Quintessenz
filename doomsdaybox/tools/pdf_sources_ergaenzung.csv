@@ -1,0 +1,20 @@
+modul;prio;titel;herausgeber;lizenz;startseite;zielordner;hinweis
+mech;2;University Physics Vol. 1-3;OpenStax;CC BY 4.0;https://openstax.org/subjects/science;pdf/mech/grundlagen;in Uebersicht 2.2 genannt, fehlte in der Liste
+mech;2;KiCad-Symbolbibliothek + Commons-Schaltzeichentafel IEC 60617;KiCad / Wikimedia;CC BY-SA;https://gitlab.com/kicad/libraries/kicad-symbols https://commons.wikimedia.org/wiki/Category:IEC_60617;src/kicad-symbols;git clone --depth 1; Uebersicht 2.1
+mech;2;Trinamic Motion Control Application Notes;Analog Devices/Trinamic;frei (Herst.);https://www.analog.com/en/product-category/motor-and-motion-control.html;pdf/mech/motoren;Uebersicht 2.3
+mech;2;Sensorik-Grundlagen: Naeherungsschalter, Encoder;ifm, Pepperl+Fuchs;frei (Herst.);https://www.ifm.com https://www.pepperl-fuchs.com;pdf/mech/sensorik;Uebersicht 2.3
+mech;2;Pneumatik-Grundlagen, Symbole ISO 1219;Festo Didactic, SMC;frei (Herst.);https://www.festo.com/didactic https://www.smc.eu;pdf/mech/fluidtechnik;Uebersicht 2.3
+prog;2;avr-libc Reference Manual;GNU/Microchip;frei;https://avrdudes.github.io/avr-libc/;pdf/prog;Uebersicht 2.6
+prog;3;Linux man-pages (HTML-Export);man-pages project;GPL/frei;https://www.kernel.org/doc/man-pages/;src/man-pages;Uebersicht 2.6; alternativ: Debian-Paket manpages-dev
+med;1;RKI-Ratgeber Infektionskrankheiten (alle Erreger) + Impfkalender;Robert Koch-Institut;amtlich, frei;https://www.rki.de/DE/Themen/Infektionskrankheiten/Infektionskrankheiten-A-Z/;pdf/med/rki;Uebersicht 2.7 + 2.11; als PDF druckbar je Erreger
+surv;2;BZfE: Vorratshaltung, Einkochen, Lebensmittelhygiene;Bundeszentrum fuer Ernaehrung;frei;https://www.bzfe.de;pdf/surv/nahrung;Uebersicht 2.8
+surv;2;TM 5-704 Construction Print Reading; TM 5-742 Concrete and Masonry;US Army;Public Domain;https://archive.org;pdf/surv/bauen;Uebersicht 2.8
+energie;2;TM 5-6115 Generator Sets (Serie);US Army;Public Domain;https://archive.org/search?query=TM+5-6115;pdf/energie/generatoren;Uebersicht 2.9
+energie;3;Akvopedia (Wasser/Sanitaer-Wiki);Akvo;CC BY-SA;https://akvopedia.org;src/akvopedia;kein Kiwix-ZIM vorhanden -> zimit (Docker) oder Einzelseiten
+komm;3;Semtech SX1262/SX1276 LoRa-Datenblaetter;Semtech;frei (Herst.);https://www.semtech.com/products/wireless-rf/lora-connect;pdf/komm/lora;Uebersicht 2.10
+mil;2;FM 20-3 Camouflage; FM 21-18 Foot Marches;US Army;Public Domain;https://archive.org;pdf/mil;Uebersicht 2.11
+mil;2;ADP 6-0 Mission Command; ADP 6-22 Army Leadership;US Army;Public Domain;https://armypubs.army.mil;pdf/mil/fuehrung;Uebersicht 2.11
+mil;2;SSK-Empfehlungen Strahlenschutz (Notfall);Strahlenschutzkommission;amtlich, frei;https://www.ssk.de;pdf/mil/abc;Uebersicht 2.11
+rebuild;3;Thorpe's Dictionary of Applied Chemistry (1912-1927);Thorpe;Public Domain;https://archive.org/search?query=Thorpe+Dictionary+Applied+Chemistry;pdf/rebuild/chemie;Uebersicht 2.12; Baende einzeln
+rebuild;3;UNESCO: Bildung in Notlagen (INEE Minimum Standards);UNESCO/INEE;frei;https://inee.org/minimum-standards;pdf/rebuild/gesellschaft;Uebersicht 2.12
+maps;3;OpenTopoMap DACH (Hoehenlinien, Relief) als Kachelsatz;OpenTopoMap;CC BY-SA;https://opentopomap.org;maps/opentopo;Uebersicht 2.14 optional; Kacheln selbst rendern oder MBTiles-Export

@@ -1,0 +1,8 @@
+# Mini MPi 1997-2000 - MEMS 2J, Einspritzung, Schaltplan
+https://www.minispares.com/blog/2026/04/03/mini-spi-and-mpi-fuel-injectionelectronic-management-systems-and-emissions/ | Minispares_SPi-MPi-Einspritzung-MEMS-Emissionen
+https://www.theminiforum.co.uk/forums/topic/339839-mpi-wiring-ignition-diagramquestions/ | TheMiniForum_MPi-Wiring-Ignition-Diagram
+https://www.theminiforum.co.uk/forums/topic/305286-workshop-manual/ | TheMiniForum_Workshop-Manual-Hinweise
+https://www.perfectpower.com/wiring_diagram/SMT8L/ROVER/173_Mini_1.3i_(12A2LK70)_1996-2001-ROVER_-_MEMS_MPI.html | PerfectPower_Mini-1.3i-MEMS-MPI-Wiring
+https://rovermems.com/ | RoverMEMS_Diagnose-und-Remapping
+https://www.16vminiclub.com/forum/general-public-area/general-16v-mini-chat/34749-mpi-wiring-ignition-diagram-questions | 16vMiniClub_MPI-Wiring-Ignition
+https://www.minispares.com/blog/2026/06/03/classic-mini-gearbox/ | Minispares_Classic-Mini-Gearbox

@@ -1,0 +1,107 @@
+modul;prio;titel;herausgeber;lizenz;startseite;zielordner;hinweis
+mech;1;Lessons in Electric Circuits Bd. 1-6;T. Kuphaldt / All About Circuits;Design Science License;https://www.allaboutcircuits.com/textbook/;pdf/mech/elektronik;PDF-Fassungen auf ibiblio.org/kuphaldt/electricCircuits
+mech;1;NEETS Navy Electricity and Electronics Training Series Module 1-24;US Navy;Public Domain;https://archive.org/search?query=NEETS+module;pdf/mech/elektronik;auch auf maritime.org/doc/neets
+mech;1;Op Amps for Everyone (SLOD006);Texas Instruments;frei (Herst.);https://www.ti.com/lit/slod006;pdf/mech/analog;
+mech;1;Analog Engineer's Pocket Reference;Texas Instruments;frei (Herst.), Registrierung;https://www.ti.com/analog-circuit/pocket-reference.html;pdf/mech/analog;
+mech;1;Linear Circuit Design Handbook / Op Amp Applications Handbook;Analog Devices;frei (Herst.);https://www.analog.com/en/resources/technical-books.html;pdf/mech/analog;
+mech;1;Datenblätter Standardbauteile (Liste eigene Projekte + ~200 Typen);Infineon, ST, TI, onsemi, Microchip, Nexperia, Vishay;frei (Herst.);https://www.infineon.com https://www.st.com https://www.ti.com https://www.onsemi.com https://www.microchip.com;pdf/mech/datenblaetter;Dateiname = Typbezeichnung.pdf
+mech;1;DGUV Vorschrift 3, DGUV Information 203-xxx, DGUV Regel 103-011;DGUV;frei;https://publikationen.dguv.de;pdf/mech/sicherheit;
+mech;1;TRBS 1201, 1203 (Technische Regeln Betriebssicherheit);BAuA;amtlich, frei;https://www.baua.de/DE/Angebote/Regelwerk/TRBS/TRBS.html;pdf/mech/sicherheit;
+mech;1;Electrical Installation Handbook Vol. 1+2;ABB;frei (Herst.);https://library.abb.com;pdf/mech/installation;Suchbegriff "Electrical installation handbook"
+mech;1;Electrical Installation Guide;Schneider Electric;frei (Herst.), Registrierung;https://www.se.com/ww/en/download/document/EIGED306001EN/;pdf/mech/installation;auch als Wiki: electrical-installation.org
+mech;1;Technische Tabellen Kabel und Leitungen;Lapp / Helukabel;frei (Herst.);https://www.lapp.com https://www.helukabel.com;pdf/mech/installation;Kataloganhang "Technische Tabellen"
+mech;1;Wälzlager-Hauptkatalog;SKF;frei (Herst.);https://www.skf.com/de/products/rolling-bearings;pdf/mech/maschinenelemente;
+mech;1;Wälzlager HR1 Katalog;Schaeffler;frei (Herst.);https://www.schaeffler.de/de/produkte-und-loesungen/industrie/kataloge/;pdf/mech/maschinenelemente;
+mech;1;Praxis der Antriebsauslegung + Handbuchreihe;SEW-Eurodrive;frei (Herst.);https://www.sew-eurodrive.de/support/dokumentation/;pdf/mech/antriebe;
+mech;1;Facts Worth Knowing about Frequency Converters;Danfoss;frei (Herst.);https://www.danfoss.com/de-de/service-and-support/documentation/;pdf/mech/antriebe;
+mech;1;SINAMICS G120 / V20 Betriebsanleitungen, S7-1200 Systemhandbuch, STEP 7 Handbücher;Siemens;frei (Herst.);https://support.industry.siemens.com;pdf/mech/antriebe pdf/mech/sps;Parameterlisten eigener Geräte zusätzlich
+mech;1;AN885 BLDC, AN907 Stepper;Microchip;frei (Herst.);https://www.microchip.com/en-us/application-notes;pdf/mech/motoren;
+mech;1;Feedback Systems 2. Aufl.;Åström & Murray / Princeton;frei (PDF);https://fbsbook.org;pdf/mech/regelung;
+mech;1;Handbuch Druck- und Temperaturmesstechnik;WIKA;frei (Herst.);https://www.wika.de/de-de/handbuecher.WIKA;pdf/mech/sensorik;
+mech;1;ITS-90 Thermocouple Database;NIST;Public Domain;https://srdata.nist.gov/its90/main/;own/mech;als CSV exportieren -> SQLite tc_table
+mech;1;NAVEDTRA 14105 Fluid Power;US Navy;Public Domain;https://archive.org/search?query=NAVEDTRA+14105;pdf/mech/fluidtechnik;
+mech;1;PLCopen Coding Guidelines;PLCopen;frei, Registrierung;https://plcopen.org/software-construction-guidelines;pdf/mech/sps;
+mech;1;OSCAT Basic/Building/Network Dokumentation + Bibliotheken;OSCAT;frei (OSCAT-Lizenz);http://www.oscat.de;pdf/mech/sps src/oscat;auch Quellcode ablegen
+mech;1;Beckhoff Information System (Offline-Installer);Beckhoff;frei (Herst.);https://infosys.beckhoff.com;src/beckhoff-infosys;3-6 GB
+mech;1;CODESYS Online Help offline;CODESYS GmbH;frei (Herst.);https://help.codesys.com;src/codesys-help;
+mech;1;XYZs of Oscilloscopes;Tektronix;frei (Herst.);https://www.tek.com/en/documents/primer/xyzs-oscilloscopes-primer;pdf/mech/messtechnik;
+mech;1;Oscilloscope Fundamentals;Rohde & Schwarz;frei (Herst.);https://www.rohde-schwarz.com/de/wissen/;pdf/mech/messtechnik;
+mech;1;Grundlagen Multimeter / Isolationsmessung / Wärmebild;Fluke;frei (Herst.);https://www.fluke.com/de-de/mehr-erfahren;pdf/mech/messtechnik;
+mech;2;Raspberry Pi Documentation, RP2040/RP2350 Datenblätter;Raspberry Pi Ltd;CC BY-SA 4.0 / frei;https://www.raspberrypi.com/documentation/;pdf/mech/embedded;git clone github.com/raspberrypi/documentation
+mech;2;ESP32 Technical Reference Manual;Espressif;frei (Herst.);https://www.espressif.com/en/support/documents/technical-documents;pdf/mech/embedded;
+mech;2;Werkstoffdatenblätter Stahl/Edelstahl/Aluminium/Kunststoffe;thyssenkrupp, DEW, Ensinger;frei (Herst.);https://www.thyssenkrupp-materials.de https://www.dew-stahl.com https://www.ensingerplastics.com;pdf/mech/werkstoffe;
+prog;1;Modern C;J. Gustedt;CC BY-NC-ND;https://gustedt.gitlabpages.inria.fr/modern-c/;pdf/prog;
+prog;1;Beej's Guide to C Programming;B. Hall;frei;https://beej.us/guide/bgc/;pdf/prog;
+prog;1;cppreference Offline-Archiv;cppreference.com;CC BY-SA 3.0;https://en.cppreference.com/w/Cppreference:Archives;src/cppreference;HTML-Archiv, per zimwriterfs zu ZIM
+prog;1;Python 3 Dokumentation (HTML/PDF);Python Software Foundation;PSF-Lizenz;https://docs.python.org/3/download.html;src/python-docs;
+prog;1;Embedded C Coding Standard;Barr Group;frei, Registrierung;https://barrgroup.com/embedded-systems/books/embedded-c-coding-standard;pdf/prog;
+prog;1;Automate the Boring Stuff with Python;A. Sweigart;CC BY-NC-SA;https://automatetheboringstuff.com;pdf/prog;
+prog;2;The Debian Administrator's Handbook;R. Hertzog, R. Mas;GPL-2+ / CC BY-SA;https://debian-handbook.info/get/;pdf/prog;
+prog;2;The Linux Command Line;W. Shotts;CC BY-NC-ND 3.0;https://linuxcommand.org/tlcl.php;pdf/prog;
+med;1;Where There Is No Doctor / Dentist / Where Women Have No Doctor / A Book for Midwives / Wo es keinen Arzt gibt;Hesperian Health Guides;CC BY-NC-SA 4.0;https://hesperian.org/books-and-resources/;pdf/med/hesperian;
+med;1;ERC-Leitlinien 2021 (deutsche Übersetzung);German Resuscitation Council;frei;https://www.grc-org.de/leitlinien;pdf/med/erstehilfe;
+med;1;DGUV Information 204-006 Anleitung zur Ersten Hilfe;DGUV;frei;https://publikationen.dguv.de;pdf/med/erstehilfe;
+med;1;Emergency War Surgery (aktuelle Ausgabe);US Army Borden Institute;Public Domain;https://medcoe.army.mil/borden-tb-emergency-war-surgery;pdf/med/notfall;
+med;1;TCCC Guidelines + Quick Reference Guide;CoTCCC / Deployed Medicine;Public Domain;https://www.deployedmedicine.com;pdf/med/notfall pdf/mil/sanitaet;
+med;1;TECC Guidelines;C-TECC;frei;https://www.c-tecc.org/guidelines;pdf/mil/sanitaet;
+med;1;Stop the Bleed Materialien;American College of Surgeons;frei;https://www.stopthebleed.org;pdf/mil/sanitaet;
+med;1;Surgical Care at the District Hospital; Pocket Book of Hospital Care for Children; Anaesthesia at the District Hospital; Guidelines for Drinking-water Quality; Model Formulary 2008; Essential Medicines List;WHO;CC BY-NC-SA 3.0 IGO;https://www.who.int/publications;pdf/med/who;
+med;1;Essential Drugs; Clinical Guidelines;Médecins Sans Frontières;frei;https://medicalguidelines.msf.org;pdf/med/msf;
+med;1;Pharmacology for Nurses; Anatomy and Physiology 2e;OpenStax;CC BY 4.0;https://openstax.org/subjects;pdf/med/openstax;
+med;1;Household Water Treatment;CDC;Public Domain;https://www.cdc.gov/global-water-sanitation-hygiene/;pdf/med/hygiene;
+med;1;Primary Surgery Bd. 1+2;M. King / GTZ;frei online;https://www.primary-surgery.org;pdf/rebuild/medizin;
+surv;1;FM 21-76 / FM 3-05.70 / ATP 3-50.21 Survival;US Army;Public Domain;https://armypubs.army.mil https://archive.org;pdf/surv;
+surv;1;Complete Guide to Home Canning (AIB 539);USDA;Public Domain;https://nchfp.uga.edu/publications/usda/;pdf/surv/nahrung;
+surv;1;SODIS Manual;Eawag;frei;https://www.sodis.ch;pdf/surv/wasser;
+surv;1;Biosand Filter Manual;CAWST;CC BY-NC-SA;https://www.cawst.org/resources;pdf/surv/wasser;
+surv;2;Rural structures in the tropics; Small-scale poultry production; Draught Animal Power Manual; Simple Technologies for Charcoal Making (Forestry Paper 41);FAO;CC BY-NC-SA 3.0 IGO / CC BY 4.0;https://www.fao.org/publications;pdf/surv/landwirtschaft pdf/rebuild/metallurgie;
+surv;2;Technical Briefs (Lime burning, Micro-hydro, Papermaking u. a.);Practical Action;frei;https://answers.practicalaction.org;pdf/rebuild;
+energie;1;Stand-Alone Photovoltaic Systems: A Handbook of Recommended Design Practices (SAND87-7023);Sandia National Laboratories;Public Domain;https://www.osti.gov;pdf/energie/pv;
+energie;1;Wiring Unlimited + Produkthandbücher;Victron Energy;frei (Herst.);https://www.victronenergy.com/support-and-downloads/technical-information;pdf/energie/batterie;
+energie;1;Construction of a Simplified Wood Gas Generator for Fueling Internal Combustion Engines in a Petroleum Emergency;FEMA (1989);Public Domain;https://archive.org/search?query=FEMA+wood+gas+generator;pdf/rebuild/energie;
+energie;2;TM 9-8000 Principles of Automotive Vehicles;US Army;Public Domain;https://archive.org;pdf/energie/motoren;
+energie;2;Pump Handbook;Grundfos;frei (Herst.);https://www.grundfos.com/learn;pdf/energie/pumpen;
+energie;2;Compendium of Sanitation Systems and Technologies;Eawag;frei;https://www.eawag.ch/de/abteilung/sandec/publikationen/compendium/;pdf/energie/sanitaer;
+energie;2;The Humanure Handbook;J. Jenkins;frei (PDF älterer Ausgabe);https://humanurehandbook.com;pdf/energie/sanitaer;
+komm;1;Frequenzplan; Fragenkataloge Amateurfunk N/E/A;Bundesnetzagentur;amtlich, frei;https://www.bundesnetzagentur.de;pdf/komm;
+komm;2;Bandpläne IARU Region 1 / DARC;DARC;frei;https://www.darc.de;pdf/komm;
+komm;2;Reticulum Manual;M. Bruun;Reticulum-Lizenz;https://reticulum.network/manual/;pdf/komm src/reticulum;Quellcode: github.com/markqvist/Reticulum
+komm;2;Meshtastic Docs + Firmware;Meshtastic;GPL-3.0;https://meshtastic.org/docs/ https://github.com/meshtastic/firmware/releases;src/meshtastic;zimit für Doku, Firmware-Binaries + Flasher
+mil;1;FM 21-11 First Aid for Soldiers; FM 4-25.11 / TC 4-02.1 First Aid;US Army;Public Domain;https://armypubs.army.mil https://archive.org;pdf/mil/sanitaet;
+mil;1;Prolonged Field Care Guidelines;SOMA / PFC Working Group;frei;https://prolongedfieldcare.org;pdf/mil/sanitaet;
+mil;2;FM 22-6 Guard Duty; FM 21-75 Combat Skills of the Soldier; FM 20-3 Camouflage; FM 21-18 Foot Marches; TC 3-25.26 Map Reading and Land Navigation;US Army;Public Domain;https://archive.org https://www.globalsecurity.org/military/library/policy/army/fm/;pdf/mil/sicherung;nur "approved for public release"
+mil;2;ATP 3-39.32 Physical Security; FEMA 426/427;US Army / FEMA;Public Domain;https://armypubs.army.mil https://www.fema.gov;pdf/mil/sicherung;
+mil;2;FM 3-06 Urban Operations; FM 90-10 MOUT; FM 90-10-1;US Army;Public Domain;https://www.globalsecurity.org/military/library/policy/army/fm/;pdf/mil/sicherung;Angriffskapitel nicht indexieren
+mil;2;FM 3-11, FM 3-11.4, FM 3-11.5 CBRN;US Army;Public Domain;https://armypubs.army.mil;pdf/mil/abc;
+mil;2;Ratgeber für Notfallvorsorge; Merkblätter Strahlenunfall;BBK / BfS;amtlich, frei;https://www.bbk.bund.de https://www.bfs.de;pdf/mil/abc;
+mil;2;Nuclear War Survival Skills;C. Kearny / Oak Ridge National Laboratory;Public Domain;https://archive.org/details/NuclearWarSurvivalSkills;pdf/mil/abc;Kearny Fallout Meter
+mil;2;Management of Dead Bodies after Disasters;WHO / PAHO;frei;https://www.paho.org;pdf/mil/abc;
+mil;2;IED Awareness; IED Lexicon;DHS/FEMA; UNMAS;frei;https://www.cisa.gov https://unmas.org;pdf/mil/sicherung;nur Erkennung
+mil;3;FM 5-31 Boobytraps (1965);US Army;Public Domain;https://archive.org;pdf/mil/sicherung;nur Erkennungskapitel, nicht in RAG-Index
+mil;3;FM 24-18 Radio Communications; FM 6-99 Report and Message Formats; ADP 6-0 Mission Command; ADP 6-22 Army Leadership;US Army;Public Domain;https://armypubs.army.mil https://archive.org;pdf/mil/fuehrung;
+mil;3;StGB §§ 32-35, BGB §§ 227-231, WaffG;BMJ;amtlich, frei;https://www.gesetze-im-internet.de;own/mil;HTML speichern, Rechtsstand datieren
+rebuild;1;Farm Blacksmithing (1901); Hawkins Electrical Guide Bd. 1-10 (1917); Machinery's Handbook bis 1928; Henley's Twentieth Century Book of Formulas (1914); Manual of Industrial Chemistry (Rogers); Hand-Loom Weaving (1910); Farmers of Forty Centuries (1911); King's American Dispensatory (1898); Radio Amateur's Handbook 1926-1928;diverse;Public Domain (vor 1929);https://archive.org https://www.gutenberg.org https://www.hathitrust.org;pdf/rebuild/klassiker;Scans oft groß: mit Ghostscript /ebook auf 150 DPI
+rebuild;1;The Knowledge / Das Handbuch für den Neustart der Welt;L. Dartnell / Hanser;kommerziell;https://the-knowledge.org;pdf/rebuild;gekauftes E-Book
+rebuild;1;Build Your Own Metal Working Shop from Scrap Bd. 1-7;D. Gingery / Gingery Books;kommerziell;https://www.gingerybookstore.com;pdf/rebuild/metallurgie;gekauft
+rebuild;2;THE BOOK: The Ultimate Guide to Rebuilding a Civilization;Hungry Minds;kommerziell;https://hungryminds.com;pdf/rebuild;Eigen-Scan 150 DPI
+rebuild;2;Biogas Plants;L. Sasse / GTZ;frei;https://www.susana.org/library;pdf/rebuild/energie;
+rebuild;2;Village Technology Handbook;VITA;frei;https://archive.org/search?query=VITA+Village+Technology+Handbook;pdf/rebuild;
+rebuild;2;Sphere Handbook 2018;Sphere Association;CC BY-SA;https://spherestandards.org/handbook/;pdf/rebuild/gesellschaft;
+rebuild;2;UNHCR Emergency Handbook;UNHCR;frei;https://emergency.unhcr.org;pdf/rebuild/gesellschaft;
+rebuild;3;CD3WD Appropriate Technology Library;A. Weir;gemischt frei;https://archive.org/details/cd3wd;src/cd3wd;13 GB, Lizenz je Dokument prüfen
+fahrzeuge;1;Defender Workshop Manual TD5 MJ 1999-2006 (LRL0410/LRL0097) + Electrical Library;Land Rover / Brooklands Books;kommerziell (Nachdruck ca. 40-60 EUR);https://www.brooklandsbooks.com;pdf/fahrzeuge/defender;Original-PDF urheberrechtlich; gekauft oder Privatkopie
+fahrzeuge;1;Defender Parts Catalogue 1987-2006 (STC9021CC) mit Explosionszeichnungen;Land Rover / Brooklands Books;kommerziell;https://www.brooklandsbooks.com;pdf/fahrzeuge/defender;
+fahrzeuge;1;Online-Teilekatalog Land Rover mit Explosionszeichnungen (lrcat.com, Britpart, Bearmach, Paddock, Famous Four, Rimmer Bros);diverse Haendler;frei einsehbar, Privatkopie;https://www.lrcat.com https://www.britpart.com https://www.paddockspares.com https://rimmerbros.com;pdf/fahrzeuge/defender/explosionszeichnungen;Baugruppen als PDF drucken; Fahrgestellnummer eingeben
+fahrzeuge;1;Nanocom Evolution Handbuch TD5;Blackbox Solutions;frei (Herst.);https://www.nanocom-diagnostics.com;pdf/fahrzeuge/defender;
+fahrzeuge;2;Haynes 3017 Land Rover Defender Diesel 1983-2007;Haynes;kommerziell;https://haynes.com;pdf/fahrzeuge/defender;
+fahrzeuge;1;Rover Mini Workshop Manual 1992-2000 inkl. MPi (RCL 0193 / AKM 7169);Rover / Brooklands Books;kommerziell (Nachdruck);https://www.brooklandsbooks.com https://www.minispares.com;pdf/fahrzeuge/mini;
+fahrzeuge;1;Mini Parts Catalogue 1990-2000 mit Explosionszeichnungen;Rover / British Motor Heritage;kommerziell / Nachdruck;https://www.minispares.com https://www.somerfordminis.co.uk;pdf/fahrzeuge/mini;
+fahrzeuge;1;Mini Spares Online-Katalog: Explosionszeichnungen je Baugruppe mit Teilenummern;Mini Spares Centre;frei einsehbar, Privatkopie;https://www.minispares.com;pdf/fahrzeuge/mini/explosionszeichnungen;alle Baugruppen MPi 1997-2000 sichern
+fahrzeuge;2;Haynes 0646 Mini 1969-2001;Haynes;kommerziell;https://haynes.com;pdf/fahrzeuge/mini;
+fahrzeuge;2;MPi/MEMS 2J Schaltplan und Tech-Artikel;Mini Mania, theminiforum.co.uk, mini-forum.de;urheberrechtlich, Privatkopie;https://www.minimania.com https://www.theminiforum.co.uk https://www.mini-forum.de;own/fahrzeuge;
+fahrzeuge;1;Vespa 50 V5A1T Anleitung fuer die Werkstatt (Piaggio 1960er) + Bedienungsanleitung 1963;Piaggio;urheberrechtlich, Scans frei zugaenglich, Privatkopie;https://www.scooterhelp.com;pdf/fahrzeuge/vespa;Bereich Manuals
+fahrzeuge;1;Catalogo parti di ricambio Vespa 50 V5A1T (Ersatzteilkatalog mit Explosionszeichnungen, Piaggio-Nummern);Piaggio;wie oben;https://www.scooterhelp.com;pdf/fahrzeuge/vespa;Bereich Parts Books
+fahrzeuge;1;Explosionszeichnungen Vespa V50 N je Baugruppe mit aktuellen Teilenummern;SIP Scootershop, Scooter Center;frei einsehbar, Privatkopie;https://www.sip-scootershop.com https://www.scooter-center.com;pdf/fahrzeuge/vespa/explosionszeichnungen;Modell V50 N V5A1T waehlen, jede Baugruppe als PDF
+fahrzeuge;2;Bucheli Reparaturanleitung Vespa Smallframe;Bucheli;kommerziell;Buchhandel;pdf/fahrzeuge/vespa;
+fahrzeuge;3;Vespa Technica Bd. Smallframe;Vespa Technica;kommerziell;Buchhandel;pdf/fahrzeuge/vespa;
+fahrzeuge;2;GSF-Wiki Smallframe (Zuendung einstellen, Motor teilen, Falschluft);germanscooterforum.de, vespaforum.de;urheberrechtlich, Privatkopie;https://www.germanscooterforum.de https://www.vespaforum.de;own/fahrzeuge;
