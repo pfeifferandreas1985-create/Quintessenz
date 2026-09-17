@@ -87,9 +87,12 @@ def main():
   * {{ box-sizing: border-box; }}
   html, body {{ margin: 0; height: 100%; background: #000; color: var(--p); overflow: hidden;
                font: 15px/1.45 "IBM Plex Mono", "Courier Prime", "Consolas", monospace; }}
+  /* Ruhezustand ist "aus". body.on setzt "an" als festen Zustand und spielt das Einschalten ab;
+     kein animation-fill-mode, sonst wuerde eine spaetere Animation (Ruettler) den Endzustand
+     mitnehmen und der Schirm fiele auf schwarz zurueck. */
   #stage {{ position: relative; width: 100%; height: 100%; background: var(--bg);
             transform: scaleY(0); opacity: 0; }}
-  body.on #stage {{ animation: crt-on .85s cubic-bezier(.2,.9,.2,1) forwards; }}
+  body.on #stage {{ transform: none; opacity: 1; animation: crt-on .85s cubic-bezier(.2,.9,.2,1); }}
   body.on #stage::after {{ content: ""; position: absolute; inset: 0; background: #fff; opacity: 0;
                            pointer-events: none; z-index: 40; animation: crt-flicker 1.5s steps(1) .3s; }}
   body::before {{ /* feine Scanlines über allem */
@@ -117,17 +120,32 @@ def main():
   #count-num.beat {{ animation: num-in .95s cubic-bezier(.2,.8,.2,1); }}
   #count-cap {{ position: absolute; bottom: -8%; left: 0; right: 0; font-size: 12px; letter-spacing: .45em;
                 text-indent: .45em; opacity: .65; }}
+  /* Vorspann vor dem Countdown */
+  #preface {{ position: absolute; text-align: center; opacity: 0; }}
+  #preface.on {{ opacity: 1; animation: pre-out .5s ease-in 1.9s forwards; }}
+  #preface .wort {{ font-size: clamp(24px, 6vw, 68px); font-weight: 700; letter-spacing: .3em;
+                    text-indent: .3em; color: var(--h); text-shadow: 0 0 30px var(--p), 0 0 70px rgba(63,200,255,.45);
+                    white-space: nowrap; }}
+  #preface .wort span {{ display: inline-block; opacity: 0; }}
+  #preface.on .wort span {{ animation: pre-letter .55s cubic-bezier(.2,.9,.2,1) forwards;
+                            animation-delay: calc(var(--i) * 65ms); }}
+  #preface .strich {{ height: 2px; margin: 18px auto 0; width: 0; background: var(--p);
+                      box-shadow: 0 0 14px var(--p); }}
+  #preface.on .strich {{ animation: pre-line .9s cubic-bezier(.2,.9,.2,1) .55s forwards; }}
+  #preface .unter {{ margin-top: 14px; font-size: 11px; letter-spacing: .5em; text-indent: .5em;
+                     opacity: 0; }}
+  #preface.on .unter {{ animation: pre-sub .6s ease-out 1.1s forwards; }}
 
   /* ---- Glitch statt Schriftzug ---------------------------------------------- */
   #glitch {{ position: absolute; inset: 0; z-index: 35; pointer-events: none; opacity: 0; overflow: hidden; }}
   #glitch.on {{ opacity: 1; }}
   #glitch i {{ position: absolute; left: -10%; right: -10%; display: block; background: var(--c);
-               opacity: .55; mix-blend-mode: screen; transform: translateX(var(--dx));
+               opacity: .34; mix-blend-mode: screen; transform: translateX(var(--dx));
                animation: g-slice var(--t) steps(2) infinite alternate; }}
-  #glitch b {{ position: absolute; left: 0; right: 0; height: 2px; background: var(--h); opacity: .9;
-               box-shadow: 0 0 24px var(--h); animation: g-sweep .55s linear infinite; }}
-  #glitch::after {{ content: ""; position: absolute; inset: -20%; opacity: .22; mix-blend-mode: screen;
-                    background: repeating-linear-gradient(0deg, rgba(255,255,255,.9) 0 1px, transparent 1px 4px);
+  #glitch b {{ position: absolute; left: 0; right: 0; height: 2px; background: var(--h); opacity: .75;
+               box-shadow: 0 0 24px var(--h); animation: g-sweep .5s linear infinite; }}
+  #glitch::after {{ content: ""; position: absolute; inset: -20%; opacity: .1; mix-blend-mode: screen;
+                    background: repeating-linear-gradient(0deg, rgba(255,255,255,.9) 0 1px, transparent 1px 5px);
                     animation: g-noise .08s steps(2) infinite; }}
   body.glitching #stage {{ animation: g-shake .09s steps(2) infinite; }}
   .skip {{ position: fixed; right: 18px; bottom: 14px; font-size: 12px; letter-spacing: .2em; opacity: .5;
@@ -179,6 +197,11 @@ def main():
   @keyframes num-in {{ 0% {{ opacity: 0; transform: scale(1.7); filter: blur(6px); }}
                        22% {{ opacity: 1; transform: scale(1); filter: blur(0); }}
                        80% {{ opacity: 1; }} 100% {{ opacity: .15; transform: scale(.94); }} }}
+  @keyframes pre-letter {{ 0% {{ opacity: 0; transform: translateY(14px) scale(1.25); filter: blur(7px); }}
+                           100% {{ opacity: 1; transform: none; filter: blur(0); }} }}
+  @keyframes pre-line {{ to {{ width: min(62vw, 520px); }} }}
+  @keyframes pre-sub {{ to {{ opacity: .6; }} }}
+  @keyframes pre-out {{ to {{ opacity: 0; transform: scale(1.06); filter: blur(3px); }} }}
   @keyframes g-slice {{ from {{ transform: translateX(var(--dx)); }} to {{ transform: translateX(calc(var(--dx) * -.7)); }} }}
   @keyframes g-sweep {{ from {{ top: -4%; }} to {{ top: 104%; }} }}
   @keyframes g-noise {{ 0% {{ transform: translateY(0); }} 100% {{ transform: translateY(3px); }} }}
@@ -205,6 +228,11 @@ def main():
 
   <!-- 1/2 · Einschalten und Countdown -->
   <section id="s-count" class="on">
+    <div id="preface">
+      <div class="wort"></div>
+      <div class="strich"></div>
+      <div class="unter">STAND BY</div>
+    </div>
     <div id="count">
       <svg viewBox="0 0 200 200" aria-hidden="true">
         <circle class="ring-bg" cx="100" cy="100" r="86"/>
@@ -212,7 +240,7 @@ def main():
         <circle class="ring-go" cx="100" cy="100" r="86"/>
       </svg>
       <div id="count-num" aria-live="polite">3</div>
-      <div id="count-cap">WORLD RESTART SEQUENCE</div>
+      <div id="count-cap">RESET SEQUENCE</div>
     </div>
   </section>
   <div id="glitch" aria-hidden="true"></div>
@@ -315,11 +343,11 @@ def main():
     if (reduced) return;
     const g = $('#glitch');
     g.innerHTML = '';
-    for (let i = 0; i < 18; i++) {{
+    for (let i = 0; i < 9; i++) {{
       const b = document.createElement('i');
-      b.style.cssText = `top:${{(Math.random() * 100).toFixed(1)}}%;height:${{(1 + Math.random() * 7).toFixed(1)}}%;`
-        + `--dx:${{((Math.random() - .5) * 16).toFixed(1)}}vw;--t:${{(70 + Math.random() * 90).toFixed(0)}}ms;`
-        + `--c:${{Math.random() < .45 ? '#FF3DF5' : (Math.random() < .5 ? '#3FC8FF' : '#CFF7FF')}}`;
+      b.style.cssText = `top:${{(Math.random() * 100).toFixed(1)}}%;height:${{(.5 + Math.random() * 3).toFixed(1)}}%;`
+        + `--dx:${{((Math.random() - .5) * 18).toFixed(1)}}vw;--t:${{(70 + Math.random() * 90).toFixed(0)}}ms;`
+        + `--c:${{Math.random() < .4 ? '#FF3DF5' : (Math.random() < .5 ? '#3FC8FF' : '#CFF7FF')}}`;
       g.appendChild(b);
     }}
     g.appendChild(document.createElement('b'));
@@ -334,8 +362,17 @@ def main():
 
   async function lauf() {{
     document.body.classList.add('on');                       // Bildroehre schaltet ein
-    await wait(reduced ? 0 : 950);
+    await wait(950);
     if (skipped) return;
+
+    const vor = $('#preface');                               // Vorspann: WORLD RESET
+    vor.querySelector('.wort').innerHTML = [...'WORLD RESET']
+      .map((c, i) => `<span style="--i:${{i}}">${{c === ' ' ? '&nbsp;' : c}}</span>`).join('');
+    vor.classList.add('on');
+    await wait(2400);
+    vor.classList.remove('on');
+    if (skipped) return;
+
     const box = $('#count'), num = $('#count-num');
     box.classList.add('on');
     for (const n of ['3', '2', '1']) {{
