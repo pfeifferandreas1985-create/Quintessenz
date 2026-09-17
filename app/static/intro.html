@@ -39,12 +39,19 @@
   #count-num.beat { animation: num-in .95s cubic-bezier(.2,.8,.2,1); }
   #count-cap { position: absolute; bottom: -8%; left: 0; right: 0; font-size: 12px; letter-spacing: .45em;
                 text-indent: .45em; opacity: .65; }
-  #initiated { position: absolute; font-size: clamp(16px, 3.4vw, 40px); font-weight: 700; letter-spacing: .34em;
-                text-indent: .34em; color: var(--h); text-shadow: 0 0 24px var(--p); opacity: 0;
-                white-space: nowrap; }
-  #initiated.on { animation: init-in 1.7s ease-out forwards; }
-  #initiated span { display: inline-block; }
-  #initiated.on span { animation: glitch .12s steps(1) 3; animation-delay: calc(var(--i) * 28ms + .35s); }
+
+  /* ---- Glitch statt Schriftzug ---------------------------------------------- */
+  #glitch { position: absolute; inset: 0; z-index: 35; pointer-events: none; opacity: 0; overflow: hidden; }
+  #glitch.on { opacity: 1; }
+  #glitch i { position: absolute; left: -10%; right: -10%; display: block; background: var(--c);
+               opacity: .55; mix-blend-mode: screen; transform: translateX(var(--dx));
+               animation: g-slice var(--t) steps(2) infinite alternate; }
+  #glitch b { position: absolute; left: 0; right: 0; height: 2px; background: var(--h); opacity: .9;
+               box-shadow: 0 0 24px var(--h); animation: g-sweep .55s linear infinite; }
+  #glitch::after { content: ""; position: absolute; inset: -20%; opacity: .22; mix-blend-mode: screen;
+                    background: repeating-linear-gradient(0deg, rgba(255,255,255,.9) 0 1px, transparent 1px 4px);
+                    animation: g-noise .08s steps(2) infinite; }
+  body.glitching #stage { animation: g-shake .09s steps(2) infinite; }
   .skip { position: fixed; right: 18px; bottom: 14px; font-size: 12px; letter-spacing: .2em; opacity: .5;
            z-index: 60; color: var(--p); border: 1px solid var(--dim); padding: 6px 10px; cursor: pointer;
            background: none; font-family: inherit; }
@@ -64,22 +71,24 @@
   #s-menu { grid-template-rows: auto 1fr auto; padding: 3vh 4vw; }
   #s-menu header { letter-spacing: .4em; text-indent: .4em; font-size: 13px; opacity: .8; text-align: center; }
   #s-menu header b { color: var(--h); font-weight: 700; }
-  /* 4 x 4 soll ohne Scrollen in die Höhe passen: Kachel ist ca. 1,12-mal so hoch wie breit */
-  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;
-           width: min(92vw, calc((100vh - 152px) / 1.12 + 42px)); align-self: center; }
-  @media (max-aspect-ratio: 4/5) { .grid { grid-template-columns: repeat(2, 1fr); width: 92vw; }
-                                    #s-menu.on { overflow-y: auto; } }
-  .tile { position: relative; display: block; padding: 6px 6px 26px; border: 1px solid var(--dim);
-           border-radius: 6px; color: var(--p); text-decoration: none; opacity: 0; transform: scale(.4);
-           background: radial-gradient(circle at 50% 40%, #0a1a22 0, transparent 70%); }
+  /* Breites Band statt mittigem Quadrat: 8 x 2 auf breiten Schirmen, keine Kästchen */
+  .grid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: clamp(6px, 1.1vw, 20px);
+           width: 96vw; align-self: center; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 620px) { .grid { grid-template-columns: repeat(2, 1fr); } #s-menu.on { overflow-y: auto; } }
+  .tile { position: relative; display: block; padding: 0 0 34px; border: 0; background: none;
+           color: var(--p); text-decoration: none; opacity: 0; transform: scale(.4); }
   .tile.in { animation: tile-in .7s cubic-bezier(.2,.9,.3,1.2) forwards; animation-delay: calc(var(--i) * 45ms); }
-  .tile svg { width: 100%; height: auto; display: block; }
-  .tile:hover { border-color: var(--h); box-shadow: 0 0 22px color-mix(in srgb, var(--h) 45%, transparent); }
-  .tile-code { position: absolute; left: 10px; top: 8px; font-size: 11px; letter-spacing: .2em; opacity: .6; }
-  .tile-sub { position: absolute; left: 0; right: 0; bottom: 7px; text-align: center;
-               font-size: clamp(9px, .9vw, 12px); letter-spacing: .04em; opacity: .55; padding: 0 8px;
-               white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .tile:hover .tile-sub, .tile:hover .tile-code { opacity: 1; color: var(--h); }
+  /* kein border-radius auf dem SVG: das beschneidet den Schildnamen unter dem Ring */
+  .tile svg { width: 100%; height: auto; display: block; transition: filter .25s; }
+  .tile:hover svg { filter: drop-shadow(0 0 16px color-mix(in srgb, var(--h) 60%, transparent)); }
+  .tile-code { position: absolute; left: 50%; top: 2%; transform: translateX(-50%); font-size: 10px;
+                letter-spacing: .3em; text-indent: .3em; opacity: .35; }
+  .tile-sub { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center;
+               font-size: clamp(9px, .85vw, 12px); letter-spacing: .04em; opacity: 0; padding: 0 4px;
+               white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .25s; }
+  .tile:hover .tile-sub { opacity: .85; color: var(--h); }
+  .tile:hover .tile-code { opacity: .9; color: var(--h); }
   #s-menu footer { font-size: 11px; letter-spacing: .25em; opacity: .5; text-align: center; }
 
   @keyframes crt-on { 0% { transform: scaleY(.004) scaleX(.6); opacity: 0; }
@@ -92,10 +101,11 @@
   @keyframes num-in { 0% { opacity: 0; transform: scale(1.7); filter: blur(6px); }
                        22% { opacity: 1; transform: scale(1); filter: blur(0); }
                        80% { opacity: 1; } 100% { opacity: .15; transform: scale(.94); } }
-  @keyframes init-in { 0% { opacity: 0; letter-spacing: .1em; } 18% { opacity: 1; letter-spacing: .34em; }
-                        78% { opacity: 1; } 100% { opacity: 0; letter-spacing: .5em; } }
-  @keyframes glitch { 0% { transform: translate(0,0); } 50% { transform: translate(-2px,1px); opacity: .4; }
-                       100% { transform: translate(0,0); } }
+  @keyframes g-slice { from { transform: translateX(var(--dx)); } to { transform: translateX(calc(var(--dx) * -.7)); } }
+  @keyframes g-sweep { from { top: -4%; } to { top: 104%; } }
+  @keyframes g-noise { 0% { transform: translateY(0); } 100% { transform: translateY(3px); } }
+  @keyframes g-shake { 0% { transform: translate(0,0); } 33% { transform: translate(-6px, 2px) skewX(.6deg); }
+                        66% { transform: translate(5px,-2px) skewX(-.5deg); } 100% { transform: translate(0,0); } }
   @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
   @keyframes tile-in { to { opacity: 1; transform: scale(1); } }
   @media (prefers-reduced-motion: reduce) { * { animation-duration: .001s !important; } }
@@ -126,8 +136,8 @@
       <div id="count-num" aria-live="polite">3</div>
       <div id="count-cap">WORLD RESTART SEQUENCE</div>
     </div>
-    <div id="initiated"></div>
   </section>
+  <div id="glitch" aria-hidden="true"></div>
 
   <!-- 3 · Systemcheck -->
   <section id="s-boot"><pre id="boot"></pre></section>
@@ -1570,6 +1580,25 @@
     await Promise.allSettled(anims);
   }
 
+  // ---- Bildstoerung: versetzte Streifen, Suchlauf, Rauschen, Ruettler ------------
+  async function stoerung(ms) {
+    if (reduced) return;
+    const g = $('#glitch');
+    g.innerHTML = '';
+    for (let i = 0; i < 18; i++) {
+      const b = document.createElement('i');
+      b.style.cssText = `top:${(Math.random() * 100).toFixed(1)}%;height:${(1 + Math.random() * 7).toFixed(1)}%;`
+        + `--dx:${((Math.random() - .5) * 16).toFixed(1)}vw;--t:${(70 + Math.random() * 90).toFixed(0)}ms;`
+        + `--c:${Math.random() < .45 ? '#FF3DF5' : (Math.random() < .5 ? '#3FC8FF' : '#CFF7FF')}`;
+      g.appendChild(b);
+    }
+    g.appendChild(document.createElement('b'));
+    g.classList.add('on'); document.body.classList.add('glitching');
+    await wait(ms);
+    g.classList.remove('on'); document.body.classList.remove('glitching');
+    g.innerHTML = '';
+  }
+
   // ---- Ablauf -------------------------------------------------------------------
   function neu(el) { el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
 
@@ -1587,13 +1616,9 @@
       await wait(reduced ? 0 : 1000);
     }
     box.classList.remove('on');
-    const ziel = $('#initiated');
-    ziel.innerHTML = [...'WORLD RESTART INITIATED']
-      .map((c, i) => `<span style="--i:${i}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
-    ziel.classList.add('on');
-    await wait(reduced ? 0 : 1750);
-    if (skipped) return;
     $('#s-count').classList.remove('on');
+    await stoerung(820);
+    if (skipped) return;
     $('#s-boot').classList.add('on');
     await boot();
     if (skipped) return;
