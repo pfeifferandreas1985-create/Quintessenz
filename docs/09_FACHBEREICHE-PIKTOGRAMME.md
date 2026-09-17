@@ -72,8 +72,21 @@ Motive auf Englisch, zum Einsetzen:
 | KI | a vacuum-tube computer front panel with a paper tape and one speech bubble |
 | FZ | three stacked vehicle silhouettes (off-road wagon, small car, scooter) with a wrench across |
 
-## Dateiablage
+## Umsetzung (Stand 17.09.2026): animierte SVG-Logos in Tron-Blau
 
-`app/assets/icons/<Kürzel>_<schildname>.svg` (Vektor bevorzugt), je Motiv drei Varianten:
-`_metall` (Eingang), `_papier` (Aktenmodus), `_phosphor` (Terminalmodus). Namen klein,
-ohne Umlaute, z. B. `EL_elektrik_metall.svg`.
+Alle 16 Logos liegen fertig unter `app/static/icons/<Kürzel>_<name>.svg`, erzeugt von
+`app/static/icons/build_icons.py`; Übersicht: `app/static/icons/demo_icons.html`.
+
+- **Aufbau je Logo:** transparenter Grund, drei umlaufende Ringe (zwei Richtungen, eine
+  Laufmarke), das Motiv aus der Tabelle oben, Schildname unter dem Ring. Nur SVG + CSS, kein
+  JavaScript.
+- **Bewegung:** in Ruhe langsam (Ringe drehen, Strom fließt, Zeiger pendelt, Röhren glimmen).
+  Bei Hover Faktor 4,5 schneller, Linien werden weiß-cyan, ein Akzentteil wird orange, Funken
+  springen, der Blitz flackert. `prefers-reduced-motion` schaltet alles ab.
+- **Farben** als CSS-Variablen im SVG: `--p #3FC8FF` (Ruhe), `--h #CFF7FF` (Hover), `--a #FF8A00`
+  (Akzent). Für den Papier-Modus später Tinte/Stempelrot setzen; für die Atompunk-Metallschilder
+  bleibt der Bildprompt oben.
+- **Einbinden:** als Inline-SVG oder `<object>`; per `<img>` läuft die Animation, aber der
+  Hover-Zustand nicht.
+- **Ändern:** Motiv in `build_icons.py` anpassen, Skript ausführen, fertig. Die Blitz-Variante war
+  der Prototyp; alle anderen folgen demselben Schema.
