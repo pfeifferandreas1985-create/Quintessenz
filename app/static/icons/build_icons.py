@@ -347,11 +347,23 @@ ICONS["FZ"] = ("fahrzeuge", "FAHRZEUGE", f"""
 """)
 
 
+SCHILD_EN = {"EL": "ELECTRICS", "ME": "MECHANICS", "AN": "DRIVES", "AU": "AUTOMATION", "MP": "MEASUREMENT",
+             "PR": "PROGRAMMING", "MD": "MEDICINE", "SV": "SUPPLY", "EN": "ENERGY", "KO": "RADIO",
+             "SI": "SECURITY", "NS": "RESTART", "AW": "ARCHIVE", "KN": "MAPS", "KI": "ASSISTANT", "FZ": "VEHICLES"}
+
+
+def svg_text(kuerzel, schild=None):
+    """SVG-Quelltext eines Logos, wahlweise mit anderem Schildnamen (z. B. Englisch)."""
+    name, schild_de, motiv = ICONS[kuerzel]
+    return VORLAGE.format(kuerzel=kuerzel, schild=schild or schild_de, motiv=motiv.rstrip(), stil=STIL, **FARBEN)
+
+
 def main():
-    stil = STIL
     for kuerzel, (name, schild, motiv) in ICONS.items():
-        svg = VORLAGE.format(kuerzel=kuerzel, schild=schild, motiv=motiv.rstrip(), stil=stil, **FARBEN)
-        (HIER / f"{kuerzel}_{name}.svg").write_text(svg, encoding="utf-8", newline="\n")
+        (HIER / f"{kuerzel}_{name}.svg").write_text(svg_text(kuerzel), encoding="utf-8", newline="\n")
+    (HIER / "en").mkdir(exist_ok=True)
+    for kuerzel, (name, _, _) in ICONS.items():
+        (HIER / "en" / f"{kuerzel}_{name}.svg").write_text(svg_text(kuerzel, SCHILD_EN[kuerzel]), encoding="utf-8", newline="\n")
     kacheln = "\n".join(
         f'  <a class="kachel" href="{k}_{n}.svg" title="{k} · {s}"><object type="image/svg+xml" data="{k}_{n}.svg" aria-label="{s}"></object></a>'
         for k, (n, s, _) in ICONS.items())
