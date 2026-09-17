@@ -362,10 +362,12 @@ def main():
 
   async function lauf() {{
     document.body.classList.add('on');                       // Bildroehre schaltet ein
-    await wait(950);
+    await wait(620);
+    if (skipped) return;
+    await stoerung(900);                                     // Bildstoerung zuerst
     if (skipped) return;
 
-    const vor = $('#preface');                               // Vorspann: WORLD RESET
+    const vor = $('#preface');                               // dann der Vorspann: WORLD RESET
     vor.querySelector('.wort').innerHTML = [...'WORLD RESET']
       .map((c, i) => `<span style="--i:${{i}}">${{c === ' ' ? '&nbsp;' : c}}</span>`).join('');
     vor.classList.add('on');
@@ -384,7 +386,7 @@ def main():
     }}
     box.classList.remove('on');
     $('#s-count').classList.remove('on');
-    await stoerung(820);
+    await stoerung(340);                                     // kurzer Schnitt zum Systemcheck
     if (skipped) return;
     $('#s-boot').classList.add('on');
     await boot();
