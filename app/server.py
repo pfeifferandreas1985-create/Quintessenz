@@ -386,6 +386,20 @@ def _fassung() -> str:
     return f"{VERSION}-{int(neueste)}"
 
 
+@app.get("/intro", response_class=HTMLResponse)
+def intro() -> HTMLResponse:
+    """Ladebildschirm: Kiste, Detonation, Bootschrift, daraus die 16 Bereichslogos.
+
+    Eine einzige Datei mit eingebetteten SVGs (erzeugt von static/build_intro.py),
+    damit sie auch ohne Server und ohne Netz laeuft. Von hier fuehrt jede Kachel
+    in die Anwendung unter "/".
+    """
+    return HTMLResponse(
+        (STATIC / "intro.html").read_text(encoding="utf-8"),
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
 @app.get("/", response_class=HTMLResponse)
 def wurzel() -> HTMLResponse:
     html = (STATIC / "index.html").read_text(encoding="utf-8")

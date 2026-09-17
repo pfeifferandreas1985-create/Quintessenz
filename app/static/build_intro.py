@@ -21,24 +21,25 @@ HIER = Path(__file__).resolve().parent
 sys.path.insert(0, str(HIER / "icons"))
 from build_icons import ICONS, SCHILD_EN, svg_text  # noqa: E402
 
-# Reihenfolge im Menü, englischer Untertitel, Hover-Farbe je Bereich
+# Reihenfolge im Menü: Kürzel, englischer Untertitel, Hover-Farbe, Bereichs-ID aus
+# app/config/bereiche.yaml (die Kachel führt auf "/#/b/<ID>" in die Anwendung)
 MENUE = [
-    ("EL", "Electrical engineering",              "#FFB000"),
-    ("ME", "Mechanics & machine elements",        "#FF6A00"),
-    ("AN", "Drives, control & sensors",           "#B4FF3A"),
-    ("AU", "Relay logic & PLC basics",            "#FFE733"),
-    ("MP", "Test equipment & troubleshooting",    "#FF3B3B"),
-    ("PR", "Programming & Linux",                 "#33FF66"),
-    ("MD", "Medicine & first aid",                "#FF4FA3"),
-    ("SV", "Survival & basic supply",             "#FFA76B"),
-    ("EN", "Energy & infrastructure",             "#FFD447"),
-    ("KO", "Radio & communication",               "#B26BFF"),
-    ("SI", "Defensive basics",                    "#E6E6E6"),
-    ("NS", "Rebuilding civilization",             "#E07A3F"),
-    ("AW", "General knowledge & literature",      "#FFF1B8"),
-    ("KN", "Maps & navigation",                   "#2EF2C0"),
-    ("KI", "AI capabilities, offline",            "#FF3DF5"),
-    ("FZ", "Own vehicles: Defender, Mini, Vespa", "#FF5E5E"),
+    ("EL", "Electrical engineering",              "#FFB000", "elektrotechnik-und-elektronik"),
+    ("ME", "Mechanics & machine elements",        "#FF6A00", "mechanik-und-maschinenelemente"),
+    ("AN", "Drives, control & sensors",           "#B4FF3A", "antriebstechnik-regelung-sensorik"),
+    ("AU", "Relay logic & PLC basics",            "#FFE733", "sps-und-automatisierung"),
+    ("MP", "Test equipment & troubleshooting",    "#FF3B3B", "mess-und-prueftechnik-fehlersuche"),
+    ("PR", "Programming & Linux",                 "#33FF66", "programmierung-und-linux"),
+    ("MD", "Medicine & first aid",                "#FF4FA3", "medizin"),
+    ("SV", "Survival & basic supply",             "#FFA76B", "survival-und-grundversorgung"),
+    ("EN", "Energy & infrastructure",             "#FFD447", "energie-und-infrastruktur"),
+    ("KO", "Radio & communication",               "#B26BFF", "kommunikation"),
+    ("SI", "Defensive basics",                    "#E6E6E6", "militaerische-grundlagen-defensiv"),
+    ("NS", "Rebuilding civilization",             "#E07A3F", "zivilisationsneustart"),
+    ("AW", "General knowledge & literature",      "#FFF1B8", "allgemeinwissen-sprache-literatur"),
+    ("KN", "Maps & navigation",                   "#2EF2C0", "karten-und-navigation"),
+    ("KI", "AI capabilities, offline",            "#FF3DF5", "ki-faehigkeiten"),
+    ("FZ", "Own vehicles: Defender, Mini, Vespa", "#FF5E5E", "eigene-fahrzeuge"),
 ]
 
 BOOT = [
@@ -66,10 +67,9 @@ def inline_svg(kuerzel):
 
 def main():
     kacheln = []
-    for i, (k, untertitel, farbe) in enumerate(MENUE):
-        name, _, _ = ICONS[k]
+    for i, (k, untertitel, farbe, bereich_id) in enumerate(MENUE):
         kacheln.append(f"""
-      <a class="tile" href="#{k}" data-domain="{k}" style="--h:{farbe};--a:#FFFFFF;--i:{i}">
+      <a class="tile" href="/#/b/{bereich_id}" data-domain="{k}" style="--h:{farbe};--a:#FFFFFF;--i:{i}">
         {inline_svg(k)}
         <span class="tile-code">{k}</span>
         <span class="tile-sub">{untertitel}</span>
