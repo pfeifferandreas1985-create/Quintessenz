@@ -101,14 +101,38 @@
   .knoten:hover { --s:1.12; }
   .knoten:hover .titel { color:var(--f,var(--h)); opacity:1; }
   .knoten:hover .rahmen { stroke:var(--f,var(--h)); opacity:.9; }
-  .knoten:hover .motiv { stroke:var(--f,var(--h)); filter:drop-shadow(0 0 10px var(--f,var(--p))); }
+  /* Drei Ebenen, drei Farben: Strich hell, Schatten im Akzent, Ringe blau */
+  .knoten:hover .motiv { stroke:var(--h); filter:drop-shadow(0 0 12px var(--akz,var(--p))); }
   .knoten.fokus { cursor:zoom-out; }
   .knoten.fokus .titel { font-size:13px; letter-spacing:.24em; color:var(--f,var(--h)); opacity:1; font-weight:700; }
   .knoten.fokus .motiv { stroke:var(--f,var(--h)); }
   .knoten.fokus .rahmen { stroke:var(--f,var(--h)); opacity:.5; }
-  .motiv { fill:none; stroke:var(--p); stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round; }
+  /* Symbole leben: drei Ringe drehen unterschiedlich schnell, das Motiv hat einen
+     versetzten Akzentschatten. Beim Ueberfahren laeuft alles vier- bis fuenfmal
+     schneller, das Motiv wird hell, der Akzent voll sichtbar. */
+  .knoten svg * { transform-box:view-box; transform-origin:50px 50px; }
+  .motiv { fill:none; stroke:var(--p); stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round;
+           transition:stroke .25s; }
+  .geist { fill:none; stroke:var(--akz,#FF8A00); stroke-width:4.5; stroke-linecap:round;
+           stroke-linejoin:round; opacity:.3; transform:translate(2px,2px);
+           animation:geist-atmen 3.6s ease-in-out infinite; animation-delay:var(--ph,0s);
+           transition:opacity .25s, stroke .25s; }
   .rahmen { fill:none; stroke:var(--dim); stroke-width:1.4; }
-  .rahmen.gestrichelt { stroke-dasharray:4 7; }
+  .r-aussen { stroke-dasharray:16 9; animation:dreh 26s linear infinite; animation-delay:var(--ph,0s); }
+  .r-innen  { stroke-dasharray:2 6; opacity:.6; animation:dreh 17s linear infinite reverse;
+              animation-delay:var(--ph,0s); }
+  .ping     { fill:none; stroke:var(--akz,#FF8A00); stroke-width:1.6; opacity:0; }
+  .r-marke  { stroke:var(--akz,#FF8A00); stroke-width:2.6; stroke-linecap:round;
+              stroke-dasharray:9 336; opacity:.85; animation:dreh 9s linear infinite;
+              animation-delay:var(--ph,0s); }
+  .knoten:hover .r-aussen { animation-duration:5s; }
+  .knoten:hover .r-innen  { animation-duration:3.4s; opacity:1; }
+  .knoten:hover .r-marke  { animation-duration:1.7s; stroke-width:3.4; }
+  .knoten:hover .geist    { opacity:.9; animation-duration:.9s; stroke:var(--akz,#FF8A00); }
+  .knoten:hover .ping     { animation:ping 1.15s ease-out infinite; }
+  .knoten.fokus .r-aussen { animation-duration:14s; }
+  .knoten.fokus .r-marke  { animation-duration:5s; }
+  .knoten.fokus .geist    { opacity:.5; }
 
   #mitte { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center;
            pointer-events:none; z-index:2; transition:opacity .4s; }
@@ -161,6 +185,11 @@
                        66% { transform:translate(5px,-2px) skewX(-.5deg); } 100% { transform:translate(0,0); } }
   @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:.15; } }
   @keyframes drehen { to { transform:rotate(360deg); } }
+  @keyframes dreh { to { transform:rotate(360deg); } }
+  @keyframes ping { 0% { transform:scale(.72); opacity:.75; }
+                    100% { transform:scale(1.18); opacity:0; } }
+  @keyframes geist-atmen { 0%,100% { transform:translate(2px,2px); }
+                           50% { transform:translate(-2px,-1px); } }
   @keyframes fliessen { to { stroke-dashoffset:-18; } }
   @media (prefers-reduced-motion:reduce) { * { animation-duration:.001s !important; } }
 </style>
@@ -255,10 +284,10 @@
   let pfad = [];
 
   const NS = 'http://www.w3.org/2000/svg';
-  function motiv(glyph) {
+  function motiv(glyph, klasse) {
     const u = document.createElementNS(NS, 'use');
     u.setAttribute('href', '#g-' + glyph);
-    u.setAttribute('class', 'motiv');
+    u.setAttribute('class', klasse || 'motiv');
     return u;
   }
 
@@ -269,13 +298,18 @@
     if (farbe) el.style.setProperty('--f', farbe);
     const s = document.createElementNS(NS, 'svg');
     s.setAttribute('viewBox', '-8 -8 116 116');
-    const r1 = document.createElementNS(NS, 'circle');
-    r1.setAttribute('cx', 50); r1.setAttribute('cy', 50); r1.setAttribute('r', 55);
-    r1.setAttribute('class', 'rahmen');
-    const r2 = document.createElementNS(NS, 'circle');
-    r2.setAttribute('cx', 50); r2.setAttribute('cy', 50); r2.setAttribute('r', 48);
-    r2.setAttribute('class', 'rahmen gestrichelt');
-    s.append(r1, r2, motiv(daten.glyph));
+    const ring = (r, klasse) => {
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('cx', 50); c.setAttribute('cy', 50); c.setAttribute('r', r);
+      c.setAttribute('class', klasse);
+      return c;
+    };
+    // Akzentfarbe: bei gefaerbten Bereichen deren Farbe, sonst Amber
+    el.style.setProperty('--akz', farbe || '#FF8A00');
+    // Jeder Knoten laeuft mit eigener Phase, sonst drehen alle im Gleichschritt
+    el.style.setProperty('--ph', (-(alle.length * 1.7) % 26).toFixed(1) + 's');
+    s.append(ring(55, 'rahmen r-aussen'), ring(48, 'rahmen r-innen'), ring(55, 'ping'),
+             ring(53.5, 'r-marke'), motiv(daten.glyph, 'geist'), motiv(daten.glyph, 'motiv'));
     const t = document.createElement('div');
     t.className = 'titel'; t.textContent = daten.name;
     el.append(s, t);
