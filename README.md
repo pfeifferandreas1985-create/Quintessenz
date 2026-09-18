@@ -13,6 +13,51 @@ beschafft; `ingest/` ist noch leer.
 
 ---
 
+## Was hier entsteht
+
+Ein Kasten, der weiterhilft, wenn das Netz weg ist. Nicht als Endzeitspielerei, sondern
+weil Wissen, das nur in der Leitung hängt, kein Wissen ist, über das man verfügt.
+
+Drei Teile greifen ineinander:
+
+1. **Ein Wissensspeicher.** Rund 740 GB: Wikipedia in zwei Sprachen, 75.000 Bücher,
+   Lehrbücher, 16 Fachforen mit beantworteten Praxisfragen, Medizin von Erster Hilfe bis
+   Chirurgie ohne Klinik, Karten der ganzen Welt mit 1,15 Mio. Orten, Reparaturanleitungen,
+   und das vollständige Werkstattwissen zu drei konkreten Fahrzeugen.
+2. **Ein Sprachmodell, das nachschlägt statt zu raten.** Es antwortet aus diesen Quellen
+   und nennt die Fundstelle. Läuft lokal, ohne Netz, ohne Konto, ohne Abo.
+3. **Eine Oberfläche, die man ohne Anleitung bedient.** Das QUINTESSENZ TERMINAL in `app/`,
+   gestaltet wie ein Gerät aus einer Welt, in der die Fünfziger nie aufgehört haben.
+
+Zielgerät ist ein Raspberry Pi 5 mit einer NVMe-Platte, Stromaufnahme im einstelligen
+Wattbereich. Auf einem PC läuft dasselbe schneller und mit größeren Modellen.
+
+### Alles herunterladen, ein Befehl
+
+```powershell
+git clone https://github.com/pfeifferandreas1985-create/Quintessenz.git
+cd Quintessenz\doomsdaybox\tools
+.\alles_holen.ps1 -Ziel D:\DoomsdayBox
+```
+
+Auf Linux und dem Pi:
+
+```bash
+git clone https://github.com/pfeifferandreas1985-create/Quintessenz.git
+cd Quintessenz/doomsdaybox/tools && chmod +x alles_holen.sh
+ZIEL=/srv/box ./alles_holen.sh
+```
+
+Der Befehl lädt Archive, Karten, Modelle und Software nacheinander, prüft jede Datei gegen
+die offizielle Prüfsumme und schreibt ein Logbuch. Abbrechen ist gefahrlos: beim nächsten
+Aufruf geht es an der Abbruchstelle weiter. Mit `-Prio 1` beziehungsweise `PRIO=1` holt man
+zuerst nur das Wichtigste, rund 80 GB.
+
+**Platzbedarf:** etwa 740 GB. Das Ziellaufwerk darf nicht FAT32 sein, sonst scheitern alle
+Dateien über 4 GB. Das Skript prüft das vorab.
+
+---
+
 ## Start in fünf Minuten
 
 Voraussetzung: Python 3.11 oder neuer. Sonst nichts — kein Node, kein Docker,
