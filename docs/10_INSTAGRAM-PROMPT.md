@@ -1,67 +1,64 @@
 # Prompt: Instagram-Story für das Repo
 
-Vorlage zum Einsetzen in ein beliebiges Textwerkzeug. Die Zahlen stammen aus
-`doomsdaybox/doku/BESTAND_2026-09-18.md` und sind gemessen, nicht geschätzt. Beim
-Aktualisieren des Bestands die Zahlen im Faktenblock mitziehen.
+Vorlage zum Einsetzen in ein beliebiges Textwerkzeug. Ausgabe auf Englisch.
+Die Zahlen im Faktenblock stammen aus `doomsdaybox/doku/BESTAND_2026-09-18.md` und sind
+gemessen, nicht geschätzt. Wenn der Bestand wächst, hier nachziehen.
 
 ---
 
 ```text
-Schreibe mir eine Instagram-Story von 60 Sekunden, mit der ich mein GitHub-Repo bewerbe.
+Write a 60-second Instagram story promoting my GitHub repo. Output in English.
 
-== WAS DAS PROJEKT IST ==
-Ein Backup vom Internet, für den Fall, dass wir es abschalten müssen. Eine Festplatte mit
-740 GB Wissen und ein Sprachmodell, das darin nachschlägt. Alles läuft ohne Internet,
-ohne Konto und ohne Abo auf einem Raspberry Pi 5, Stromaufnahme im einstelligen Wattbereich.
-Auf einem normalen PC läuft dasselbe schneller und mit größeren Modellen.
+== WHAT THE PROJECT IS ==
+A backup of the internet, in case we have to switch it off. One hard drive holding 740 GB
+of knowledge, plus a language model that looks things up in it. Everything runs without
+internet, without an account and without a subscription, on a Raspberry Pi 5 drawing
+single-digit watts. The same thing runs faster on a normal PC with larger models.
 Name: QUINTESSENZ. Repo: github.com/pfeifferandreas1985-create/Quintessenz
 
-== WAS ES KANN ==
-- Frage in normaler Sprache stellen, Antwort kommt aus den gespeicherten Quellen,
-  mit Angabe der Fundstelle. Das Modell erfindet nichts, es schlägt nach.
-- Durchsuchen und Lesen wie in einer Enzyklopädie, über eine eigene Oberfläche
-  im Stil eines Geräts aus den Fünfzigern.
-- Offline navigieren: Karte, Route, Orte in der Nähe.
-- Deutsch und Englisch, übersetzen und zusammenfassen auf Knopfdruck.
-- Fotos verstehen, etwa ein Typenschild oder einen Schaltplanausschnitt.
-- Sprache rein und raus, für die Bedienung mit schmutzigen Händen.
+== WHAT IT DOES ==
+- Ask a question in plain language. The answer comes from the stored sources and names the
+  place it was found. The model looks up, it does not guess.
+- Browse and read like an encyclopedia, through its own interface styled like a 1950s device.
+- Navigate offline: map, route, places nearby.
+- German and English, translate and summarise on demand.
+- Understand photos, for example a type plate or part of a wiring diagram.
+- Speech in and out, for operating it with dirty hands.
 
-== WELCHE INFORMATIONEN DRIN SIND (gemessen, nicht geschätzt) ==
-- Wikipedia Deutsch mit Bildern und Englisch ohne Bilder, zusammen 9,8 Mio. Artikel
-- 78.500 Bücher aus Project Gutenberg, deutsch und englisch
-- Lehrbücher und Kurse: Wikibooks, Wikiversity, Wörterbuch mit 1 Mio. Einträgen
-- 16 Fachforen mit beantworteten Praxisfragen: Elektronik, Mechanik, Maschinenbau,
-  Linux, Raspberry Pi, Arduino, Heimwerken, Garten, Outdoor, Physik, Medizin, Funk
-- Medizin: Krankheiten und Medikamente, Erste Hilfe, Geburt, Chirurgie ohne Klinik,
-  Wasseraufbereitung, Hygiene
-- Reparatur: iFixit auf Deutsch und Englisch, Geräte, Maschinen, Fahrzeuge
-- Karten der ganzen Welt in allen Zoomstufen, dazu Europa, DACH und Deutschland
-  einzeln, plus eine Ortsdatenbank mit 1,15 Mio. Einträgen: darunter 2.173 Krankenhäuser,
-  29.094 Feuerwehren, 17.183 Apotheken, 18.191 Tankstellen, 15.643 Brunnen, 22.015 Quellen
-- Energie und Versorgung: Solaranlagen, Generatoren, Holzgas, Biogas, Wasserkraft,
-  Pumpen, Sanitär
-- Zivilisationsneustart: Abhängigkeitsbäume für 10 Kerntechnologien, also was man
-  braucht, um Draht, Lager, Motor oder Funk von Grund auf wieder herzustellen
-- Vollständiges Werkstattwissen zu drei konkreten Fahrzeugen, mit über 11.000
-  Teilepositionen und Originalnummern
-- 14 Sprachmodelle für den PC, 9 kleinere für den Pi, dazu Spracherkennung und
-  eine deutsche Vorlesestimme
+== WHAT IS STORED (measured, not estimated) ==
+- Wikipedia German with images and English without, 9.8 million articles together
+- 78,500 books from Project Gutenberg, German and English
+- Textbooks and courses: Wikibooks, Wikiversity, a dictionary with 1 million entries
+- 16 technical Q&A archives with answered real-world problems: electronics, mechanics,
+  engineering, Linux, Raspberry Pi, Arduino, home improvement, gardening, outdoors,
+  physics, medicine, ham radio
+- Medicine: diseases and drugs, first aid, childbirth, surgery without a hospital,
+  water treatment, hygiene
+- Repair: iFixit in German and English, devices, machines, vehicles
+- Maps of the entire world at all zoom levels, plus Europe, the DACH region and Germany
+  separately, and a places database with 1.15 million entries, among them 2,173 hospitals,
+  29,094 fire stations, 17,183 pharmacies, 18,191 fuel stations, 15,643 wells, 22,015 springs
+- Energy and utilities: solar, generators, wood gas, biogas, hydro, pumps, sanitation
+- Rebuilding civilisation: dependency trees for 10 core technologies, meaning what you need
+  in order to make wire, bearings, a motor or a radio from scratch
+- Complete workshop knowledge for three specific vehicles, with over 11,000 part positions
+  and original part numbers
+- 14 language models for the PC, 9 smaller ones for the Pi, plus speech recognition and a
+  German text-to-speech voice
 
-== REGELN FÜR DEN TEXT ==
-- Deutsch, Du-Ansprache, kurze Sätze, keine Werbefloskeln, kein Marketingdeutsch.
-- Nichts erfinden. Keine erfundene Vorgeschichte, keine Behauptungen über mich als Person,
-  keine Dauer- oder Aufwandsangaben. Nur die Fakten oben.
-- Kein Weltuntergangspathos. Der Ton ist sachlich und trocken, die Zahlen wirken allein.
-- Der erste Satz muss allein stehen können und neugierig machen.
-- Keine Superlative, kein "revolutionär", kein "einzigartig".
+== RULES ==
+- Do not invent anything. No made-up backstory, no claims about me as a person, no figures
+  about how long it took or how much effort it was. Only the facts above.
+- Short sentences. No marketing language, no superlatives.
+- The first sentence has to work on its own.
 
-== WAS ICH BRAUCHE ==
-1. Einen Sprechtext für 60 Sekunden, etwa 150 Wörter, in Absätzen fürs Ablesen.
-2. Eine Tabelle mit 5 Szenen: Sekunde, was man im Bild sieht, kurzer Text zum Einblenden
-   (maximal 6 Wörter, Großbuchstaben).
-3. Eine Bildunterschrift für den Beitrag mit dem Repo-Link.
-4. 10 Hashtags, deutsch und englisch gemischt.
-5. Drei alternative Eröffnungssätze zur Auswahl.
+== WHAT I NEED ==
+1. A spoken script for 60 seconds, around 150 words, in paragraphs I can read off.
+2. A table of 5 scenes: second, what is on screen, short on-screen caption
+   (maximum 6 words, capitals).
+3. A caption for the post including the repo link.
+4. 10 hashtags.
+5. Three alternative opening lines to choose from.
 ```
 
 ---
@@ -70,7 +67,5 @@ Name: QUINTESSENZ. Repo: github.com/pfeifferandreas1985-create/Quintessenz
 
 - **Das Repo steht auf privat.** Vor dem Posten auf öffentlich stellen, sonst führt der
   Link ins Leere.
-- Die überzeugendste Szene ist immer dieselbe: sichtbar Flugmodus einschalten, Frage
-  stellen, Antwort mit Fundstelle zeigen. Alles andere ist Behauptung, das ist Beweis.
-- Für einen Feed-Beitrag statt einer Story: in den Regeln „60 Sekunden" durch
-  „Bildunterschrift mit maximal 120 Wörtern" ersetzen und Punkt 1 und 2 streichen.
+- Für einen Feed-Beitrag statt einer Story: in „WHAT I NEED" die Punkte 1 und 2 streichen
+  und stattdessen eine Bildunterschrift mit maximal 120 Wörtern verlangen.
