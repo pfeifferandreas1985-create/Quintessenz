@@ -98,6 +98,9 @@
   .knoten svg { display:block; width:100%; height:auto; overflow:visible; }
   .knoten .titel { margin-top:11px; text-align:center; font-size:13.5px; letter-spacing:.1em;
                    line-height:1.35; color:var(--p); opacity:.8; text-shadow:0 0 8px rgba(0,0,0,.9); }
+  .knoten.klein .titel { font-size:10.5px; opacity:.55; letter-spacing:.06em; }
+  .knoten.klein .motiv { stroke-width:5.5; }
+  .knoten.klein:hover .titel { opacity:1; }
   .knoten:hover { --s:1.12; }
   .knoten:hover .titel { color:var(--f,var(--h)); opacity:1; }
   .knoten:hover .rahmen { stroke:var(--f,var(--h)); opacity:.9; }
@@ -338,37 +341,60 @@
     el.classList.toggle('fokus', !!fokus);
   }
 
+  function ringLegen(liste, mx, my, R, dMax, klein, versatz) {
+    const n = liste.length || 1;
+    const platz = n > 1 ? (2 * Math.PI * R) / n : 240;
+    const d = Math.max(klein ? 44 : 54, Math.min(dMax, platz * 0.64));
+    // Der aeussere Ring wird um einen halben Schritt gedreht, sonst steht jede
+    // Funktion genau ueber einem Unterpunkt und oben in der Pfadzeile.
+    const start = -Math.PI / 2 + (versatz || 0), punkte = [];
+    liste.forEach((x, i) => {
+      const a = start + (2 * Math.PI * i) / n;
+      const px = mx + Math.cos(a) * R, py = my + Math.sin(a) * R;
+      setze(x, px, py, d, 1, true, false);
+      x.el.classList.toggle('klein', !!klein);
+      x.el.style.transitionDelay = (i * 32) + 'ms';
+      setTimeout(() => { x.el.style.transitionDelay = ''; }, 800);
+      punkte.push([px, py]);
+    });
+    return punkte;
+  }
+
   function zeichne() {
     const w = innerWidth, h = innerHeight;
     const mx = w / 2, my = h / 2;
     const fokus = pfad[pfad.length - 1] || null;
-    const kinder = kinderVon(fokus);
-    const R = Math.min(w, h) * 0.33;
-    const n = kinder.length || 1;
-    const platz = n > 1 ? (2 * Math.PI * R) / n : 240;
-    const d = Math.max(54, Math.min(112, platz * 0.64));
+    const eigene = (fokus && fokus.kinder && fokus.kinder.length) ? fokus.kinder : null;
+    const m = Math.min(w, h);
 
     alle.forEach(x => setze(x, mx, my, 90, .25, false, false));
     if (fokus) setze(fokus, mx, my, 118, 1, true, true);
     $('#mitte').style.opacity = fokus ? 0 : 1;
 
-    const start = -Math.PI / 2, punkte = [];
-    kinder.forEach((x, i) => {
-      const a = start + (2 * Math.PI * i) / n;
-      const px = mx + Math.cos(a) * R, py = my + Math.sin(a) * R;
-      setze(x, px, py, d, 1, true, false);
-      x.el.style.transitionDelay = (i * 32) + 'ms';
-      setTimeout(() => { x.el.style.transitionDelay = ''; }, 800);
-      punkte.push([px, py]);
-    });
+    // Innerer Ring: Unterpunkte, sonst die KI-Funktionen.
+    // Aeusserer Ring: die KI-Funktionen, sobald es Unterpunkte gibt. Damit sind sie
+    // auf jeder Ebene erreichbar, nicht erst ganz unten.
+    let Ri, punkte = [], ringe2 = '';
+    if (!fokus) {
+      Ri = m * 0.33;
+      punkte = ringLegen(BAUM, mx, my, Ri, 112, false);
+    } else if (eigene) {
+      Ri = m * 0.26;
+      const Ra = m * 0.40;
+      punkte = ringLegen(eigene, mx, my, Ri, 96, false);
+      ringLegen(funk, mx, my, Ra, 62, true, Math.PI / funk.length);
+      ringe2 = '<circle cx="' + mx + '" cy="' + my + '" r="' + Ra + '" stroke-dasharray="3 9"/>';
+    } else {
+      Ri = m * 0.31;
+      punkte = ringLegen(funk, mx, my, Ri, 104, false);
+    }
 
     const ringe = $('#ringe'), sp = $('#speichen');
     ringe.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
     sp.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
     ringe.innerHTML =
-      '<circle cx="' + mx + '" cy="' + my + '" r="' + (R * 0.46) + '" stroke-dasharray="2 7"/>' +
-      '<circle cx="' + mx + '" cy="' + my + '" r="' + R + '" class="lauf"/>' +
-      '<circle cx="' + mx + '" cy="' + my + '" r="' + (R * 1.34) + '" stroke-dasharray="1 10"/>';
+      '<circle cx="' + mx + '" cy="' + my + '" r="' + (Ri * 0.46) + '" stroke-dasharray="2 7"/>' +
+      '<circle cx="' + mx + '" cy="' + my + '" r="' + Ri + '" class="lauf"/>' + ringe2;
     sp.innerHTML = punkte.map(p =>
       '<line x1="' + mx + '" y1="' + my + '" x2="' + p[0] + '" y2="' + p[1] + '"/>').join('');
 
