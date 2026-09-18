@@ -143,19 +143,19 @@ BAUM = [
 # KI-Funktionen: haengen unter jedem Knoten, der keine eigenen Unterpunkte hat
 FUNKTIONEN = [
     {"id": "f1", "name": "ASK THE AI", "glyph": "fragen",
-     "text": "Frage stellen, Antwort aus den Quellen des Bereichs mit Fundstelle"},
+     "text": "Ask a question, get an answer from this area's sources with the exact reference"},
     {"id": "f2", "name": "WORK WITH AI", "glyph": "arbeiten",
-     "text": "Rechnen, uebersetzen, zusammenfassen, Schritt fuer Schritt anleiten"},
+     "text": "Calculate, translate, summarise, walk through a job step by step"},
     {"id": "f3", "name": "SOURCES", "glyph": "quellen",
-     "text": "Archive und Dokumente des Bereichs im Original lesen"},
+     "text": "Read the archives and documents of this area in the original"},
     {"id": "f4", "name": "PRINT", "glyph": "drucken",
-     "text": "Seiten als PDF sammeln und drucken, fuer den Fall ohne Geraet"},
+     "text": "Collect pages as a PDF and print them, for when no device runs"},
     {"id": "f5", "name": "HANDOUT", "glyph": "lehrblatt",
-     "text": "Doppelseite setzen: Text, Schnittzeichnung, Warnungen, Fehlertabelle"},
+     "text": "Lay out a double page: text, cutaway drawing, warnings, fault table"},
     {"id": "f6", "name": "PHOTO", "glyph": "foto",
-     "text": "Typenschild oder Bauteil fotografieren und im Bereich deuten"},
+     "text": "Photograph a type plate or part and read it in the context of this area"},
     {"id": "f7", "name": "READ ALOUD", "glyph": "vorlesen",
-     "text": "Antwort laut ausgeben, fuer die Bedienung mit schmutzigen Haenden"},
+     "text": "Speak the answer out loud, for working with dirty hands"},
 ]
 
 BOOT = [
