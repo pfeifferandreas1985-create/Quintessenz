@@ -96,15 +96,15 @@
             will-change:transform,opacity; }
   .knoten.aktiv { pointer-events:auto; }
   .knoten svg { display:block; width:100%; height:auto; overflow:visible; }
-  .knoten .titel { margin-top:9px; text-align:center; font-size:10.5px; letter-spacing:.12em;
-                   line-height:1.3; color:var(--p); opacity:.72; }
+  .knoten .titel { margin-top:11px; text-align:center; font-size:13.5px; letter-spacing:.1em;
+                   line-height:1.35; color:var(--p); opacity:.8; text-shadow:0 0 8px rgba(0,0,0,.9); }
   .knoten:hover { --s:1.12; }
   .knoten:hover .titel { color:var(--f,var(--h)); opacity:1; }
   .knoten:hover .rahmen { stroke:var(--f,var(--h)); opacity:.9; }
   /* Drei Ebenen, drei Farben: Strich hell, Schatten im Akzent, Ringe blau */
   .knoten:hover .motiv { stroke:var(--h); filter:drop-shadow(0 0 12px var(--akz,var(--p))); }
   .knoten.fokus { cursor:zoom-out; }
-  .knoten.fokus .titel { font-size:13px; letter-spacing:.24em; color:var(--f,var(--h)); opacity:1; font-weight:700; }
+  .knoten.fokus .titel { font-size:18px; letter-spacing:.22em; color:var(--f,var(--h)); opacity:1; font-weight:700; }
   .knoten.fokus .motiv { stroke:var(--f,var(--h)); }
   .knoten.fokus .rahmen { stroke:var(--f,var(--h)); opacity:.5; }
   /* Symbole leben: drei Ringe drehen unterschiedlich schnell, das Motiv hat einen
@@ -222,10 +222,10 @@
   <section id="s-nav">
     <svg id="ringe"></svg>
     <svg id="speichen"></svg>
-    <div id="mitte"><b>QUINTESSENZ</b><span>V2 · WISSENSTERMINAL</span></div>
+    <div id="mitte"><b>QUINTESSENZ</b><span>V2 &middot; KNOWLEDGE TERMINAL</span></div>
     <div id="pfad"></div>
-    <button id="zurueck" type="button">&#9666; ZURUECK</button>
-    <div id="hilfe">SYMBOL WAEHLEN &middot; ESC ODER MITTE = ZURUECK</div>
+    <button id="zurueck" type="button">&#9666; BACK</button>
+    <div id="hilfe">SELECT A SYMBOL &middot; ESC OR CENTRE = BACK</div>
   </section>
 
   <div id="hinweis"></div>
