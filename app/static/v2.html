@@ -1,0 +1,1444 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QUINTESSENZ V2</title>
+<style>
+  :root { --p:#3FC8FF; --h:#CFF7FF; --a:#FF8A00; --bg:#05080b; --dim:#17495c; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:#000; color:var(--p); overflow:hidden;
+              font:14px/1.45 "IBM Plex Mono","Courier Prime","Consolas",monospace;
+              user-select:none; -webkit-user-select:none; }
+  body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:90; opacity:.16;
+                 background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.6) 2px 3px); }
+
+  /* Ruhezustand ist "aus". body.on setzt "an" fest und spielt das Einschalten ab; kein
+     animation-fill-mode, sonst nimmt eine spaetere Animation (Ruettler) den Endzustand mit. */
+  #stage { position:relative; width:100%; height:100%; background:var(--bg);
+           transform:scaleY(0); opacity:0; }
+  body.on #stage { transform:none; opacity:1; animation:crt-on .85s cubic-bezier(.2,.9,.2,1); }
+  body.on #stage::after { content:""; position:absolute; inset:0; background:#fff; opacity:0;
+                          pointer-events:none; z-index:40; animation:crt-flicker 1.5s steps(1) .3s; }
+
+  section { position:absolute; inset:0; display:grid; place-items:center; opacity:0;
+            pointer-events:none; transition:opacity .45s; }
+  section.on { opacity:1; pointer-events:auto; }
+
+  /* ---------- Vorspann und Countdown ---------- */
+  #s-count { text-align:center; }
+  #preface { position:absolute; text-align:center; opacity:0; }
+  #preface.on { opacity:1; animation:pre-out .5s ease-in 1.9s forwards; }
+  #preface .wort { font-size:clamp(24px,6vw,68px); font-weight:700; letter-spacing:.3em; text-indent:.3em;
+                   color:var(--h); text-shadow:0 0 30px var(--p),0 0 70px rgba(63,200,255,.45); white-space:nowrap; }
+  #preface .wort span { display:inline-block; opacity:0; }
+  #preface.on .wort span { animation:pre-letter .55s cubic-bezier(.2,.9,.2,1) forwards;
+                           animation-delay:calc(var(--i) * 65ms); }
+  #preface .strich { height:2px; margin:18px auto 0; width:0; background:var(--p); box-shadow:0 0 14px var(--p); }
+  #preface.on .strich { animation:pre-line .9s cubic-bezier(.2,.9,.2,1) .55s forwards; }
+  #preface .unter { margin-top:14px; font-size:11px; letter-spacing:.5em; text-indent:.5em; opacity:0; }
+  #preface.on .unter { animation:pre-sub .6s ease-out 1.1s forwards; }
+
+  #count { position:relative; width:min(46vmin,320px); aspect-ratio:1; display:grid; place-items:center;
+           opacity:0; transition:opacity .3s; }
+  #count.on { opacity:1; }
+  #count svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+  #count circle { fill:none; transform:rotate(-90deg); transform-origin:100px 100px; }
+  .ring-bg { stroke:var(--dim); stroke-width:1.5; stroke-dasharray:3 7; }
+  .ring-go { stroke:var(--p); stroke-width:3.5; stroke-linecap:round; stroke-dasharray:540.35;
+             stroke-dashoffset:540.35; filter:drop-shadow(0 0 8px var(--p)); }
+  .ring-go.go { animation:ring-run 1s linear forwards; }
+  .ring-in { stroke:var(--p); stroke-width:1; opacity:.35; }
+  .ring-in.go { animation:ring-pulse 1s ease-out; }
+  #count-num { position:relative; font-size:min(22vmin,150px); font-weight:700; line-height:1; color:var(--h);
+               text-shadow:0 0 30px var(--p),0 0 60px rgba(63,200,255,.5); }
+  #count-num.beat { animation:num-in .95s cubic-bezier(.2,.8,.2,1); }
+  #count-cap { position:absolute; bottom:-8%; left:0; right:0; font-size:12px; letter-spacing:.45em;
+               text-indent:.45em; opacity:.65; }
+
+  /* ---------- Bildstoerung ---------- */
+  #glitch { position:absolute; inset:0; z-index:35; pointer-events:none; opacity:0; overflow:hidden; }
+  #glitch.on { opacity:1; }
+  #glitch i { position:absolute; left:-10%; right:-10%; display:block; background:var(--c); opacity:.34;
+              mix-blend-mode:screen; transform:translateX(var(--dx));
+              animation:g-slice var(--t) steps(2) infinite alternate; }
+  #glitch b { position:absolute; left:0; right:0; height:2px; background:var(--h); opacity:.75;
+              box-shadow:0 0 24px var(--h); animation:g-sweep .5s linear infinite; }
+  #glitch::after { content:""; position:absolute; inset:-20%; opacity:.1; mix-blend-mode:screen;
+                   background:repeating-linear-gradient(0deg,rgba(255,255,255,.9) 0 1px,transparent 1px 5px);
+                   animation:g-noise .08s steps(2) infinite; }
+  body.glitching #stage { animation:g-shake .09s steps(2) infinite; }
+
+  /* ---------- Systemcheck ---------- */
+  #s-boot { place-items:start; padding:6vh 6vw; }
+  #boot { margin:0; white-space:pre-wrap; font-size:clamp(12px,1.6vw,18px); line-height:1.7;
+          color:var(--p); text-shadow:0 0 8px rgba(63,200,255,.6); }
+  #boot .ok { color:#6CFF9A; }
+  #boot .warn { color:var(--a); }
+  #boot .cur { display:inline-block; width:.6em; height:1.1em; background:var(--p); vertical-align:-.2em;
+               animation:blink .8s steps(1) infinite; }
+  #boot span.g { display:inline-block; will-change:transform,opacity; }
+
+  /* ---------- Navigation ---------- */
+  #s-nav { display:block; }
+  #ringe { position:absolute; inset:0; pointer-events:none; }
+  #ringe circle { fill:none; stroke:var(--dim); opacity:.5; }
+  #ringe .lauf { stroke:var(--p); stroke-width:1.2; stroke-dasharray:4 12; opacity:.45;
+                 transform-origin:center; animation:drehen 60s linear infinite; }
+  #linien { position:absolute; inset:0; pointer-events:none; z-index:1; }
+  #linien line { stroke:var(--p); stroke-width:1; opacity:.28; stroke-dasharray:3 5;
+                 animation:fliessen 1.6s linear infinite; }
+
+  #nabe { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center;
+          pointer-events:none; z-index:2; opacity:0; transition:opacity .6s .5s; }
+  #s-nav.on #nabe { opacity:1; }
+  #nabe b { display:block; font-size:clamp(17px,2.3vw,30px); letter-spacing:.42em; text-indent:.42em;
+            color:var(--h); text-shadow:0 0 26px var(--p); font-weight:700; }
+  #nabe span { display:block; margin-top:9px; font-size:10px; letter-spacing:.42em; text-indent:.42em; opacity:.5; }
+  #nabe em { display:block; margin-top:20px; font-size:10px; letter-spacing:.28em; opacity:.35; font-style:normal; }
+
+  .knoten { position:absolute; transform:translate(-50%,-50%) scale(var(--s,1));
+            display:grid; place-items:center; cursor:pointer; z-index:3;
+            transition:opacity .25s, transform .3s cubic-bezier(.2,.9,.3,1.2), filter .25s; }
+  .knoten .scheibe { position:relative; display:grid; place-items:center; border-radius:50%; }
+  .knoten svg { width:100%; height:100%; display:block; pointer-events:none; }
+  .knoten .titel { position:absolute; left:50%; transform:translateX(-50%); white-space:nowrap;
+                   pointer-events:none; letter-spacing:.2em; text-indent:.2em; }
+  .ebene1 { opacity:0; }
+  .ebene1.da { animation:knoten-an .8s cubic-bezier(.2,.9,.3,1.2) forwards;
+               animation-delay:calc(var(--i,0) * 110ms); }
+  .ebene1 .scheibe { width:var(--d); height:var(--d); }
+  .ebene1 .titel { bottom:-22px; font-size:12px; font-weight:700; }
+  .ebene2 .scheibe { width:var(--d); height:var(--d);
+                     background:radial-gradient(circle,rgba(10,30,40,.9) 0,rgba(5,10,14,.2) 70%); }
+  .ebene2 .titel { bottom:-17px; font-size:10px; }
+  .ebene3 { --d:0; }
+  .ebene3 .pille { padding:6px 11px; border:1px solid var(--dim); border-radius:14px; font-size:10.5px;
+                   background:rgba(6,16,22,.92); white-space:nowrap; letter-spacing:.05em;
+                   box-shadow:0 0 14px rgba(0,0,0,.6); }
+  .knoten:hover { --s:1.1; }
+  .knoten:hover .titel { color:var(--f,var(--h)); }
+  .knoten:hover svg { filter:drop-shadow(0 0 14px var(--f,var(--p))); }
+  .ebene3:hover .pille { border-color:var(--f,var(--h)); color:var(--f,var(--h));
+                         box-shadow:0 0 16px color-mix(in srgb,var(--f,var(--p)) 40%,transparent); }
+  .blase { opacity:0; pointer-events:none; --s:.25; }
+  .blase.auf { opacity:1; pointer-events:auto; --s:1; transition-delay:calc(var(--i,0) * 45ms); }
+  .abgeblendet { opacity:.18; filter:grayscale(.6); }
+
+  /* ---------- Panel ---------- */
+  #panel { position:absolute; top:0; right:0; height:100%; width:min(430px,86vw); z-index:20;
+           background:linear-gradient(200deg,rgba(8,22,30,.97),rgba(4,9,13,.99));
+           border-left:1px solid var(--dim); transform:translateX(102%);
+           transition:transform .4s cubic-bezier(.2,.9,.2,1); display:flex; flex-direction:column; }
+  #panel.auf { transform:none; }
+  #panel.auf #zu { opacity:1; pointer-events:auto; }
+  #panel header { padding:22px 22px 14px; border-bottom:1px solid var(--dim); }
+  #pfad { font-size:10px; letter-spacing:.24em; opacity:.5; margin-bottom:9px; }
+  #panel h2 { margin:0; font-size:21px; letter-spacing:.2em; color:var(--f,var(--h)); font-weight:700; }
+  #zahlen { display:flex; gap:18px; margin-top:13px; font-size:10px; opacity:.62; letter-spacing:.1em; }
+  #zahlen b { display:block; font-size:16px; color:var(--f,var(--p)); letter-spacing:.05em; }
+  #liste { padding:16px 22px; overflow-y:auto; flex:1; }
+  .funktion { display:block; width:100%; text-align:left; margin-bottom:11px; padding:13px 15px;
+              background:rgba(63,200,255,.045); border:1px solid var(--dim); border-radius:5px;
+              color:var(--p); font:inherit; cursor:pointer; transition:.18s; }
+  .funktion:hover { border-color:var(--f,var(--h)); background:color-mix(in srgb,var(--f,var(--p)) 12%,transparent);
+                    transform:translateX(4px); }
+  .funktion b { display:block; font-size:12px; letter-spacing:.16em; color:var(--f,var(--h)); margin-bottom:5px; }
+  .funktion span { font-size:11px; opacity:.72; line-height:1.5; }
+  #panel footer { padding:14px 22px; border-top:1px solid var(--dim); font-size:10px; opacity:.45; letter-spacing:.14em; }
+  #zu { position:absolute; left:-1px; top:14px; transform:translateX(-100%); opacity:0; pointer-events:none;
+        transition:opacity .3s; background:rgba(8,22,30,.97); border:1px solid var(--dim); border-right:0;
+        color:var(--p); font:inherit; font-size:11px; padding:9px 12px; cursor:pointer; border-radius:5px 0 0 5px; }
+  #zu:hover { color:var(--h); border-color:var(--h); }
+
+  #hinweis { position:absolute; left:50%; bottom:26px; transform:translateX(-50%); z-index:30;
+             padding:11px 18px; border:1px solid var(--a); border-radius:5px; color:var(--a);
+             background:rgba(8,22,30,.95); font-size:11px; letter-spacing:.14em; opacity:0;
+             pointer-events:none; transition:opacity .3s; white-space:nowrap; }
+  #hinweis.auf { opacity:1; }
+  #fuss { position:absolute; left:20px; bottom:16px; font-size:10px; letter-spacing:.2em; opacity:0;
+          transition:opacity .6s 1s; }
+  #s-nav.on ~ #fuss, #s-nav.on #fuss { opacity:.35; }
+  .skip { position:fixed; right:18px; bottom:14px; font-size:11px; letter-spacing:.2em; opacity:.5; z-index:60;
+          color:var(--p); border:1px solid var(--dim); padding:6px 10px; cursor:pointer; background:none;
+          font-family:inherit; }
+  .skip:hover { opacity:1; border-color:var(--p); }
+
+  @keyframes crt-on { 0% { transform:scaleY(.004) scaleX(.6); opacity:0; }
+                      18% { transform:scaleY(.004) scaleX(1); opacity:1; }
+                      100% { transform:scaleY(1) scaleX(1); opacity:1; } }
+  @keyframes crt-flicker { 0%,6%,12%,100% { opacity:0; } 3% { opacity:.5; } 9% { opacity:.18; } }
+  @keyframes pre-letter { 0% { opacity:0; transform:translateY(14px) scale(1.25); filter:blur(7px); }
+                          100% { opacity:1; transform:none; filter:blur(0); } }
+  @keyframes pre-line { to { width:min(62vw,520px); } }
+  @keyframes pre-sub { to { opacity:.6; } }
+  @keyframes pre-out { to { opacity:0; transform:scale(1.06); filter:blur(3px); } }
+  @keyframes ring-run { from { stroke-dashoffset:540.35; } to { stroke-dashoffset:0; } }
+  @keyframes ring-pulse { 0% { transform:rotate(-90deg) scale(1); opacity:.45; }
+                          100% { transform:rotate(-90deg) scale(1.25); opacity:0; } }
+  @keyframes num-in { 0% { opacity:0; transform:scale(1.7); filter:blur(6px); }
+                      22% { opacity:1; transform:scale(1); filter:blur(0); }
+                      80% { opacity:1; } 100% { opacity:.15; transform:scale(.94); } }
+  @keyframes g-slice { from { transform:translateX(var(--dx)); } to { transform:translateX(calc(var(--dx) * -.7)); } }
+  @keyframes g-sweep { from { top:-4%; } to { top:104%; } }
+  @keyframes g-noise { 0% { transform:translateY(0); } 100% { transform:translateY(3px); } }
+  @keyframes g-shake { 0% { transform:translate(0,0); } 33% { transform:translate(-6px,2px) skewX(.6deg); }
+                       66% { transform:translate(5px,-2px) skewX(-.5deg); } 100% { transform:translate(0,0); } }
+  @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:.15; } }
+  @keyframes drehen { to { transform:rotate(360deg); } }
+  @keyframes fliessen { to { stroke-dashoffset:-16; } }
+  @keyframes knoten-an { from { opacity:0; transform:translate(-50%,-50%) scale(.2); }
+                         to { opacity:1; transform:translate(-50%,-50%) scale(1); } }
+  @media (prefers-reduced-motion:reduce) { * { animation-duration:.001s !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+</svg>
+<template id="sym-AW"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich ARCHIV">
+  <title data-size="200">ARCHIV</title>
+  <!-- Bereichslogo AW · ARCHIV · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <g class="anim-drehen" style="--t:24s;--o:100px 60px">
+      <circle class="linie" cx="100" cy="60" r="20"/>
+    </g>
+    <ellipse class="linie duenn anim-fliessen" style="--t:4s;--d:4 4" cx="100" cy="60" rx="20" ry="7"/>
+    <ellipse class="linie duenn" cx="100" cy="60" rx="8" ry="20"/>
+    <path class="linie duenn" d="M80 60 H120"/>
+    <path class="linie" d="M54 96 C70 88 88 90 100 98 L100 146 C88 138 70 136 54 144 Z"/>
+    <path class="linie" d="M146 96 C130 88 112 90 100 98 L100 146 C112 138 130 136 146 144 Z"/>
+    <path class="linie duenn anim-fliessen" style="--t:3s;--d:30 8;--v:-38" d="M62 104 C74 99 86 100 94 105 M62 114 C74 109 86 110 94 115 M62 124 C74 119 86 120 94 125"/>
+    <path class="linie duenn anim-fliessen" style="--t:3s;--d:30 8;--v:-38;animation-delay:-1.5s" d="M138 104 C126 99 114 100 106 105 M138 114 C126 109 114 110 106 115 M138 124 C126 119 114 120 106 125"/>
+    <path class="linie funke" d="M128 44 l8 -6 M130 56 l10 0"/>
+  </g>
+  
+</svg></template>
+<template id="sym-EL"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich ELEKTRIK">
+  <title data-size="200">ELEKTRIK</title>
+  <!-- Bereichslogo EL · ELEKTRIK · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <path class="linie dick anim-atmen hover-flackern" style="--t:3.2s" d="M111 36 L85 88 L103 88 L89 130 L123 78 L105 78 L117 36 Z"/>
+    <path class="linie duenn hover-flackern" style="stroke:#EAFBFF;opacity:.55" d="M109 42 L91 84 L105 84 L95 121 L117 80 L101 80 L111 42"/>
+    <path class="linie funke" d="M123 76 l9 -6 M125 82 l10 2"/>
+    <path class="linie funke" style="animation-delay:-.4s" d="M85 90 l-10 -3 M83 84 l-8 -7"/>
+    <path class="linie funke" style="animation-delay:-.75s" d="M89 130 l-6 9 M93 132 l2 11"/>
+    <path class="linie anim-fliessen" style="--t:2.4s" d="M58 150 C65 136 75 136 79 150 C83 164 93 164 100 150"/>
+    <path class="linie anim-fliessen" style="--t:2.4s;animation-delay:-1.2s" d="M100 150 C107 136 117 136 121 150 C125 164 135 164 142 150"/>
+  </g>
+  
+</svg></template>
+<template id="sym-EN"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich ENERGIE">
+  <title data-size="200">ENERGIE</title>
+  <!-- Bereichslogo EN · ENERGIE · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <circle class="linie" cx="74" cy="72" r="14"/>
+    <g class="anim-drehen" style="--t:20s;--o:74px 72px">
+      <path class="linie duenn" d="M74 50 v-8 M74 94 v8 M52 72 h-8 M96 72 h8 M58.4 56.4 l-5.6 -5.6 M89.6 87.6 l5.6 5.6 M58.4 87.6 l-5.6 5.6 M89.6 56.4 l5.6 -5.6"/>
+    </g>
+    <rect class="linie" x="106" y="60" width="44" height="24" rx="3"/><rect class="fuell" x="150" y="67" width="5" height="10"/>
+    <rect class="fuell anim-blinken" style="--t:3.2s;animation-delay:-0s" x="111" y="65" width="7" height="14"/>
+    <rect class="fuell anim-blinken" style="--t:3.2s;animation-delay:-.8s" x="120" y="65" width="7" height="14"/>
+    <rect class="fuell anim-blinken" style="--t:3.2s;animation-delay:-1.6s" x="129" y="65" width="7" height="14"/>
+    <rect class="fuell akzent-fuell anim-blinken" style="--t:3.2s;animation-delay:-2.4s" x="138" y="65" width="7" height="14"/>
+    <g class="anim-drehen" style="--t:9s;--o:100px 128px">
+      <circle class="linie" cx="100" cy="128" r="20"/>
+      <path class="linie duenn" d="M100 108 V148 M80 128 H120 M85.9 113.9 L114.1 142.1 M114.1 113.9 L85.9 142.1"/>
+    </g>
+    <path class="linie duenn anim-fliessen" style="--t:2s;--d:6 6" d="M56 156 Q66 150 76 156 T96 156 T116 156 T136 156 T146 156"/>
+    <path class="linie funke" d="M150 100 l8 -6 M152 112 l10 0"/>
+  </g>
+  
+</svg></template>
+<template id="sym-KI"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich ASSISTENT">
+  <title data-size="200">ASSISTENT</title>
+  <!-- Bereichslogo KI · ASSISTENT · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <rect class="linie" x="50" y="60" width="98" height="64" rx="4"/>
+    <rect class="linie anim-atmen" style="--t:2.6s" x="60" y="70" width="9" height="24" rx="4"/>
+    <rect class="linie anim-atmen" style="--t:2.6s;animation-delay:-.6s" x="76" y="70" width="9" height="24" rx="4"/>
+    <rect class="linie anim-atmen" style="--t:2.6s;animation-delay:-1.2s" x="92" y="70" width="9" height="24" rx="4"/>
+    <rect class="linie anim-atmen" style="--t:2.6s;animation-delay:-1.8s" x="108" y="70" width="9" height="24" rx="4"/>
+    <circle class="linie duenn" cx="132" cy="80" r="7"/><path class="linie duenn akzent" d="M132 80 L136 75"/>
+    <path class="linie duenn" d="M60 106 h20 M88 106 h20 M116 106 h22"/>
+    <rect class="fuell anim-blinken" style="--t:.9s" x="60" y="112" width="6" height="4"/>
+    <path class="linie anim-fliessen" style="--t:2.2s;--d:3 5" d="M56 136 C72 128 88 146 104 138 C118 131 132 143 148 136"/>
+    <path class="linie duenn" d="M56 132 C72 124 88 142 104 134 C118 127 132 139 148 132 M56 140 C72 132 88 150 104 142 C118 135 132 147 148 140"/>
+    <g class="anim-wippen" style="--t:1.6s">
+      <path class="linie" d="M118 34 H158 Q164 34 164 40 V52 Q164 58 158 58 H134 L126 66 V58 H118 Q112 58 112 52 V40 Q112 34 118 34 Z"/>
+      <circle class="fuell anim-blinken" style="--t:1.2s" cx="128" cy="46" r="2.2"/>
+      <circle class="fuell anim-blinken" style="--t:1.2s;animation-delay:-.4s" cx="138" cy="46" r="2.2"/>
+      <circle class="fuell anim-blinken akzent-fuell" style="--t:1.2s;animation-delay:-.8s" cx="148" cy="46" r="2.2"/>
+    </g>
+    <path class="linie funke" d="M46 56 l-8 -6 M44 68 l-10 0"/>
+  </g>
+  
+</svg></template>
+<template id="sym-KN"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich KARTEN">
+  <title data-size="200">KARTEN</title>
+  <!-- Bereichslogo KN · KARTEN · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <path class="linie" d="M46 128 L72 116 L98 128 L124 116 L150 128 L150 156 L124 168 L98 156 L72 168 L46 156 Z"/>
+    <path class="linie duenn" d="M72 116 V168 M98 128 V156 M124 116 V168"/>
+    <path class="linie duenn anim-fliessen" style="--t:3s;--d:6 4" d="M50 140 C60 134 66 146 78 140 M104 150 C112 142 120 152 132 146 M128 134 C136 128 142 138 148 134"/>
+    <path class="linie" d="M100.0 48.0 L104.6 70.9 L124.0 58.0 L111.1 77.4 L134.0 82.0 L111.1 86.6 L124.0 106.0 L104.6 93.1 L100.0 116.0 L95.4 93.1 L76.0 106.0 L88.9 86.6 L66.0 82.0 L88.9 77.4 L76.0 58.0 L95.4 70.9 Z"/>
+    <g class="anim-pendeln" style="--t:4s;--w:24deg;--o:100px 82px">
+      <path class="linie dick akzent" d="M100 82 L100 54"/>
+      <path class="linie dick" d="M100 82 L100 110"/>
+    </g>
+    <circle class="fuell" cx="100" cy="82" r="3.5"/>
+    <path class="linie funke" d="M136 54 l8 -6 M138 66 l10 0"/>
+  </g>
+  
+</svg></template>
+<template id="sym-MD"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich MEDIZIN">
+  <title data-size="200">MEDIZIN</title>
+  <!-- Bereichslogo MD · MEDIZIN · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <path class="linie dick" d="M92 48 h16 v22 h22 v16 h-22 v22 h-16 v-22 h-22 v-16 h22 z"/>
+    <path class="linie duenn" d="M100 56 V126"/>
+    <path class="linie anim-fliessen" style="--t:3s;--d:4 3" d="M92 62 C112 70 88 82 108 92 C90 102 110 114 96 124"/>
+    <circle class="fuell" cx="100" cy="52" r="2.5"/>
+    <path class="linie akzent anim-fliessen" style="--t:2.8s;--d:70 130;--v:-200" d="M44 152 L70 152 L78 140 L86 166 L94 146 L100 152 L156 152"/>
+    <path class="linie funke" d="M132 60 l8 -6 M134 70 l10 0"/>
+  </g>
+  
+</svg></template>
+<template id="sym-ME"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich MECHANIK">
+  <title data-size="200">MECHANIK</title>
+  <!-- Bereichslogo ME · MECHANIK · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <path class="linie anim-drehen" style="--t:30s;--o:100px 96px" d="M138.0 96.0 L145.6 102.0 L142.5 113.6 L136.7 105.8 L132.9 115.0 L136.5 124.0 L128.0 132.5 L126.9 122.9 L119.0 128.9 L117.6 138.5 L106.0 141.6 L109.8 132.7 L100.0 134.0 L94.0 141.6 L82.4 138.5 L90.2 132.7 L81.0 128.9 L72.0 132.5 L63.5 124.0 L73.1 122.9 L67.1 115.0 L57.5 113.6 L54.4 102.0 L63.3 105.8 L62.0 96.0 L54.4 90.0 L57.5 78.4 L63.3 86.2 L67.1 77.0 L63.5 68.0 L72.0 59.5 L73.1 69.1 L81.0 63.1 L82.4 53.5 L94.0 50.4 L90.2 59.3 L100.0 58.0 L106.0 50.4 L117.6 53.5 L109.8 59.3 L119.0 63.1 L128.0 59.5 L136.5 68.0 L126.9 69.1 L132.9 77.0 L142.5 78.4 L145.6 90.0 L136.7 86.2 Z"/>
+    <circle class="linie duenn" cx="100" cy="96" r="30"/>
+    <circle class="linie" cx="100" cy="96" r="11"/>
+    <g class="anim-drehen-r" style="--t:12s;--o:100px 96px">
+      <circle class="fuell" cx="120.5" cy="96.0" r="3.2"/><circle class="fuell" cx="114.5" cy="110.5" r="3.2"/><circle class="fuell" cx="100.0" cy="116.5" r="3.2"/><circle class="fuell" cx="85.5" cy="110.5" r="3.2"/><circle class="fuell" cx="79.5" cy="96.0" r="3.2"/><circle class="fuell" cx="85.5" cy="81.5" r="3.2"/><circle class="fuell" cx="100.0" cy="75.5" r="3.2"/><circle class="fuell" cx="114.5" cy="81.5" r="3.2"/>
+    </g>
+    <path class="linie funke" d="M146 60 l8 -8 M150 70 l10 -2"/>
+    <path class="linie funke" style="animation-delay:-.5s" d="M54 130 l-8 8 M50 120 l-10 2"/>
+  </g>
+  
+</svg></template>
+<template id="sym-NS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich NEUSTART">
+  <title data-size="200">NEUSTART</title>
+  <!-- Bereichslogo NS · NEUSTART · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <path class="linie duenn anim-fliessen" style="--t:12s;--d:8 6;--v:-14" d="M42 122 A58 58 0 0 1 158 122"/>
+    <path class="linie" d="M62 112 H138 V124 H112 L116 138 H84 L88 124 H62 Z"/>
+    <path class="linie" d="M62 112 L44 108 L50 98 L70 112"/>
+    <path class="linie duenn" d="M78 138 H122 V146 H78 Z"/>
+    <g class="anim-pendeln" style="--t:1.1s;--w:16deg;--o:96px 118px">
+      <path class="linie" d="M96 118 L136 74"/>
+      <rect class="linie akzent" x="126" y="58" width="24" height="14" rx="2" transform="rotate(-45 138 65)"/>
+    </g>
+    <path class="linie funke" d="M104 112 l-6 -8 M110 110 l2 -10 M116 114 l8 -6"/>
+  </g>
+  
+</svg></template>
+<template id="sym-PR"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich PROGRAMM">
+  <title data-size="200">PROGRAMM</title>
+  <!-- Bereichslogo PR · PROGRAMM · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <path class="linie" d="M54 60 L136 60 L150 74 L150 138 L54 138 Z"/>
+    <path class="linie duenn" d="M136 60 V74 H150"/>
+    <rect class="fuell anim-blinken" style="--t:2.2s;animation-delay:-0.00s" x="64" y="76" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.0s;animation-delay:-0.74s" x="86" y="76" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.4s;animation-delay:-1.11s" x="97" y="76" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:2.2s;animation-delay:-1.85s" x="119" y="76" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:2.6s;animation-delay:-0.02s" x="130" y="76" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.0s;animation-delay:-0.39s" x="64" y="89" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.4s;animation-delay:-0.76s" x="75" y="89" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:2.2s;animation-delay:-1.50s" x="97" y="89" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:2.6s;animation-delay:-1.87s" x="108" y="89" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.4s;animation-delay:-0.41s" x="130" y="89" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:2.2s;animation-delay:-1.15s" x="75" y="102" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:2.6s;animation-delay:-1.52s" x="86" y="102" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.4s;animation-delay:-0.06s" x="108" y="102" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.8s;animation-delay:-0.43s" x="119" y="102" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:2.6s;animation-delay:-1.17s" x="64" y="115" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.4s;animation-delay:-1.91s" x="86" y="115" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.8s;animation-delay:-0.08s" x="97" y="115" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:2.6s;animation-delay:-0.82s" x="119" y="115" width="4" height="7"/><rect class="fuell anim-blinken" style="--t:3.0s;animation-delay:-1.19s" x="130" y="115" width="4" height="7"/>
+    <rect class="fuell akzent-fuell anim-blinken" style="--t:1s" x="62" y="128" width="9" height="5"/>
+    <path class="linie duenn" d="M76 130 h30"/>
+    <path class="linie funke" d="M152 70 l8 -6 M154 82 l10 0"/>
+  </g>
+  
+</svg></template>
+<template id="sym-SI"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich SICHERUNG">
+  <title data-size="200">SICHERUNG</title>
+  <!-- Bereichslogo SI · SICHERUNG · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <path class="linie dick" d="M100 44 L148 60 C148 100 130 130 100 148 C70 130 52 100 52 60 Z"/>
+    <path class="linie duenn" d="M100 54 L138 66 C138 98 124 122 100 136 C76 122 62 98 62 66 Z"/>
+    <path class="linie" d="M70 96 Q100 70 130 96 Q100 122 70 96 Z"/>
+    <g class="anim-blicken" style="--t:6s">
+      <circle class="linie" cx="100" cy="96" r="9"/>
+      <circle class="fuell akzent-fuell" cx="100" cy="96" r="3.5"/>
+    </g>
+    <path class="linie funke" d="M146 56 l8 -6 M148 68 l10 0"/>
+  </g>
+  
+</svg></template>
+<template id="sym-SV"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bereich VERSORGUNG">
+  <title data-size="200">VERSORGUNG</title>
+  <!-- Bereichslogo SV · VERSORGUNG · Quintessenz-Terminal · erzeugt von build_icons.py -->
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    :root { --p: #3FC8FF; --h: #CFF7FF; --a: #FF8A00; }
+    svg { --f: 1; }
+    svg:hover { --f: .22; }
+    .linie { fill: none; stroke: var(--p); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.4; }
+    .fuell { fill: var(--p); stroke: none; }
+    .duenn { stroke-width: 1.4; }
+    .dick  { stroke-width: 3.4; }
+    .motiv { filter: url(#glow); }
+    svg:hover .motiv { filter: url(#glow-stark); }
+    svg:hover .linie { stroke: var(--h); }
+    svg:hover .fuell { fill: var(--h); }
+    svg:hover .akzent { stroke: var(--a); }
+    svg:hover .akzent-fuell { fill: var(--a); }
+    .ring-aussen { stroke-width: 2; stroke-dasharray: 34 10 4 10; --t: 24s; --o: 100px 96px; }
+    .ring-innen  { stroke-width: 1; stroke-dasharray: 2 6; opacity: .7; --t: 16s; --o: 100px 96px; }
+    .ring-marke  { stroke-width: 3; stroke-dasharray: 6 214; --t: 6s; --o: 100px 96px; }
+    svg:hover .ring-marke { stroke: var(--a); }
+    .anim-drehen   { animation: drehen calc(var(--t) * var(--f)) linear infinite; transform-origin: var(--o); }
+    .anim-drehen-r { animation: drehen calc(var(--t) * var(--f)) linear infinite reverse; transform-origin: var(--o); }
+    .anim-pendeln  { animation: pendeln calc(var(--t) * var(--f)) ease-in-out infinite alternate; transform-origin: var(--o); }
+    .anim-fliessen { stroke-dasharray: var(--d, 5 7); animation: fliessen calc(var(--t) * var(--f)) linear infinite; }
+    .anim-atmen    { animation: atmen calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-blinken  { animation: blinken calc(var(--t) * var(--f)) steps(1) infinite; }
+    .anim-pulsieren{ animation: pulsieren calc(var(--t) * var(--f)) ease-out infinite; transform-origin: var(--o); }
+    .anim-blicken  { animation: blicken calc(var(--t) * var(--f)) ease-in-out infinite; }
+    .anim-wippen   { animation: wippen calc(var(--t) * var(--f)) ease-in-out infinite alternate; }
+    svg:hover .hover-flackern { animation: flackern .9s steps(1) infinite; }
+    .funke { opacity: 0; transform-origin: 100px 96px; stroke-width: 2; }
+    svg:hover .funke { animation: funkeln 1.1s ease-out infinite; stroke: var(--a); }
+    .schild { fill: var(--p); font: 700 13px/1 "Jost", "League Spartan", "Futura", "Century Gothic", sans-serif;
+              letter-spacing: 3.5px; text-anchor: middle; }
+    svg:hover .schild { fill: var(--h); }
+    @keyframes drehen    { to { transform: rotate(360deg); } }
+    @keyframes pendeln   { from { transform: rotate(calc(-1 * var(--w, 12deg))); } to { transform: rotate(var(--w, 12deg)); } }
+    @keyframes fliessen  { to { stroke-dashoffset: var(--v, -24); } }
+    @keyframes atmen     { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    @keyframes blinken   { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .15; } }
+    @keyframes pulsieren { 0% { transform: scale(.92); opacity: .8; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(.92); opacity: .8; } }
+    @keyframes blicken   { 0%, 20% { transform: translateX(-6px); } 45%, 65% { transform: translateX(6px); } 85%, 100% { transform: translateX(-6px); } }
+    @keyframes wippen    { from { transform: translateY(-1.5px); } to { transform: translateY(1.5px); } }
+    @keyframes flackern  { 0% { opacity: 1; } 12% { opacity: .35; } 20% { opacity: 1; } 47% { opacity: .9; }
+                           55% { opacity: .2; } 62% { opacity: 1; } 81% { opacity: .6; } 88% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes funkeln   { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+  </style>
+  <rect width="200" height="200" fill="transparent"/>
+  <circle class="linie ring-aussen anim-drehen"   cx="100" cy="96" r="80"/>
+  <circle class="linie ring-innen  anim-drehen-r" cx="100" cy="96" r="71"/>
+  <circle class="linie ring-marke  anim-drehen"   cx="100" cy="96" r="80"/>
+  <g class="motiv">
+
+    <path class="linie" d="M46 74 Q100 26 154 74"/>
+    <path class="linie duenn" d="M58 64 l-6 -8 M70 56 l-4 -9 M84 50 l-2 -10 M100 48 v-10 M116 50 l2 -10 M130 56 l4 -9 M142 64 l6 -8"/>
+    <rect class="linie" x="58" y="88" width="40" height="52" rx="6"/>
+    <rect class="linie" x="55" y="80" width="46" height="9" rx="2"/>
+    <path class="linie duenn" d="M66 104 h24 M66 116 h24 M66 128 h14"/>
+    <g class="anim-pulsieren hover-flackern" style="--t:1.6s;--o:126px 140px">
+      <path class="linie akzent" d="M126 140 C106 122 120 110 122 92 C128 104 140 108 134 122 C142 114 148 122 146 132 C144 138 136 140 126 140 Z"/>
+      <path class="linie duenn" d="M126 134 C118 124 126 116 128 108 C134 118 136 126 126 134 Z"/>
+    </g>
+    <path class="linie funke" d="M148 100 l8 -6 M150 112 l10 0"/>
+  </g>
+  
+</svg></template>
+
+<div id="stage">
+
+  <section id="s-count" class="on">
+    <div id="preface">
+      <div class="wort"></div>
+      <div class="strich"></div>
+      <div class="unter">STAND BY</div>
+    </div>
+    <div id="count">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="ring-bg" cx="100" cy="100" r="86"/>
+        <circle class="ring-in" cx="100" cy="100" r="70"/>
+        <circle class="ring-go" cx="100" cy="100" r="86"/>
+      </svg>
+      <div id="count-num" aria-live="polite">3</div>
+      <div id="count-cap">RESET SEQUENCE</div>
+    </div>
+  </section>
+  <div id="glitch" aria-hidden="true"></div>
+
+  <section id="s-boot"><pre id="boot"></pre></section>
+
+  <section id="s-nav">
+    <svg id="ringe"></svg>
+    <svg id="linien"></svg>
+    <div id="nabe">
+      <b>QUINTESSENZ</b>
+      <span>V2 · WISSENSTERMINAL</span>
+      <em>BEREICH WÄHLEN</em>
+    </div>
+    <div id="fuss">DEMO · NAVIGATION UND FUNKTIONEN OHNE HINTERLEGTE DATEN</div>
+  </section>
+
+  <aside id="panel">
+    <button id="zu" type="button">SCHLIESSEN ✕</button>
+    <header>
+      <div id="pfad"></div>
+      <h2 id="titel"></h2>
+      <div id="zahlen"></div>
+    </header>
+    <div id="liste"></div>
+    <footer>OFFLINE · ALLE QUELLEN LOKAL · ANTWORTEN MIT FUNDSTELLE</footer>
+  </aside>
+
+  <div id="hinweis"></div>
+</div>
+<button class="skip" id="skip" type="button">SKIP INTRO ▸</button>
+
+<script>
+(() => {
+  const BAUM = [{"id": "TEC", "name": "TECHNIK", "farbe": "#FFB000", "sym": "ME", "kinder": [{"id": "EL", "name": "ELECTRICS", "farbe": "#FFB000", "sym": "EL", "themen": ["Grundlagen und Bauteile", "Analog und Digital", "Leistungselektronik", "Antriebe und Umrichter", "Regelung und Sensorik", "Steuerungen und Relaislogik", "Messen und Fehlersuche", "Hochspannung", "Funk und Antennen"]}, {"id": "ME", "name": "MECHANICS", "farbe": "#FF6A00", "sym": "ME", "themen": ["Statik und Festigkeit", "Maschinenelemente", "Werkstoffe", "Fertigung und Schweissen", "Pneumatik und Hydraulik", "Fahrzeuge"]}, {"id": "PR", "name": "PROGRAMMING", "farbe": "#33FF66", "sym": "PR", "themen": ["C", "Python", "Bash und Linux", "Mikrocontroller", "Netzwerk"]}]}, {"id": "SUR", "name": "SURVIVAL", "farbe": "#FFA76B", "sym": "SV", "kinder": [{"id": "SV", "name": "SUPPLY", "farbe": "#FFA76B", "sym": "SV", "themen": ["Nahrung haltbar machen", "Pflanzen und Pilze", "Feuer und Unterschlupf", "Landwirtschaft", "Bauen und Holz", "Alltagsanleitungen", "Kochrezepte"]}, {"id": "NS", "name": "RESTART", "farbe": "#E07A3F", "sym": "NS", "themen": ["Abhaengigkeitsbaeume", "Metallurgie", "Chemie", "Textil und Papier", "Fruehe Elektrotechnik", "Gemeinschaft organisieren"]}, {"id": "SI", "name": "SECURITY", "farbe": "#E6E6E6", "sym": "SI", "themen": ["Wache und Beobachtung", "Objektschutz", "ABC-Schutz", "Strahlenschutz", "Quarantaene", "Orientierung und Marsch", "Recht und Fuehrung"]}, {"id": "EN", "name": "ENERGY", "farbe": "#FFD447", "sym": "EN", "themen": ["Solar und Inselanlagen", "Generatoren und Motoren", "Holzgas und Biogas", "Wasserkraft und Wind", "Pumpen und Sanitaer"]}]}, {"id": "MED", "name": "MEDICINE", "farbe": "#FF4FA3", "sym": "MD", "kinder": [{"id": "M1", "name": "ERSTE HILFE", "farbe": "#FF4FA3", "sym": "MD", "themen": ["Reanimation", "Blutungskontrolle", "Wunden und Frakturen", "Schock"]}, {"id": "M2", "name": "KRANKHEITEN", "farbe": "#FF7AC0", "sym": "MD", "themen": ["Symptome und Diagnose", "Medikamente und Dosierung", "Infektionen", "Anatomie"]}, {"id": "M3", "name": "OHNE ARZT", "farbe": "#FFA8D6", "sym": "MD", "themen": ["Untersuchung", "Geburt", "Chirurgie mit einfachen Mitteln", "Zaehne", "Versorgung ueber Tage"]}, {"id": "M4", "name": "HYGIENE", "farbe": "#FFC7E4", "sym": "MD", "themen": ["Wasseraufbereitung", "Wasserqualitaet", "Seuchenschutz"]}]}, {"id": "ARC", "name": "ARCHIVE", "farbe": "#FFF1B8", "sym": "AW", "kinder": [{"id": "AW", "name": "WISSEN", "farbe": "#FFF1B8", "sym": "AW", "themen": ["Wikipedia", "Buecher und Literatur", "Lehrbuecher und Kurse", "Woerterbuch", "Fachforen"]}, {"id": "KN", "name": "MAPS", "farbe": "#2EF2C0", "sym": "KN", "themen": ["Weltkarte", "Europa und DACH", "Deutschland", "Routing", "Orte in der Naehe", "Hoehenlinien"]}]}, {"id": "ASS", "name": "ASSISTENT", "farbe": "#FF3DF5", "sym": "KI", "kinder": []}];
+  const FUNKTIONEN = [{"id": "fragen", "name": "FRAGE STELLEN", "text": "Frage in normaler Sprache. Die Antwort kommt aus den Quellen dieses Bereichs und nennt die Fundstelle."}, {"id": "arbeiten", "name": "MIT KI ARBEITEN", "text": "Laengeres Gespraech im Bereich: rechnen lassen, uebersetzen, zusammenfassen, Schritt fuer Schritt anleiten."}, {"id": "quellen", "name": "QUELLEN EINSEHEN", "text": "Alle Archive, Handbuecher und Dokumente dieses Bereichs durchblaettern und im Original lesen."}, {"id": "drucken", "name": "QUELLEN DRUCKEN", "text": "Ausgewaehlte Seiten als PDF sammeln und drucken, fuer den Fall, dass kein Geraet mehr laeuft."}, {"id": "lehrblatt", "name": "LEHRBLATT ERZEUGEN", "text": "Eine Doppelseite zum Thema setzen: Text, Schnittzeichnung, Warnhinweise, Fehlertabelle."}, {"id": "foto", "name": "FOTO ERKLAEREN", "text": "Typenschild, Schaltplanausschnitt oder Bauteil fotografieren und im Zusammenhang dieses Bereichs deuten."}];
+  const LINES = ["QUINTESSENZ TERMINAL  //  BIOS 2.0  //  ATOMIC AGE EDITION", "", "CPU ........ ARM CORTEX-A76 x4 @ 2.4 GHZ .......... OK", "MEMORY ..... 16384 MB ............................ OK", "STORAGE .... /srv/box  740 GB, READ-ONLY ......... OK", "KIWIX ...... 39 ARCHIVES, 2 LANGUAGES ............ OK", "MAPS ....... WORLD / EUROPE / DACH / GERMANY ..... OK", "MODELS ..... 9 LOADED, NO CLOUD .................. OK", "NETWORK .... NONE (BY DESIGN) .................... OK", "", "SCANNING KNOWLEDGE GROUPS ........................ 5 FOUND", "INITIALIZING INTERFACE"];
+  const $ = s => document.querySelector(s);
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let skipped = false;
+
+  // Warten und Tippen haengen am Bildtakt, nicht an setTimeout: Browser drosseln Timer
+  // (Hintergrundfenster, Stromsparen, Vorschaufenster) teils um den Faktor 40.
+  const wait = ms => new Promise(res => {
+    if (reduced || ms <= 0) return res();
+    const t0 = performance.now();
+    (function f(now) { (now - t0 >= ms || skipped) ? res() : requestAnimationFrame(f); })(t0);
+  });
+
+  function tippen(pre, cur, line, cps) {
+    return new Promise(res => {
+      if (reduced || skipped) {
+        for (const ch of line) { const s = document.createElement('span'); s.className = 'g';
+                                 s.textContent = ch; pre.insertBefore(s, cur); }
+        return res();
+      }
+      let i = 0; const t0 = performance.now();
+      (function f(now) {
+        const soll = Math.min(line.length, Math.floor((now - t0) / 1000 * cps));
+        while (i < soll) {
+          const s = document.createElement('span'); s.className = 'g'; s.textContent = line[i++];
+          pre.insertBefore(s, cur);
+        }
+        (i >= line.length || skipped) ? res() : requestAnimationFrame(f);
+      })(t0);
+    });
+  }
+
+  // ================= Navigation aufbauen (unsichtbar, wird nach dem Boot enthuellt) ==========
+  const buehne = $('#s-nav');
+  let aktiv1 = null, aktiv2 = null, schliessUhr = null;
+
+  function symbol(sym) {
+    const t = document.getElementById('sym-' + sym);
+    return t ? t.content.cloneNode(true) : document.createDocumentFragment();
+  }
+  function knoten(klasse, beschriftung, farbe, sym, i) {
+    const el = document.createElement('div');
+    el.className = 'knoten ' + klasse;
+    el.style.setProperty('--f', farbe);
+    el.style.setProperty('--i', i || 0);
+    if (klasse.startsWith('ebene3')) {
+      const p = document.createElement('div');
+      p.className = 'pille'; p.textContent = beschriftung; el.appendChild(p);
+    } else {
+      const s = document.createElement('div');
+      s.className = 'scheibe'; s.appendChild(symbol(sym));
+      const t = document.createElement('div');
+      t.className = 'titel'; t.textContent = beschriftung;
+      el.append(s, t);
+    }
+    buehne.appendChild(el);
+    return el;
+  }
+
+  const gruppen = BAUM.map((g, i) => {
+    g.el = knoten('ebene1', g.name, g.farbe, g.sym, i);
+    g.kinder.forEach((k, j) => {
+      k.el = knoten('ebene2 blase', k.name, k.farbe, k.sym, j);
+      k.themen_el = k.themen.map((t, m) => {
+        const e = knoten('ebene3 blase', t, k.farbe, null, m);
+        e.dataset.thema = t; return e;
+      });
+    });
+    return g;
+  });
+
+  let mitte = { x:0, y:0 }, r1 = 0;
+  function setzen(el, pos, d) {
+    el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px';
+    if (d) el.style.setProperty('--d', d + 'px');
+  }
+  function anordnen() {
+    const w = buehne.clientWidth || innerWidth, h = buehne.clientHeight || innerHeight;
+    mitte = { x:w/2, y:h/2 };
+    r1 = Math.min(w, h) * 0.30;
+    const d1 = Math.max(74, Math.min(112, r1 * 0.42));
+    const start = -Math.PI / 2;
+    gruppen.forEach((g, i) => {
+      const a = start + (2 * Math.PI * i) / gruppen.length;
+      g.pos = { x: mitte.x + Math.cos(a) * r1, y: mitte.y + Math.sin(a) * r1 };
+      setzen(g.el, g.pos, d1);
+      // Blasen faechern nach aussen. Danach wird der ganze Faecher so weit
+      // zurueckgeschoben, dass er im Bild bleibt; sonst laufen die Knoten am
+      // oberen und unteren Rand aus dem Schirm.
+      const r2 = d1 * 1.5, spanne = Math.PI * 0.72;
+      const punkte = [];
+      g.kinder.forEach((k, j) => {
+        const n = g.kinder.length;
+        const b = n === 1 ? a : a - spanne/2 + (spanne * j) / (n - 1);
+        k.pos = { x: g.pos.x + Math.cos(b) * r2, y: g.pos.y + Math.sin(b) * r2 };
+        punkte.push({ p: k.pos, rand: d1 * 0.42 });
+        const r3 = d1 * 1.2, spanne3 = Math.PI * 0.9;
+        k.themen_pos = k.themen_el.map((e, m) => {
+          const n3 = k.themen_el.length;
+          const c = n3 === 1 ? b : b - spanne3/2 + (spanne3 * m) / (n3 - 1);
+          const pt = { x: k.pos.x + Math.cos(c) * r3, y: k.pos.y + Math.sin(c) * r3 };
+          punkte.push({ p: pt, rand: 90 });
+          return pt;
+        });
+      });
+      let dx = 0, dy = 0;
+      punkte.forEach(q => {
+        dx = Math.min(dx, q.p.x - q.rand);      // links raus
+        dy = Math.min(dy, q.p.y - q.rand * 0.5);
+      });
+      punkte.forEach(q => {
+        dx = Math.max(dx, q.p.x + q.rand - w);  // rechts raus
+        dy = Math.max(dy, q.p.y + q.rand * 0.5 - h);
+      });
+      g.kinder.forEach(k => {
+        k.pos = { x: k.pos.x - dx, y: k.pos.y - dy };
+        setzen(k.el, k.pos, d1 * 0.62);
+        k.themen_el.forEach((e, m) =>
+          setzen(e, { x: k.themen_pos[m].x - dx, y: k.themen_pos[m].y - dy }, 0));
+      });
+    });
+    const ringe = $('#ringe');
+    ringe.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    ringe.innerHTML =
+      '<circle cx="' + mitte.x + '" cy="' + mitte.y + '" r="' + (r1*0.44) + '" stroke-dasharray="2 6"/>' +
+      '<circle cx="' + mitte.x + '" cy="' + mitte.y + '" r="' + r1 + '" class="lauf"/>' +
+      '<circle cx="' + mitte.x + '" cy="' + mitte.y + '" r="' + (r1*1.42) + '" stroke-dasharray="1 9"/>';
+  }
+
+  function linien(paare) {
+    const s = $('#linien');
+    s.setAttribute('viewBox', '0 0 ' + (buehne.clientWidth||innerWidth) + ' ' + (buehne.clientHeight||innerHeight));
+    s.innerHTML = paare.map(p => '<line x1="'+p[0].x+'" y1="'+p[0].y+'" x2="'+p[1].x+'" y2="'+p[1].y+'"/>').join('');
+  }
+  function alleZu() {
+    gruppen.forEach(g => {
+      g.el.classList.remove('abgeblendet');
+      g.kinder.forEach(k => { k.el.classList.remove('auf'); k.themen_el.forEach(e => e.classList.remove('auf')); });
+    });
+    linien([]); aktiv1 = aktiv2 = null;
+  }
+  function oeffnen1(g) {
+    clearTimeout(schliessUhr);
+    if (aktiv1 === g) return;
+    alleZu(); aktiv1 = g;
+    gruppen.forEach(x => { if (x !== g) x.el.classList.add('abgeblendet'); });
+    g.kinder.forEach(k => k.el.classList.add('auf'));
+    linien(g.kinder.map(k => [g.pos, k.pos]));
+  }
+  function oeffnen2(g, k) {
+    clearTimeout(schliessUhr);
+    if (aktiv2 === k) return;
+    if (aktiv2) aktiv2.themen_el.forEach(e => e.classList.remove('auf'));
+    aktiv2 = k;
+    k.themen_el.forEach(e => e.classList.add('auf'));
+  }
+  const spaeterZu = () => { clearTimeout(schliessUhr); schliessUhr = setTimeout(alleZu, 450); };
+
+  gruppen.forEach(g => {
+    g.el.addEventListener('mouseenter', () => oeffnen1(g));
+    g.el.addEventListener('mouseleave', spaeterZu);
+    g.el.addEventListener('click', () => panel(g.name, g.farbe, [g.name], g));
+    g.kinder.forEach(k => {
+      k.el.addEventListener('mouseenter', () => oeffnen2(g, k));
+      k.el.addEventListener('mouseleave', spaeterZu);
+      k.el.addEventListener('click', () => panel(k.name, k.farbe, [g.name, k.name], k));
+      k.themen_el.forEach(e => {
+        e.addEventListener('mouseenter', () => clearTimeout(schliessUhr));
+        e.addEventListener('mouseleave', spaeterZu);
+        e.addEventListener('click', () => panel(e.dataset.thema, k.farbe, [g.name, k.name, e.dataset.thema], null));
+      });
+    });
+  });
+
+  const zufall = (a, b) => Math.floor(a + Math.random() * (b - a));
+  function panel(titel, farbe, pfad, obj) {
+    const p = $('#panel');
+    p.style.setProperty('--f', farbe);
+    $('#titel').textContent = titel;
+    $('#pfad').textContent = pfad.join('  ›  ');
+    const themen = obj && obj.themen ? obj.themen.length : (obj && obj.kinder ? obj.kinder.length : 1);
+    $('#zahlen').innerHTML =
+      '<div><b>' + zufall(3, 40) + '</b>QUELLEN</div>' +
+      '<div><b>' + zufall(400, 90000).toLocaleString('de-DE') + '</b>ABSCHNITTE</div>' +
+      '<div><b>' + themen + '</b>THEMEN</div>';
+    $('#liste').innerHTML = FUNKTIONEN.map(f =>
+      '<button class="funktion" data-f="' + f.id + '"><b>' + f.name + '</b><span>' + f.text + '</span></button>').join('');
+    $('#liste').querySelectorAll('.funktion').forEach(b =>
+      b.addEventListener('click', () => hinweis(b.querySelector('b').textContent + ' · ' + titel)));
+    p.classList.add('auf');
+  }
+  $('#zu').addEventListener('click', () => $('#panel').classList.remove('auf'));
+
+  let hinweisUhr = null;
+  function hinweis(text) {
+    const h = $('#hinweis');
+    h.textContent = 'DEMO: ' + text;
+    h.classList.add('auf');
+    clearTimeout(hinweisUhr);
+    hinweisUhr = setTimeout(() => h.classList.remove('auf'), 2200);
+  }
+
+  // ================= Vorspann =====================================================
+  async function boot() {
+    const pre = $('#boot'); pre.innerHTML = '';
+    const cur = document.createElement('span'); cur.className = 'cur'; pre.appendChild(cur);
+    for (const line of LINES) {
+      if (skipped) return;
+      await tippen(pre, cur, line, 90);
+      if (line.endsWith(' OK')) [...pre.querySelectorAll('span.g')].slice(-2).forEach(s => s.classList.add('ok'));
+      if (line.endsWith('FOUND')) [...pre.querySelectorAll('span.g')].slice(-8).forEach(s => s.classList.add('warn'));
+      pre.insertBefore(document.createTextNode('\n'), cur);
+      await wait(line === '' ? 90 : 150 + Math.random() * 120);
+    }
+    await tippen(pre, cur, '████████████████████████', 26);
+    await wait(420);
+  }
+
+  async function morph() {
+    anordnen();
+    const ziele = gruppen.map(g => g.pos);
+    const glyphen = [...document.querySelectorAll('#boot span.g')];
+    $('#boot .cur')?.remove();
+    const anims = glyphen.map((g, i) => {
+      const r = g.getBoundingClientRect(), t = ziele[i % ziele.length];
+      const dx = t.x - (r.left + r.width/2) + (Math.random() - .5) * 60;
+      const dy = t.y - (r.top + r.height/2) + (Math.random() - .5) * 60;
+      return g.animate([
+        { transform:'translate(0,0) scale(1)', opacity:1 },
+        { transform:'translate(' + (dx*.35) + 'px,' + (dy*.35 - 60) + 'px) scale(1.4)', opacity:1, offset:.35 },
+        { transform:'translate(' + dx + 'px,' + dy + 'px) scale(.2)', opacity:0 }
+      ], { duration: 900 + Math.random()*500, delay: Math.random()*350,
+           easing:'cubic-bezier(.3,.7,.2,1)', fill:'forwards' }).finished;
+    });
+    await wait(600);
+    $('#s-nav').classList.add('on');
+    gruppen.forEach(g => g.el.classList.add('da'));
+    $('#s-boot').classList.remove('on');
+    await Promise.allSettled(anims);
+  }
+
+  async function stoerung(ms) {
+    if (reduced) return;
+    const g = $('#glitch');
+    g.innerHTML = '';
+    for (let i = 0; i < 9; i++) {
+      const b = document.createElement('i');
+      b.style.cssText = 'top:' + (Math.random()*100).toFixed(1) + '%;height:' + (.5 + Math.random()*3).toFixed(1) + '%;'
+        + '--dx:' + ((Math.random()-.5)*18).toFixed(1) + 'vw;--t:' + (70 + Math.random()*90).toFixed(0) + 'ms;'
+        + '--c:' + (Math.random() < .4 ? '#FF3DF5' : (Math.random() < .5 ? '#3FC8FF' : '#CFF7FF'));
+      g.appendChild(b);
+    }
+    g.appendChild(document.createElement('b'));
+    g.classList.add('on'); document.body.classList.add('glitching');
+    await wait(ms);
+    g.classList.remove('on'); document.body.classList.remove('glitching');
+    g.innerHTML = '';
+  }
+
+  const neu = el => { el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); };
+
+  async function lauf() {
+    document.body.classList.add('on');
+    await wait(620);
+    if (skipped) return;
+    await stoerung(900);
+    if (skipped) return;
+
+    const vor = $('#preface');
+    vor.querySelector('.wort').innerHTML = [...'WORLD RESET']
+      .map((c, i) => '<span style="--i:' + i + '">' + (c === ' ' ? '&nbsp;' : c) + '</span>').join('');
+    vor.classList.add('on');
+    await wait(2400);
+    vor.classList.remove('on');
+    if (skipped) return;
+
+    const box = $('#count'), num = $('#count-num');
+    box.classList.add('on');
+    for (const n of ['3','2','1']) {
+      if (skipped) return;
+      num.textContent = n;
+      num.classList.remove('beat'); void num.offsetWidth; num.classList.add('beat');
+      neu($('.ring-go')); neu($('.ring-in'));
+      await wait(1000);
+    }
+    box.classList.remove('on');
+    $('#s-count').classList.remove('on');
+    await stoerung(340);
+    if (skipped) return;
+    $('#s-boot').classList.add('on');
+    await boot();
+    if (skipped) return;
+    await morph();
+    $('#skip')?.remove();
+  }
+
+  function skipAll() {
+    skipped = true;
+    document.body.classList.add('on');
+    const st = $('#stage');
+    st.style.animation = 'none'; st.style.transform = 'none'; st.style.opacity = '1';
+    ['#s-count','#s-boot'].forEach(s => $(s).classList.remove('on'));
+    anordnen();
+    $('#s-nav').classList.add('on');
+    gruppen.forEach(g => { g.el.style.opacity = 1; g.el.style.animation = 'none'; });
+    $('#skip')?.remove();
+  }
+
+  $('#skip').addEventListener('click', skipAll);
+  addEventListener('keydown', e => {
+    if (e.key === 'Escape') { $('#panel').classList.remove('auf'); alleZu(); }
+  });
+  addEventListener('resize', () => { anordnen(); if (aktiv1) oeffnen1(aktiv1); });
+
+  anordnen();
+  if (reduced) skipAll(); else lauf();
+})();
+</script>
+</body>
+</html>

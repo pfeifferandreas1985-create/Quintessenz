@@ -386,6 +386,20 @@ def _fassung() -> str:
     return f"{VERSION}-{int(neueste)}"
 
 
+@app.get("/v2", response_class=HTMLResponse)
+def v2() -> HTMLResponse:
+    """QUINTESSENZ V2: Startanimation und Navigationsdemo in einer Datei.
+
+    Fuenf Hauptgruppen auf einem Kreis; beim Ueberfahren poppen die Untergruppen als
+    Blasen auf, darunter deren Themen. Nach dem Anklicken zeigt ein Panel die
+    KI-Funktionen des Bereichs. Erzeugt von static/build_v2.py.
+    """
+    return HTMLResponse(
+        (STATIC / "v2.html").read_text(encoding="utf-8"),
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
 @app.get("/intro", response_class=HTMLResponse)
 def intro() -> HTMLResponse:
     """Ladebildschirm: Kiste, Detonation, Bootschrift, daraus die 16 Bereichslogos.
