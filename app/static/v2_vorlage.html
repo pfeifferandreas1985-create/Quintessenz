@@ -81,84 +81,59 @@
 
   /* ---------- Navigation ---------- */
   #s-nav { display:block; }
-  #ringe { position:absolute; inset:0; pointer-events:none; }
-  #ringe circle { fill:none; stroke:var(--dim); opacity:.5; }
-  #ringe .lauf { stroke:var(--p); stroke-width:1.2; stroke-dasharray:4 12; opacity:.45;
+  #ringe, #speichen { position:absolute; inset:0; pointer-events:none; }
+  #ringe circle { fill:none; stroke:var(--dim); opacity:.45; }
+  #ringe .lauf { stroke:var(--p); stroke-width:1.2; stroke-dasharray:4 12; opacity:.4;
                  transform-origin:center; animation:drehen 60s linear infinite; }
-  #linien { position:absolute; inset:0; pointer-events:none; z-index:1; }
-  #linien line { stroke:var(--p); stroke-width:1; opacity:.28; stroke-dasharray:3 5;
-                 animation:fliessen 1.6s linear infinite; }
+  #speichen line { stroke:var(--p); stroke-width:1; opacity:.2; stroke-dasharray:3 6;
+                   animation:fliessen 1.8s linear infinite; }
 
-  #nabe { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center;
-          pointer-events:none; z-index:2; opacity:0; transition:opacity .6s .5s; }
-  #s-nav.on #nabe { opacity:1; }
-  #nabe b { display:block; font-size:clamp(17px,2.3vw,30px); letter-spacing:.42em; text-indent:.42em;
-            color:var(--h); text-shadow:0 0 26px var(--p); font-weight:700; }
-  #nabe span { display:block; margin-top:9px; font-size:10px; letter-spacing:.42em; text-indent:.42em; opacity:.5; }
-  #nabe em { display:block; margin-top:20px; font-size:10px; letter-spacing:.28em; opacity:.35; font-style:normal; }
+  /* Lage ueber transform, damit die Bewegung fluessig bleibt */
+  .knoten { position:absolute; left:0; top:0; width:var(--d,96px); cursor:pointer; z-index:3;
+            transform:translate(calc(var(--x,0px) - 50%), calc(var(--y,0px) - 50%)) scale(var(--s,1));
+            opacity:var(--o,1); pointer-events:none;
+            transition:transform .55s cubic-bezier(.2,.9,.25,1.05), opacity .4s;
+            will-change:transform,opacity; }
+  .knoten.aktiv { pointer-events:auto; }
+  .knoten svg { display:block; width:100%; height:auto; overflow:visible; }
+  .knoten .titel { margin-top:9px; text-align:center; font-size:10.5px; letter-spacing:.12em;
+                   line-height:1.3; color:var(--p); opacity:.72; }
+  .knoten:hover { --s:1.12; }
+  .knoten:hover .titel { color:var(--f,var(--h)); opacity:1; }
+  .knoten:hover .rahmen { stroke:var(--f,var(--h)); opacity:.9; }
+  .knoten:hover .motiv { stroke:var(--f,var(--h)); filter:drop-shadow(0 0 10px var(--f,var(--p))); }
+  .knoten.fokus { cursor:zoom-out; }
+  .knoten.fokus .titel { font-size:13px; letter-spacing:.24em; color:var(--f,var(--h)); opacity:1; font-weight:700; }
+  .knoten.fokus .motiv { stroke:var(--f,var(--h)); }
+  .knoten.fokus .rahmen { stroke:var(--f,var(--h)); opacity:.5; }
+  .motiv { fill:none; stroke:var(--p); stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round; }
+  .rahmen { fill:none; stroke:var(--dim); stroke-width:1.4; }
+  .rahmen.gestrichelt { stroke-dasharray:4 7; }
 
-  .knoten { position:absolute; transform:translate(-50%,-50%) scale(var(--s,1));
-            display:grid; place-items:center; cursor:pointer; z-index:3;
-            transition:opacity .25s, transform .3s cubic-bezier(.2,.9,.3,1.2), filter .25s; }
-  .knoten .scheibe { position:relative; display:grid; place-items:center; border-radius:50%; }
-  .knoten svg { width:100%; height:100%; display:block; pointer-events:none; }
-  .knoten .titel { position:absolute; left:50%; transform:translateX(-50%); white-space:nowrap;
-                   pointer-events:none; letter-spacing:.2em; text-indent:.2em; }
-  .ebene1 { opacity:0; }
-  .ebene1.da { animation:knoten-an .8s cubic-bezier(.2,.9,.3,1.2) forwards;
-               animation-delay:calc(var(--i,0) * 110ms); }
-  .ebene1 .scheibe { width:var(--d); height:var(--d); }
-  .ebene1 .titel { bottom:-22px; font-size:12px; font-weight:700; }
-  .ebene2 .scheibe { width:var(--d); height:var(--d);
-                     background:radial-gradient(circle,rgba(10,30,40,.9) 0,rgba(5,10,14,.2) 70%); }
-  .ebene2 .titel { bottom:-17px; font-size:10px; }
-  .ebene3 { --d:0; }
-  .ebene3 .pille { padding:6px 11px; border:1px solid var(--dim); border-radius:14px; font-size:10.5px;
-                   background:rgba(6,16,22,.92); white-space:nowrap; letter-spacing:.05em;
-                   box-shadow:0 0 14px rgba(0,0,0,.6); }
-  .knoten:hover { --s:1.1; }
-  .knoten:hover .titel { color:var(--f,var(--h)); }
-  .knoten:hover svg { filter:drop-shadow(0 0 14px var(--f,var(--p))); }
-  .ebene3:hover .pille { border-color:var(--f,var(--h)); color:var(--f,var(--h));
-                         box-shadow:0 0 16px color-mix(in srgb,var(--f,var(--p)) 40%,transparent); }
-  .blase { opacity:0; pointer-events:none; --s:.25; }
-  .blase.auf { opacity:1; pointer-events:auto; --s:1; transition-delay:calc(var(--i,0) * 45ms); }
-  .abgeblendet { opacity:.18; filter:grayscale(.6); }
+  #mitte { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center;
+           pointer-events:none; z-index:2; transition:opacity .4s; }
+  #mitte b { display:block; font-size:clamp(16px,2.2vw,28px); letter-spacing:.42em; text-indent:.42em;
+             color:var(--h); text-shadow:0 0 26px var(--p); font-weight:700; }
+  #mitte span { display:block; margin-top:8px; font-size:10px; letter-spacing:.42em; text-indent:.42em; opacity:.5; }
 
-  /* ---------- Panel ---------- */
-  #panel { position:absolute; top:0; right:0; height:100%; width:min(430px,86vw); z-index:20;
-           background:linear-gradient(200deg,rgba(8,22,30,.97),rgba(4,9,13,.99));
-           border-left:1px solid var(--dim); transform:translateX(102%);
-           transition:transform .4s cubic-bezier(.2,.9,.2,1); display:flex; flex-direction:column; }
-  #panel.auf { transform:none; }
-  #panel.auf #zu { opacity:1; pointer-events:auto; }
-  #panel header { padding:22px 22px 14px; border-bottom:1px solid var(--dim); }
-  #pfad { font-size:10px; letter-spacing:.24em; opacity:.5; margin-bottom:9px; }
-  #panel h2 { margin:0; font-size:21px; letter-spacing:.2em; color:var(--f,var(--h)); font-weight:700; }
-  #zahlen { display:flex; gap:18px; margin-top:13px; font-size:10px; opacity:.62; letter-spacing:.1em; }
-  #zahlen b { display:block; font-size:16px; color:var(--f,var(--p)); letter-spacing:.05em; }
-  #liste { padding:16px 22px; overflow-y:auto; flex:1; }
-  .funktion { display:block; width:100%; text-align:left; margin-bottom:11px; padding:13px 15px;
-              background:rgba(63,200,255,.045); border:1px solid var(--dim); border-radius:5px;
-              color:var(--p); font:inherit; cursor:pointer; transition:.18s; }
-  .funktion:hover { border-color:var(--f,var(--h)); background:color-mix(in srgb,var(--f,var(--p)) 12%,transparent);
-                    transform:translateX(4px); }
-  .funktion b { display:block; font-size:12px; letter-spacing:.16em; color:var(--f,var(--h)); margin-bottom:5px; }
-  .funktion span { font-size:11px; opacity:.72; line-height:1.5; }
-  #panel footer { padding:14px 22px; border-top:1px solid var(--dim); font-size:10px; opacity:.45; letter-spacing:.14em; }
-  #zu { position:absolute; left:-1px; top:14px; transform:translateX(-100%); opacity:0; pointer-events:none;
-        transition:opacity .3s; background:rgba(8,22,30,.97); border:1px solid var(--dim); border-right:0;
-        color:var(--p); font:inherit; font-size:11px; padding:9px 12px; cursor:pointer; border-radius:5px 0 0 5px; }
-  #zu:hover { color:var(--h); border-color:var(--h); }
+  #pfad { position:absolute; left:0; right:0; top:26px; text-align:center; font-size:11px;
+          letter-spacing:.24em; opacity:.55; z-index:5; pointer-events:none; }
+  #hilfe { position:absolute; left:0; right:0; bottom:22px; text-align:center; font-size:10px;
+           letter-spacing:.2em; opacity:.3; z-index:5; pointer-events:none; }
+  #zurueck { position:absolute; left:24px; top:22px; z-index:6; font:inherit; font-size:11px;
+             letter-spacing:.2em; color:var(--p); background:none; border:1px solid var(--dim);
+             padding:7px 11px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .3s; }
+  #zurueck.auf { opacity:.7; pointer-events:auto; }
+  #zurueck:hover { opacity:1; border-color:var(--h); color:var(--h); }
 
-  #hinweis { position:absolute; left:50%; bottom:26px; transform:translateX(-50%); z-index:30;
-             padding:11px 18px; border:1px solid var(--a); border-radius:5px; color:var(--a);
-             background:rgba(8,22,30,.95); font-size:11px; letter-spacing:.14em; opacity:0;
-             pointer-events:none; transition:opacity .3s; white-space:nowrap; }
+  #hinweis { position:absolute; left:50%; bottom:64px; transform:translateX(-50%); z-index:30;
+             padding:12px 20px; border:1px solid var(--fh,var(--a)); border-radius:4px; color:var(--fh,var(--a));
+             background:rgba(6,16,22,.96); font-size:11.5px; letter-spacing:.1em; opacity:0;
+             pointer-events:none; transition:opacity .3s; text-align:center; max-width:min(520px,86vw); }
   #hinweis.auf { opacity:1; }
-  #fuss { position:absolute; left:20px; bottom:16px; font-size:10px; letter-spacing:.2em; opacity:0;
-          transition:opacity .6s 1s; }
-  #s-nav.on ~ #fuss, #s-nav.on #fuss { opacity:.35; }
+  #hinweis b { display:block; letter-spacing:.2em; margin-bottom:5px; }
+  #hinweis span { opacity:.75; font-size:10.5px; letter-spacing:.04em; }
+
   .skip { position:fixed; right:18px; bottom:14px; font-size:11px; letter-spacing:.2em; opacity:.5; z-index:60;
           color:var(--p); border:1px solid var(--dim); padding:6px 10px; cursor:pointer; background:none;
           font-family:inherit; }
@@ -186,23 +161,11 @@
                        66% { transform:translate(5px,-2px) skewX(-.5deg); } 100% { transform:translate(0,0); } }
   @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:.15; } }
   @keyframes drehen { to { transform:rotate(360deg); } }
-  @keyframes fliessen { to { stroke-dashoffset:-16; } }
-  @keyframes knoten-an { from { opacity:0; transform:translate(-50%,-50%) scale(.2); }
-                         to { opacity:1; transform:translate(-50%,-50%) scale(1); } }
+  @keyframes fliessen { to { stroke-dashoffset:-18; } }
   @media (prefers-reduced-motion:reduce) { * { animation-duration:.001s !important; } }
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute">
-  <defs>
-    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="glow-stark" x="-60%" y="-60%" width="220%" height="220%">
-      <feGaussianBlur stdDeviation="4.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-</svg>
 <!--SYMBOLE-->
 
 <div id="stage">
@@ -229,29 +192,16 @@
 
   <section id="s-nav">
     <svg id="ringe"></svg>
-    <svg id="linien"></svg>
-    <div id="nabe">
-      <b>QUINTESSENZ</b>
-      <span>V2 · WISSENSTERMINAL</span>
-      <em>BEREICH WÄHLEN</em>
-    </div>
-    <div id="fuss">DEMO · NAVIGATION UND FUNKTIONEN OHNE HINTERLEGTE DATEN</div>
+    <svg id="speichen"></svg>
+    <div id="mitte"><b>QUINTESSENZ</b><span>V2 · WISSENSTERMINAL</span></div>
+    <div id="pfad"></div>
+    <button id="zurueck" type="button">&#9666; ZURUECK</button>
+    <div id="hilfe">SYMBOL WAEHLEN &middot; ESC ODER MITTE = ZURUECK</div>
   </section>
-
-  <aside id="panel">
-    <button id="zu" type="button">SCHLIESSEN ✕</button>
-    <header>
-      <div id="pfad"></div>
-      <h2 id="titel"></h2>
-      <div id="zahlen"></div>
-    </header>
-    <div id="liste"></div>
-    <footer>OFFLINE · ALLE QUELLEN LOKAL · ANTWORTEN MIT FUNDSTELLE</footer>
-  </aside>
 
   <div id="hinweis"></div>
 </div>
-<button class="skip" id="skip" type="button">SKIP INTRO ▸</button>
+<button class="skip" id="skip" type="button">SKIP INTRO &#9656;</button>
 
 <script>
 (() => {
@@ -262,12 +212,9 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let skipped = false;
 
-  // Warten und Tippen haengen am Bildtakt, nicht an setTimeout: Browser drosseln Timer
-  // (Hintergrundfenster, Stromsparen, Vorschaufenster) teils um den Faktor 40.
   // Bildtakt als Taktgeber, setTimeout als Notnagel. Browser halten requestAnimationFrame
   // an, sobald das Fenster nicht sichtbar ist; ohne den Notnagel bliebe der Vorspann dann
-  // fuer immer am Anfang stehen (schwarzer Schirm). setTimeout laeuft auch im Hintergrund,
-  // nur gedrosselt - das reicht, um weiterzukommen.
+  // fuer immer am Anfang stehen. setTimeout laeuft auch im Hintergrund, nur gedrosselt.
   const wait = ms => new Promise(res => {
     if (reduced || ms <= 0) return res();
     let fertig = false;
@@ -298,181 +245,132 @@
         setze(Math.min(line.length, Math.floor((now - t0) / 1000 * cps)));
         (i >= line.length || skipped) ? ende() : requestAnimationFrame(f);
       })(t0);
-      setTimeout(ende, (line.length / cps) * 1000 + 600);   // Notnagel, s. wait()
+      setTimeout(ende, (line.length / cps) * 1000 + 600);
     });
   }
 
-  // ================= Navigation aufbauen (unsichtbar, wird nach dem Boot enthuellt) ==========
+  // ================= Navigation ===============================================
   const buehne = $('#s-nav');
-  let aktiv1 = null, aktiv2 = null, schliessUhr = null;
+  const alle = [];
+  let pfad = [];
 
-  function symbol(sym) {
-    const t = document.getElementById('sym-' + sym);
-    return t ? t.content.cloneNode(true) : document.createDocumentFragment();
+  const NS = 'http://www.w3.org/2000/svg';
+  function motiv(glyph) {
+    const u = document.createElementNS(NS, 'use');
+    u.setAttribute('href', '#g-' + glyph);
+    u.setAttribute('class', 'motiv');
+    return u;
   }
-  function knoten(klasse, beschriftung, farbe, sym, i) {
+
+  function baueKnoten(daten, eltern) {
     const el = document.createElement('div');
-    el.className = 'knoten ' + klasse;
-    el.style.setProperty('--f', farbe);
-    el.style.setProperty('--i', i || 0);
-    if (klasse.startsWith('ebene3')) {
-      const p = document.createElement('div');
-      p.className = 'pille'; p.textContent = beschriftung; el.appendChild(p);
-    } else {
-      const s = document.createElement('div');
-      s.className = 'scheibe'; s.appendChild(symbol(sym));
-      const t = document.createElement('div');
-      t.className = 'titel'; t.textContent = beschriftung;
-      el.append(s, t);
-    }
+    el.className = 'knoten';
+    const farbe = daten.farbe || (eltern && eltern.farbe) || null;
+    if (farbe) el.style.setProperty('--f', farbe);
+    const s = document.createElementNS(NS, 'svg');
+    s.setAttribute('viewBox', '-8 -8 116 116');
+    const r1 = document.createElementNS(NS, 'circle');
+    r1.setAttribute('cx', 50); r1.setAttribute('cy', 50); r1.setAttribute('r', 55);
+    r1.setAttribute('class', 'rahmen');
+    const r2 = document.createElementNS(NS, 'circle');
+    r2.setAttribute('cx', 50); r2.setAttribute('cy', 50); r2.setAttribute('r', 48);
+    r2.setAttribute('class', 'rahmen gestrichelt');
+    s.append(r1, r2, motiv(daten.glyph));
+    const t = document.createElement('div');
+    t.className = 'titel'; t.textContent = daten.name;
+    el.append(s, t);
     buehne.appendChild(el);
-    return el;
+    daten.el = el; daten.farbe = farbe; daten.eltern = eltern || null;
+    alle.push(daten);
+    el.addEventListener('click', e => { e.stopPropagation(); waehle(daten); });
+    (daten.kinder || []).forEach(x => baueKnoten(x, daten));
+    return daten;
   }
 
-  const gruppen = BAUM.map((g, i) => {
-    g.el = knoten('ebene1', g.name, g.farbe, g.sym, i);
-    g.kinder.forEach((k, j) => {
-      k.el = knoten('ebene2 blase', k.name, k.farbe, k.sym, j);
-      k.themen_el = k.themen.map((t, m) => {
-        const e = knoten('ebene3 blase', t, k.farbe, null, m);
-        e.dataset.thema = t; return e;
-      });
-    });
-    return g;
-  });
+  BAUM.forEach(x => baueKnoten(x, null));
+  const funk = FUNKTIONEN.map(f =>
+    baueKnoten({ id:f.id, name:f.name, glyph:f.glyph, kinder:[], funktion:f }, null));
 
-  let mitte = { x:0, y:0 }, r1 = 0;
-  function setzen(el, pos, d) {
-    el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px';
-    if (d) el.style.setProperty('--d', d + 'px');
+  const kinderVon = kn => !kn ? BAUM : ((kn.kinder && kn.kinder.length) ? kn.kinder : funk);
+
+  function setze(d, x, y, groesse, skala, sichtbar, fokus) {
+    const el = d.el;
+    el.style.setProperty('--x', x + 'px');
+    el.style.setProperty('--y', y + 'px');
+    el.style.setProperty('--d', groesse + 'px');
+    el.style.setProperty('--s', skala);
+    el.style.setProperty('--o', sichtbar ? 1 : 0);
+    el.classList.toggle('aktiv', sichtbar);
+    el.classList.toggle('fokus', !!fokus);
   }
-  function anordnen() {
-    const w = buehne.clientWidth || innerWidth, h = buehne.clientHeight || innerHeight;
-    mitte = { x:w/2, y:h/2 };
-    r1 = Math.min(w, h) * 0.30;
-    const d1 = Math.max(74, Math.min(112, r1 * 0.42));
-    const start = -Math.PI / 2;
-    gruppen.forEach((g, i) => {
-      const a = start + (2 * Math.PI * i) / gruppen.length;
-      g.pos = { x: mitte.x + Math.cos(a) * r1, y: mitte.y + Math.sin(a) * r1 };
-      setzen(g.el, g.pos, d1);
-      // Blasen faechern nach aussen. Danach wird der ganze Faecher so weit
-      // zurueckgeschoben, dass er im Bild bleibt; sonst laufen die Knoten am
-      // oberen und unteren Rand aus dem Schirm.
-      const r2 = d1 * 1.5, spanne = Math.PI * 0.72;
-      const punkte = [];
-      g.kinder.forEach((k, j) => {
-        const n = g.kinder.length;
-        const b = n === 1 ? a : a - spanne/2 + (spanne * j) / (n - 1);
-        k.pos = { x: g.pos.x + Math.cos(b) * r2, y: g.pos.y + Math.sin(b) * r2 };
-        punkte.push({ p: k.pos, rand: d1 * 0.42 });
-        const r3 = d1 * 1.2, spanne3 = Math.PI * 0.9;
-        k.themen_pos = k.themen_el.map((e, m) => {
-          const n3 = k.themen_el.length;
-          const c = n3 === 1 ? b : b - spanne3/2 + (spanne3 * m) / (n3 - 1);
-          const pt = { x: k.pos.x + Math.cos(c) * r3, y: k.pos.y + Math.sin(c) * r3 };
-          punkte.push({ p: pt, rand: 90 });
-          return pt;
-        });
-      });
-      let dx = 0, dy = 0;
-      punkte.forEach(q => {
-        dx = Math.min(dx, q.p.x - q.rand);      // links raus
-        dy = Math.min(dy, q.p.y - q.rand * 0.5);
-      });
-      punkte.forEach(q => {
-        dx = Math.max(dx, q.p.x + q.rand - w);  // rechts raus
-        dy = Math.max(dy, q.p.y + q.rand * 0.5 - h);
-      });
-      g.kinder.forEach(k => {
-        k.pos = { x: k.pos.x - dx, y: k.pos.y - dy };
-        setzen(k.el, k.pos, d1 * 0.62);
-        k.themen_el.forEach((e, m) =>
-          setzen(e, { x: k.themen_pos[m].x - dx, y: k.themen_pos[m].y - dy }, 0));
-      });
+
+  function zeichne() {
+    const w = innerWidth, h = innerHeight;
+    const mx = w / 2, my = h / 2;
+    const fokus = pfad[pfad.length - 1] || null;
+    const kinder = kinderVon(fokus);
+    const R = Math.min(w, h) * 0.33;
+    const n = kinder.length || 1;
+    const platz = n > 1 ? (2 * Math.PI * R) / n : 240;
+    const d = Math.max(54, Math.min(112, platz * 0.64));
+
+    alle.forEach(x => setze(x, mx, my, 90, .25, false, false));
+    if (fokus) setze(fokus, mx, my, 118, 1, true, true);
+    $('#mitte').style.opacity = fokus ? 0 : 1;
+
+    const start = -Math.PI / 2, punkte = [];
+    kinder.forEach((x, i) => {
+      const a = start + (2 * Math.PI * i) / n;
+      const px = mx + Math.cos(a) * R, py = my + Math.sin(a) * R;
+      setze(x, px, py, d, 1, true, false);
+      x.el.style.transitionDelay = (i * 32) + 'ms';
+      setTimeout(() => { x.el.style.transitionDelay = ''; }, 800);
+      punkte.push([px, py]);
     });
-    const ringe = $('#ringe');
+
+    const ringe = $('#ringe'), sp = $('#speichen');
     ringe.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    sp.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
     ringe.innerHTML =
-      '<circle cx="' + mitte.x + '" cy="' + mitte.y + '" r="' + (r1*0.44) + '" stroke-dasharray="2 6"/>' +
-      '<circle cx="' + mitte.x + '" cy="' + mitte.y + '" r="' + r1 + '" class="lauf"/>' +
-      '<circle cx="' + mitte.x + '" cy="' + mitte.y + '" r="' + (r1*1.42) + '" stroke-dasharray="1 9"/>';
+      '<circle cx="' + mx + '" cy="' + my + '" r="' + (R * 0.46) + '" stroke-dasharray="2 7"/>' +
+      '<circle cx="' + mx + '" cy="' + my + '" r="' + R + '" class="lauf"/>' +
+      '<circle cx="' + mx + '" cy="' + my + '" r="' + (R * 1.34) + '" stroke-dasharray="1 10"/>';
+    sp.innerHTML = punkte.map(p =>
+      '<line x1="' + mx + '" y1="' + my + '" x2="' + p[0] + '" y2="' + p[1] + '"/>').join('');
+
+    $('#pfad').textContent = pfad.map(x => x.name).join('   >   ');
+    $('#zurueck').classList.toggle('auf', pfad.length > 0);
   }
 
-  function linien(paare) {
-    const s = $('#linien');
-    s.setAttribute('viewBox', '0 0 ' + (buehne.clientWidth||innerWidth) + ' ' + (buehne.clientHeight||innerHeight));
-    s.innerHTML = paare.map(p => '<line x1="'+p[0].x+'" y1="'+p[0].y+'" x2="'+p[1].x+'" y2="'+p[1].y+'"/>').join('');
+  function waehle(d) {
+    if (d.funktion) { hinweis(d.funktion); return; }
+    if (pfad[pfad.length - 1] === d) { zurueck(); return; }
+    pfad = [];
+    let x = d;
+    while (x) { pfad.unshift(x); x = x.eltern; }
+    zeichne();
   }
-  function alleZu() {
-    gruppen.forEach(g => {
-      g.el.classList.remove('abgeblendet');
-      g.kinder.forEach(k => { k.el.classList.remove('auf'); k.themen_el.forEach(e => e.classList.remove('auf')); });
-    });
-    linien([]); aktiv1 = aktiv2 = null;
-  }
-  function oeffnen1(g) {
-    clearTimeout(schliessUhr);
-    if (aktiv1 === g) return;
-    alleZu(); aktiv1 = g;
-    gruppen.forEach(x => { if (x !== g) x.el.classList.add('abgeblendet'); });
-    g.kinder.forEach(k => k.el.classList.add('auf'));
-    linien(g.kinder.map(k => [g.pos, k.pos]));
-  }
-  function oeffnen2(g, k) {
-    clearTimeout(schliessUhr);
-    if (aktiv2 === k) return;
-    if (aktiv2) aktiv2.themen_el.forEach(e => e.classList.remove('auf'));
-    aktiv2 = k;
-    k.themen_el.forEach(e => e.classList.add('auf'));
-  }
-  const spaeterZu = () => { clearTimeout(schliessUhr); schliessUhr = setTimeout(alleZu, 450); };
-
-  gruppen.forEach(g => {
-    g.el.addEventListener('mouseenter', () => oeffnen1(g));
-    g.el.addEventListener('mouseleave', spaeterZu);
-    g.el.addEventListener('click', () => panel(g.name, g.farbe, [g.name], g));
-    g.kinder.forEach(k => {
-      k.el.addEventListener('mouseenter', () => oeffnen2(g, k));
-      k.el.addEventListener('mouseleave', spaeterZu);
-      k.el.addEventListener('click', () => panel(k.name, k.farbe, [g.name, k.name], k));
-      k.themen_el.forEach(e => {
-        e.addEventListener('mouseenter', () => clearTimeout(schliessUhr));
-        e.addEventListener('mouseleave', spaeterZu);
-        e.addEventListener('click', () => panel(e.dataset.thema, k.farbe, [g.name, k.name, e.dataset.thema], null));
-      });
-    });
-  });
-
-  const zufall = (a, b) => Math.floor(a + Math.random() * (b - a));
-  function panel(titel, farbe, pfad, obj) {
-    const p = $('#panel');
-    p.style.setProperty('--f', farbe);
-    $('#titel').textContent = titel;
-    $('#pfad').textContent = pfad.join('  ›  ');
-    const themen = obj && obj.themen ? obj.themen.length : (obj && obj.kinder ? obj.kinder.length : 1);
-    $('#zahlen').innerHTML =
-      '<div><b>' + zufall(3, 40) + '</b>QUELLEN</div>' +
-      '<div><b>' + zufall(400, 90000).toLocaleString('de-DE') + '</b>ABSCHNITTE</div>' +
-      '<div><b>' + themen + '</b>THEMEN</div>';
-    $('#liste').innerHTML = FUNKTIONEN.map(f =>
-      '<button class="funktion" data-f="' + f.id + '"><b>' + f.name + '</b><span>' + f.text + '</span></button>').join('');
-    $('#liste').querySelectorAll('.funktion').forEach(b =>
-      b.addEventListener('click', () => hinweis(b.querySelector('b').textContent + ' · ' + titel)));
-    p.classList.add('auf');
-  }
-  $('#zu').addEventListener('click', () => $('#panel').classList.remove('auf'));
+  function zurueck() { pfad.pop(); zeichne(); }
 
   let hinweisUhr = null;
-  function hinweis(text) {
-    const h = $('#hinweis');
-    h.textContent = 'DEMO: ' + text;
-    h.classList.add('auf');
+  function hinweis(f) {
+    const el = $('#hinweis');
+    const wo = pfad.length ? pfad[pfad.length - 1] : null;
+    el.innerHTML = '<b>' + f.name + (wo ? ' &middot; ' + wo.name : '') + '</b><span>' + f.text + '</span>';
+    el.style.setProperty('--fh', (wo && wo.farbe) || '#FF8A00');
+    el.classList.add('auf');
     clearTimeout(hinweisUhr);
-    hinweisUhr = setTimeout(() => h.classList.remove('auf'), 2200);
+    hinweisUhr = setTimeout(() => el.classList.remove('auf'), 3200);
   }
 
-  // ================= Vorspann =====================================================
+  $('#zurueck').addEventListener('click', e => { e.stopPropagation(); zurueck(); });
+  // Kein Zurueck bei Klick auf den Hintergrund: ein Klick knapp neben ein Symbol
+  // haette sonst ungewollt eine Ebene geschlossen. Zurueck geht ueber den Knopf,
+  // ueber Escape oder ueber das Symbol in der Mitte.
+  addEventListener('keydown', e => { if (e.key === 'Escape' && pfad.length) zurueck(); });
+  addEventListener('resize', zeichne);
+
+  // ================= Vorspann =================================================
   async function boot() {
     const pre = $('#boot'); pre.innerHTML = '';
     const cur = document.createElement('span'); cur.className = 'cur'; pre.appendChild(cur);
@@ -484,19 +382,22 @@
       pre.insertBefore(document.createTextNode('\n'), cur);
       await wait(line === '' ? 90 : 150 + Math.random() * 120);
     }
-    await tippen(pre, cur, '████████████████████████', 26);
+    await tippen(pre, cur, '████████████████', 22);
     await wait(420);
   }
 
   async function morph() {
-    anordnen();
-    const ziele = gruppen.map(g => g.pos);
+    zeichne();
+    const ziele = BAUM.map(g => {
+      const r = g.el.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    });
     const glyphen = [...document.querySelectorAll('#boot span.g')];
-    $('#boot .cur')?.remove();
+    const cur = $('#boot .cur'); if (cur) cur.remove();
     const anims = glyphen.map((g, i) => {
       const r = g.getBoundingClientRect(), t = ziele[i % ziele.length];
-      const dx = t.x - (r.left + r.width/2) + (Math.random() - .5) * 60;
-      const dy = t.y - (r.top + r.height/2) + (Math.random() - .5) * 60;
+      const dx = t.x - (r.left + r.width / 2) + (Math.random() - .5) * 60;
+      const dy = t.y - (r.top + r.height / 2) + (Math.random() - .5) * 60;
       return g.animate([
         { transform:'translate(0,0) scale(1)', opacity:1 },
         { transform:'translate(' + (dx*.35) + 'px,' + (dy*.35 - 60) + 'px) scale(1.4)', opacity:1, offset:.35 },
@@ -506,7 +407,6 @@
     });
     await wait(600);
     $('#s-nav').classList.add('on');
-    gruppen.forEach(g => g.el.classList.add('da'));
     $('#s-boot').classList.remove('on');
     await Promise.allSettled(anims);
   }
@@ -563,7 +463,7 @@
     await boot();
     if (skipped) return;
     await morph();
-    $('#skip')?.remove();
+    const sk = $('#skip'); if (sk) sk.remove();
   }
 
   function skipAll() {
@@ -571,20 +471,16 @@
     document.body.classList.add('on');
     const st = $('#stage');
     st.style.animation = 'none'; st.style.transform = 'none'; st.style.opacity = '1';
-    ['#s-count','#s-boot'].forEach(s => $(s).classList.remove('on'));
-    anordnen();
+    $('#s-count').classList.remove('on');
+    $('#s-boot').classList.remove('on');
     $('#s-nav').classList.add('on');
-    gruppen.forEach(g => { g.el.style.opacity = 1; g.el.style.animation = 'none'; });
-    $('#skip')?.remove();
+    zeichne();
+    const sk = $('#skip'); if (sk) sk.remove();
   }
 
-  $('#skip').addEventListener('click', skipAll);
-  addEventListener('keydown', e => {
-    if (e.key === 'Escape') { $('#panel').classList.remove('auf'); alleZu(); }
-  });
-  addEventListener('resize', () => { anordnen(); if (aktiv1) oeffnen1(aktiv1); });
+  $('#skip').addEventListener('click', e => { e.stopPropagation(); skipAll(); });
 
-  anordnen();
+  zeichne();
   if (reduced) skipAll(); else lauf();
 })();
 </script>
