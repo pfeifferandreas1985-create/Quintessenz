@@ -94,8 +94,30 @@ def page_ref(row) -> str:
     return f"[{short(title)}, {seite}]"
 
 
-def ask_llm(question: str, rows: list) -> str:
+def ask_llm(question: str, rows: list, modus: str | None = None) -> str:
+    """Antwort formulieren lassen.
+
+    Laeuft ueber app/modell.py, sobald das Terminal danebenliegt: dann laesst sich zwischen
+    dem lokalen Modell und einem Online-Modell umschalten. Ohne diese Datei bleibt es beim
+    alten Weg ueber Ollama. Nach aussen gehen nur Frage und Auszuege, nie das Archiv.
+    """
+    from pathlib import Path
     ctx = "\n\n".join(f"--- {page_ref(r)} ---\n{r[5]}" for r in rows)
+    fundstellen = [{"titel": r[1], "seite": r[3], "text": r[5]} for r in rows]
+
+    hier = Path(__file__).resolve()
+    for kandidat in (hier.parents[3] / "app", hier.parents[3] / "app" / "app"):
+        if (kandidat / "modell.py").exists():
+            sys.path.insert(0, str(kandidat))
+            try:
+                import modell
+                text, woher = modell.antwort(question, fundstellen, modus=modus)
+                return f"{text}\n\n[Antwort erzeugt: {woher}]"
+            except Exception as e:
+                return f"({type(e).__name__}: {e})"
+            finally:
+                sys.path.remove(str(kandidat))
+
     try:
         r = requests.post(
             f"{cfg.OLLAMA_URL}/api/chat",
@@ -110,8 +132,6 @@ def ask_llm(question: str, rows: list) -> str:
     except requests.RequestException as e:
         return f"(LLM nicht erreichbar: {e})"
     return r.json()["message"]["content"]
-
-
 def open_page(row) -> None:
     _, _, did, ps, _, _ = row
     png = cfg.PAGES / did / f"{ps:04d}.png"
@@ -132,6 +152,8 @@ def main() -> None:
     ap.add_argument("--quellen", action="store_true", help="nur Fundstellen, kein LLM")
     ap.add_argument("--oeffnen", action="store_true", help="beste Originalseite oeffnen")
     ap.add_argument("-k", type=int, default=cfg.TOP_K_FINAL, help="Anzahl Fundstellen")
+    ap.add_argument("--modus", choices=["lokal", "online", "auto"], default=None,
+                    help="Antwortmodell: lokal (Vorgabe), online oder auto. Online geht nur, wenn ein Schluessel in QUINTESSENZ_API_KEY steht.")
     args = ap.parse_args()
 
     if not cfg.DB_PATH.exists():
@@ -153,7 +175,7 @@ def main() -> None:
 
     if not args.quellen:
         print("\n--- Antwort -------------------------------------------------")
-        print(ask_llm(args.frage, rows))
+        print(ask_llm(args.frage, rows, args.modus))
     con.close()
 
 

@@ -1,0 +1,40 @@
+# Modellanbindung des QUINTESSENZ TERMINALS
+#
+# Hier steht KEIN Schluessel. Der kommt aus der Umgebung, damit er nicht versehentlich
+# im Repo landet:
+#     Windows   setx QUINTESSENZ_API_KEY "sk-..."
+#     Linux     export QUINTESSENZ_API_KEY=sk-...
+#
+# Der Modus laesst sich auch je Sitzung umstellen:  QUINTESSENZ_MODUS=online
+# In der Oberflaeche steht er als Schalter neben "ASK THE AI"; dort gilt er je Frage.
+
+# lokal  = antwortet nur mit dem Modell auf dem Geraet (Vorgabe, offlinefaehig)
+# online = antwortet ueber den Anbieter unten
+# auto   = nimmt lokal und weicht nur aus, wenn lokal nicht laeuft
+modus: lokal
+
+lokal:
+  anbieter: lokal                      # Ollama
+  adresse: http://127.0.0.1:11434
+  modell: qwen3.5-9b                   # auf dem Pi; am PC z. B. gemma-4-26B-A4B-it-qat
+  einbettungsmodell: qwen3-embedding-0.6b
+  temperatur: 0.2
+  zeitlimit: 300                       # Sekunden; der Pi rechnet langsam
+  max_zeichen: 4000                    # so viel Quelltext geht hoechstens in den Prompt
+
+online:
+  # anbieter: anthropic  ->  https://api.anthropic.com
+  # anbieter: openai     ->  alles mit OpenAI-Schnittstelle: OpenAI, Mistral, Groq,
+  #                          OpenRouter, LM Studio, llama.cpp-Server
+  anbieter: anthropic
+  adresse: https://api.anthropic.com
+  modell: claude-sonnet-5
+  einbettungsmodell: ""                # bleibt leer: Einbettungen laufen immer lokal
+  temperatur: 0.2
+  zeitlimit: 120
+  max_zeichen: 12000                   # online darf mehr Zusammenhang mitgehen
+
+# Was online geht und was nicht
+#   Die Suche bleibt vollstaendig auf dem Geraet: Index, Einbettungen, Auswahl der
+#   Fundstellen. Nach aussen gehen nur die Frage und die wenigen Absaetze, die zur
+#   Frage gehoeren. Das Archiv selbst verlaesst die Box nie.
