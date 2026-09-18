@@ -1526,10 +1526,16 @@
   // Warten und Tippen haengen am Bildtakt, nicht an setTimeout: Browser drosseln Timer
   // (Hintergrundfenster, Stromsparen, Vorschaufenster) teils um den Faktor 40, dann
   // kroeche der Vorspann. requestAnimationFrame laeuft mit der Bildwiederholung.
+  // Bildtakt als Taktgeber, setTimeout als Notnagel. Browser halten requestAnimationFrame
+  // an, sobald das Fenster nicht sichtbar ist; ohne den Notnagel bliebe der Vorspann dann
+  // fuer immer am Anfang stehen. setTimeout laeuft auch im Hintergrund, nur gedrosselt.
   const wait = ms => new Promise(res => {
     if (reduced || ms <= 0) return res();
+    let fertig = false;
+    const ende = () => { if (!fertig) { fertig = true; res(); } };
     const t0 = performance.now();
-    (function f(now) { (now - t0 >= ms || skipped) ? res() : requestAnimationFrame(f); })(t0);
+    (function f(now) { if (fertig) return; (now - t0 >= ms || skipped) ? ende() : requestAnimationFrame(f); })(t0);
+    setTimeout(ende, ms + 40);
   });
 
   /** Zeile zeichenweise setzen, Tempo in Zeichen je Sekunde. */
@@ -1540,15 +1546,21 @@
                                  s.textContent = ch; pre.insertBefore(s, cur); }
         return res();
       }
-      let i = 0; const t0 = performance.now();
-      (function f(now) {
-        const soll = Math.min(line.length, Math.floor((now - t0) / 1000 * cps));
-        while (i < soll) {
+      let i = 0, fertig = false;
+      const t0 = performance.now();
+      const setze = bis => {
+        while (i < bis) {
           const s = document.createElement('span'); s.className = 'g'; s.textContent = line[i++];
           pre.insertBefore(s, cur);
         }
-        (i >= line.length || skipped) ? res() : requestAnimationFrame(f);
+      };
+      const ende = () => { if (!fertig) { fertig = true; setze(line.length); res(); } };
+      (function f(now) {
+        if (fertig) return;
+        setze(Math.min(line.length, Math.floor((now - t0) / 1000 * cps)));
+        (i >= line.length || skipped) ? ende() : requestAnimationFrame(f);
       })(t0);
+      setTimeout(ende, (line.length / cps) * 1000 + 600);   // Notnagel, s. wait()
     });
   }
 
